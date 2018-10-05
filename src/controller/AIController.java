@@ -16,6 +16,7 @@ public class AIController extends CarController {
 	
 	// Car Speed to move at
 	private final int CAR_MAX_SPEED = 1;
+	//TODO(naverill) remove this
 	
 	public AIController(Car car) {
 		super(car);
