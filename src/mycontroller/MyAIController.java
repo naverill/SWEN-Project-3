@@ -4,6 +4,7 @@ import controller.CarController;
 import world.Car;
 
 public class MyAIController extends CarController{
+	IMovementStrategy strategy;
 
 	public MyAIController(Car car) {
 		super(car);
@@ -14,5 +15,6 @@ public class MyAIController extends CarController{
 		// TODO Auto-generated method stub
 		
 	}
-
 }
+
+
