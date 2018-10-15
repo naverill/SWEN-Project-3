@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import tiles.LavaTrap;
 import tiles.MapTile;
 import utilities.Coordinate;
 import world.Car;
@@ -47,6 +48,8 @@ public class AIController extends CarController {
 			flag = !flag;
 		}
 		
+		getViewSpecifics(currentView);
+
 		// checkStateChange();
 		if(getSpeed() < CAR_MAX_SPEED){       // Need speed to turn and progress toward the exit
 			applyForwardAcceleration();   // Tough luck if there's a wall in the way
@@ -69,6 +72,67 @@ public class AIController extends CarController {
 			}
 		}
 	}
+	
+	public void getViewSpecifics(HashMap<Coordinate, MapTile> currentView){
+		ArrayList<MapTile.Type> array = new ArrayList<>();
+		int max = Car.VIEW_SQUARE;
+		Coordinate currentPosition = new Coordinate(getPosition());
+		//north
+		for(int i = 1; i <= max; i++){
+			MapTile tileNorth = currentView.get(new Coordinate(currentPosition.x, currentPosition.y+i));
+			MapTile.Type northType = tileNorth.getType();
+			if(tileNorth instanceof LavaTrap) {
+				if(((LavaTrap) tileNorth).getKey()!=0) {
+					System.out.println("found key yo");
+				}
+			}
+			array.add(northType);
+		}
+		//south
+		for(int i = 1; i <= max; i++){
+			MapTile tileSouth = currentView.get(new Coordinate(currentPosition.x, currentPosition.y-i));
+			MapTile.Type southType = tileSouth.getType();
+			if(tileSouth instanceof LavaTrap) {
+				if(((LavaTrap) tileSouth).getKey()!=0) {
+					System.out.println("found key yo");
+				}
+			}
+			array.add(southType);
+		}
+		//west
+		for(int i = 1; i <= max; i++){
+			MapTile tileWest = currentView.get(new Coordinate(currentPosition.x-i, currentPosition.y));
+			MapTile.Type westType = tileWest.getType();
+			if(tileWest instanceof LavaTrap) {
+				if(((LavaTrap) tileWest).getKey()!=0) {
+					System.out.println("found key yo");
+				}
+			}
+			array.add(westType);
+		}
+		//east
+		for(int i = 1; i <= max; i++){
+			MapTile tileEast= currentView.get(new Coordinate(currentPosition.x+i, currentPosition.y));
+			MapTile.Type eastType = tileEast.getType();
+			if(tileEast instanceof LavaTrap) {
+				if(((LavaTrap) tileEast).getKey()!=0) {
+					System.out.println("found key yo");
+				}
+			}
+			array.add(eastType);
+		}
+			
+//			if(tile.isType(MapTile.Type.TRAP)){
+//				if(tile instanceof LavaTrap) {
+//					((LavaTrap) tile).getKey();
+//					array.add(tile.getType());
+//				}
+//			}else {
+//				array.add(tile.getType());
+//			}
+		System.out.println(array);
+	}
+	
 
 	/**
 	 * Check if you have a wall in front of you!
