@@ -1,10 +1,13 @@
 package controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 import tiles.MapTile;
 import utilities.Coordinate;
 import world.Car;
+import world.World;
 import world.WorldSpatial;
 
 public class AIController extends CarController {
@@ -24,10 +27,25 @@ public class AIController extends CarController {
 	
 	// Coordinate initialGuess;
 	// boolean notSouth = true;
+	private HashMap<Coordinate, MapTile.Type> hey;
+	private boolean flag = true;
 	@Override
 	public void update() {
 		// Gets what the car can see
 		HashMap<Coordinate, MapTile> currentView = getView();
+		HashMap<Coordinate,MapTile> currentMap = getMap();
+		hey = new HashMap<>();
+		if(flag) {
+			for (Entry<Coordinate, MapTile>  entry : currentMap.entrySet()) {
+				hey.put(entry.getKey(),entry.getValue().getType());
+			}
+			for (Entry<Coordinate, MapTile>  entry : currentMap.entrySet()) {
+				hey.put(entry.getKey(),entry.getValue().getType());
+			}System.out.println(hey);
+			System.out.println(World.MAP_WIDTH);
+			System.out.println(World.MAP_HEIGHT);
+			flag = !flag;
+		}
 		
 		// checkStateChange();
 		if(getSpeed() < CAR_MAX_SPEED){       // Need speed to turn and progress toward the exit
