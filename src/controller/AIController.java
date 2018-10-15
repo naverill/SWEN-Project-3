@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import mycontroller.MapExpert;
 import tiles.LavaTrap;
 import tiles.MapTile;
 import utilities.Coordinate;
@@ -28,26 +29,17 @@ public class AIController extends CarController {
 	
 	// Coordinate initialGuess;
 	// boolean notSouth = true;
-	private HashMap<Coordinate, MapTile.Type> hey;
-	private boolean flag = true;
+	private boolean initializeFlag = true;
+	private MapExpert mapExpert;
 	@Override
 	public void update() {
 		// Gets what the car can see
 		HashMap<Coordinate, MapTile> currentView = getView();
 		HashMap<Coordinate,MapTile> currentMap = getMap();
-		hey = new HashMap<>();
-		if(flag) {
-			for (Entry<Coordinate, MapTile>  entry : currentMap.entrySet()) {
-				hey.put(entry.getKey(),entry.getValue().getType());
-			}
-			for (Entry<Coordinate, MapTile>  entry : currentMap.entrySet()) {
-				hey.put(entry.getKey(),entry.getValue().getType());
-			}System.out.println(hey);
-			System.out.println(World.MAP_WIDTH);
-			System.out.println(World.MAP_HEIGHT);
-			flag = !flag;
+		if(initializeFlag) {
+			generateMapExpert();
+			initializeFlag = !initializeFlag;
 		}
-		
 		getViewSpecifics(currentView);
 
 		// checkStateChange();
@@ -73,64 +65,31 @@ public class AIController extends CarController {
 		}
 	}
 	
+	public void generateMapExpert() {
+		HashMap<Coordinate,MapTile> currentMap = getMap();
+		HashMap<Coordinate, MapTile.Type> worldMap = new HashMap<>();
+		for (Entry<Coordinate, MapTile>  entry : currentMap.entrySet()) {
+			worldMap.put(entry.getKey(),entry.getValue().getType());
+		}
+		for (Entry<Coordinate, MapTile>  entry : currentMap.entrySet()) {
+			worldMap.put(entry.getKey(),entry.getValue().getType());
+		}
+		mapExpert = new MapExpert(worldMap);
+		System.out.println(worldMap);
+		System.out.println(World.MAP_WIDTH);
+		System.out.println(World.MAP_HEIGHT);
+	}
+	
 	public void getViewSpecifics(HashMap<Coordinate, MapTile> currentView){
-		ArrayList<MapTile.Type> array = new ArrayList<>();
-		int max = Car.VIEW_SQUARE;
-		Coordinate currentPosition = new Coordinate(getPosition());
-		//north
-		for(int i = 1; i <= max; i++){
-			MapTile tileNorth = currentView.get(new Coordinate(currentPosition.x, currentPosition.y+i));
-			MapTile.Type northType = tileNorth.getType();
-			if(tileNorth instanceof LavaTrap) {
-				if(((LavaTrap) tileNorth).getKey()!=0) {
-					System.out.println("found key yo");
+		for (Entry<Coordinate, MapTile>  entry : currentView.entrySet()) {
+			MapTile thing = entry.getValue();
+			if(thing instanceof LavaTrap) {
+				if(((LavaTrap) thing).getKey()!=0) {
+					System.out.println("found key in"+entry.getKey());
+					mapExpert.addKey(entry.getKey());
 				}
 			}
-			array.add(northType);
-		}
-		//south
-		for(int i = 1; i <= max; i++){
-			MapTile tileSouth = currentView.get(new Coordinate(currentPosition.x, currentPosition.y-i));
-			MapTile.Type southType = tileSouth.getType();
-			if(tileSouth instanceof LavaTrap) {
-				if(((LavaTrap) tileSouth).getKey()!=0) {
-					System.out.println("found key yo");
-				}
-			}
-			array.add(southType);
-		}
-		//west
-		for(int i = 1; i <= max; i++){
-			MapTile tileWest = currentView.get(new Coordinate(currentPosition.x-i, currentPosition.y));
-			MapTile.Type westType = tileWest.getType();
-			if(tileWest instanceof LavaTrap) {
-				if(((LavaTrap) tileWest).getKey()!=0) {
-					System.out.println("found key yo");
-				}
-			}
-			array.add(westType);
-		}
-		//east
-		for(int i = 1; i <= max; i++){
-			MapTile tileEast= currentView.get(new Coordinate(currentPosition.x+i, currentPosition.y));
-			MapTile.Type eastType = tileEast.getType();
-			if(tileEast instanceof LavaTrap) {
-				if(((LavaTrap) tileEast).getKey()!=0) {
-					System.out.println("found key yo");
-				}
-			}
-			array.add(eastType);
-		}
-			
-//			if(tile.isType(MapTile.Type.TRAP)){
-//				if(tile instanceof LavaTrap) {
-//					((LavaTrap) tile).getKey();
-//					array.add(tile.getType());
-//				}
-//			}else {
-//				array.add(tile.getType());
-//			}
-		System.out.println(array);
+		}		
 	}
 	
 
