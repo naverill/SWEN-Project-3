@@ -73,4 +73,11 @@ public class MapExpert {
 		return worldMap;
 	}
 	
+	public boolean hasSeenTile(Coordinate coor) {
+		if(markedTiles.containsKey(coor)) {
+			return true;
+		}
+		return false;
+	}
+	
 }
