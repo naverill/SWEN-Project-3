@@ -7,8 +7,6 @@ import java.util.List;
 
 import tiles.MapTile;
 import utilities.Coordinate;
-import world.WorldSpatial.Direction;
-
 
 public class AIStrategy implements IMovementStrategy {
 	enum StrategyKey {

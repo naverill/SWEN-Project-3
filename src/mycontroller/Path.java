@@ -8,7 +8,9 @@ import tiles.MapTile;
 import utilities.Coordinate;
 
 public class Path {
-	public Stack<Coordinate> pathMoves;
+	public Stack<Coordinate> pathMoves = new Stack<>();
+	
+	public Path() {}
 
 	public Path(Coordinate start, ArrayList<Coordinate> end, HashMap<Coordinate, MapTile> tiles) {
 		pathMoves = getPath(start, end, tiles);
@@ -19,14 +21,12 @@ public class Path {
 		return pathMoves.pop();
 	}
 	
-	private Stack<Coordinate> getPath(Coordinate start, ArrayList<Coordinate> end, HashMap<Coordinate, MapTile> tiles){
-		Stack<Coordinate> path = new Stack<>();
-		
-		return path;
+	private Stack<Coordinate> getPath(Coordinate start, ArrayList<Coordinate> end, HashMap<Coordinate, MapTile> tiles){		
+		return pathMoves;
 	}
 
 
-	public boolean isEmpty() {
+	public boolean endPath() {
 		return pathMoves.isEmpty();
 	}
 }

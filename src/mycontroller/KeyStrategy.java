@@ -6,7 +6,6 @@ import java.util.HashMap;
 import tiles.LavaTrap;
 import tiles.MapTile;
 import utilities.Coordinate;
-import world.WorldSpatial.Direction;
 
 public class KeyStrategy implements IMovementStrategy {
 	static private ArrayList<Coordinate> keys;
@@ -16,7 +15,7 @@ public class KeyStrategy implements IMovementStrategy {
 	public Coordinate move(HashMap<Coordinate, MapTile> worldView) {
 		// TODO Auto-generated method stub
 		
-		if(keyPath.isEmpty()) {
+		if(keyPath.endPath()) {
 			keyPath = new Path(WorldSensor.getCurrentPosition(), keys, worldView);
 		} 
 		

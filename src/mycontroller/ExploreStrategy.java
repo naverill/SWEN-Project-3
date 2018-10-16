@@ -34,19 +34,6 @@ public class ExploreStrategy implements IMovementStrategy {
 	}
 	
 	
-	private void populateUnexploredTiles(HashMap<Coordinate, MapTile> map) {
-		for(Coordinate coordinate : map.keySet()) {
-			MapTile tile = map.get(coordinate);
-			
-			if(tile.getType().equals(MapTile.Type.ROAD) || tile.getType().equals(MapTile.Type.TRAP)) {
-				//TODO() if tile has a path to it (not blocked by mud/walls)
-				unexploredTiles.add(coordinate);
-				
-			}
-		}
-		
-	}
-	
 	class CoordinateComparator implements Comparator<Coordinate> {
 		Coordinate currentPosition;
 		
@@ -68,4 +55,18 @@ public class ExploreStrategy implements IMovementStrategy {
 	        }
 	    }
 	};
+	
+	
+	private void populateUnexploredTiles(HashMap<Coordinate, MapTile> map) {
+		for(Coordinate coordinate : map.keySet()) {
+			MapTile tile = map.get(coordinate);
+			
+			if(tile.getType().equals(MapTile.Type.ROAD) || tile.getType().equals(MapTile.Type.TRAP)) {
+				//TODO() if tile has a path to it (not blocked by mud/walls)
+				unexploredTiles.add(coordinate);
+				
+			}
+		}
+		
+	}
 }
