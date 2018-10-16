@@ -6,13 +6,14 @@ import java.util.Stack;
 
 import tiles.MapTile;
 import utilities.Coordinate;
+import world.WorldSpatial.Direction;
 
 public class KeyStrategy implements IMovementStrategy {
 	ArrayList<Coordinate> keys;
 	Path keyPath;
 
 	@Override
-	public Coordinate move(Coordinate currentPos, HashMap<Coordinate, MapTile> worldView) {
+	public Coordinate move(Direction direction, Coordinate currentPos, HashMap<Coordinate, MapTile> worldView) {
 		// TODO Auto-generated method stub
 		
 		if(keyPath.isEmpty()) {

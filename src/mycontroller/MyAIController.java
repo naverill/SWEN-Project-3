@@ -25,7 +25,7 @@ public class MyAIController extends CarController {
 	private int maxForwardVelocity = 1;
 	private int maxReverseVelocity = -1;
 	
-	HashMap<Coordinate, MapTile> worldView;
+	HashMap<Coordinate, MapTile> worldView = new HashMap<>();
 	
 	public MyAIController(Car car) {
 		super(car);
@@ -40,9 +40,10 @@ public class MyAIController extends CarController {
 		worldView.putAll(currentView);
 
 		Coordinate currentPos =  new Coordinate(getPosition());
-;
-		Coordinate nextPos = strategy.move(currentPos, worldView);
 		
+		Coordinate nextPos = strategy.move(getOrientation(), currentPos, worldView);
+		
+		coordinateToMovement(currentPos, nextPos);
 		if(initializeFlag) {
 			generateMapExpert();
 			initializeFlag = !initializeFlag;
@@ -76,105 +77,33 @@ public class MyAIController extends CarController {
 		} else {
 			if(isStopped()) {
 				//apply acceleration so car can turn
-				changeDirection(nextDirection);
+				changeAcceleration(nextDirection);
 			}
 		}
 		
 		changeOrientation(getOrientation(), nextDirection);
-		changeDirection(nextDirection);
+		changeAcceleration(nextDirection);
 	}
 	
 	private void changeOrientation(Direction current, Direction next) {
 		while(!current.equals(next) && !next.equals(WorldSpatial.reverseDirection(current))) {
-			if (next.equals(leftDirection(current))) {
+			//next direction is left of current
+			if (next.equals(WorldSpatial.changeDirection(current, WorldSpatial.RelativeDirection.LEFT))) {
 				turnLeft();
-			} else if (next.equals(rightDirection(current))) {
+			//next direction is right of current
+			} else if (next.equals(WorldSpatial.changeDirection(current, WorldSpatial.RelativeDirection.RIGHT))) {
 				turnRight();
 			}
 			current = getOrientation();
 		}
 	}
 	
-	public Direction getGlobalOrientation() {
-		return getOrientation();
-	}
-	
-	public MyAIController getInstance() {
-		return this;
-	}
-	
-	private void changeDirection(Direction nextDirection) {
+	private void changeAcceleration(Direction nextDirection) {
 		if(nextDirection.equals(getOrientation())) {
-			goForward();
-		} else {
-			goBackward();
-		}
-	}
-	
-	private void goForward() {
-		Coordinate currentPos =  new Coordinate(getPosition());
-		MapTile tile = worldView.get(new Coordinate(currentPos.x, currentPos.y));
-		
-		while(car.getVelocity() < maxForwardVelocity) {
 			applyForwardAcceleration();
-			
-			//go faster over traps
-			if (tile.isType(MapTile.Type.TRAP)) {
-				applyForwardAcceleration();
-				
-				//update knowledge about max forward velocity (why is it private?????)
-				if(car.getVelocity() > maxForwardVelocity) {
-					maxForwardVelocity = car.getVelocity();
-				}
-			}
-		}
-	}
-	
-	private void goBackward() {
-		Coordinate currentPos =  new Coordinate(getPosition());
-		MapTile tile = worldView.get(new Coordinate(currentPos.x, currentPos.y));
-
-		while(car.getVelocity() > maxReverseVelocity) {
+		} else {
 			applyReverseAcceleration();
-			
-			//go faster over trap tiles 
-			if (tile.isType(MapTile.Type.TRAP)) {
-				applyReverseAcceleration();
-				
-				//update knowledge about max reverse velocity
-				if(car.getVelocity() < maxReverseVelocity) {
-					maxReverseVelocity = car.getVelocity();
-				}
-			}
 		}
-	}
-	
-	public Direction leftDirection(Direction curr) {
-		switch (curr) {
-			case NORTH:
-				return Direction.WEST;
-			case SOUTH:
-				return Direction.EAST;
-			case EAST:
-				return Direction.NORTH;
-			case WEST:
-				return Direction.SOUTH;
-		}
-		return Direction.NORTH; // should never happen
-	}
-	
-	public Direction rightDirection(Direction curr) {
-		switch (curr) {
-			case NORTH:
-				return Direction.EAST;
-			case SOUTH:
-				return Direction.WEST;
-			case EAST:
-				return Direction.SOUTH;
-			case WEST:
-				return Direction.NORTH;
-		}
-		return Direction.NORTH; // should never happen
 	}
 	
 	private boolean isStopped() {
@@ -182,8 +111,8 @@ public class MyAIController extends CarController {
 	}
 	
 	private final Coordinate NORTH = new Coordinate(0, 1);
-	private final Coordinate SOUTH = new Coordinate(1, 0);
-	private final Coordinate EAST = new Coordinate(0, -1);
+	private final Coordinate EAST = new Coordinate(1, 0);
+	private final Coordinate SOUTH = new Coordinate(0, -1);
 	private final Coordinate WEST = new Coordinate(-1, 0);
 	
 	public Direction absoluteToRelativePosition(Coordinate current, Coordinate next) {

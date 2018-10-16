@@ -13,50 +13,42 @@ public class ExploreStrategy implements IMovementStrategy {
 	private HashMap<Coordinate, Boolean> explored;
 	
 	ExploreStrategy(HashMap<Coordinate, MapTile> map){
-		for(Coordinate key : map.keySet()) {
-			explored.put(key, false);
-		}
+//		for(Coordinate key : map.keySet()) {
+//			explored.put(key, false);
+//		}
 	}
 
 	@Override
-	public Coordinate move(Coordinate currentPos, HashMap<Coordinate, MapTile> worldView) {		
+	public Coordinate move(Direction currentDirection, Coordinate currentPos, HashMap<Coordinate, MapTile> worldView) {		
 		if (isFollowingWall) {
 			// If wall no longer on left, turn left
-			if(!checkFollowingWall(currentPos, worldView)) {
-				return directionDelta(changeDirection(RelativeDirection.LEFT, ));
+			if(!checkFollowingWall(currentPos, currentDirection, worldView)) {
+				return directionDelta(WorldSpatial.changeDirection(currentDirection, WorldSpatial.RelativeDirection.LEFT));
 			} else {
 				// If wall on left and wall straight ahead, turn right
-				if(checkWallAhead(getOrientation(), worldView)) {
-					turnRight();
+				if(checkWallAhead(currentPos, currentDirection, worldView)) {
+					return directionDelta(WorldSpatial.changeDirection(currentDirection, WorldSpatial.RelativeDirection.RIGHT));
 				}
 			}
 		} else {
 			// Start wall-following (with wall on left) as soon as we see a wall straight ahead
-			if(checkWallAhead(getOrientation(),worldView)) {
-				turnRight();
+			if(checkWallAhead(currentPos, currentDirection,worldView)) {
 				isFollowingWall = true;
+				return directionDelta(WorldSpatial.changeDirection(currentDirection, WorldSpatial.RelativeDirection.RIGHT));
 			}
-		}	}
+		}	
+		Coordinate d = directionDelta(currentDirection);
+		return new Coordinate(currentPos.x + d.x, currentPos.y + d.y);
+		
+	}
 	
-	// How many minimum units the wall is away from the player.
-		private int wallSensitivity = 1;
+		// How many minimum units the wall is away from the player.
+		private int wallSensitivity = 2;
 		
 		private boolean isFollowingWall = false; // This is set to true when the car starts sticking to a wall.
 		
 		// Car Speed to move at
 		private final int CAR_MAX_SPEED = 1;
-		//TODO(naverill) remove this
-		
-		public AIController(Car car) {
-			super(car);
-		}
-		
-		// Coordinate initialGuess;
-		// boolean notSouth = true;
-		@Override
-		public void update() {
-			// Gets what the car can see
-		}
 
 		/**
 		 * Check if you have a wall in front of you!
@@ -112,7 +104,7 @@ public class ExploreStrategy implements IMovementStrategy {
 		public boolean checkEast(Coordinate currentPosition, HashMap<Coordinate, MapTile> currentView){
 			// Check tiles to my right
 			for(int i = 0; i <= wallSensitivity; i++){
-				MapTile tile = currentView.get(new Coordinate(currentPosition.x+i, currentPosition.y));
+				MapTile tile = currentView.get(new Coordinate(currentPosition.x + i, currentPosition.y));
 				if(tile.isType(MapTile.Type.WALL)){
 					return true;
 				}

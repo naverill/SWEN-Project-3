@@ -3,9 +3,11 @@ package mycontroller;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 import tiles.MapTile;
 import utilities.Coordinate;
+import world.WorldSpatial.Direction;
 
 
 public class AIStrategy implements IMovementStrategy {
@@ -16,11 +18,11 @@ public class AIStrategy implements IMovementStrategy {
 		kPathFollowStrat
 	}
 	
-	public ArrayList<IMovementStrategy>  strategies = new ArrayList<>();
+	public List<IMovementStrategy>  strategies = new ArrayList<>();
 	private IMovementStrategy currentStrategy;
 
 	public AIStrategy() {
-	    strategies = (ArrayList<IMovementStrategy>) Arrays.asList(
+	    strategies = (List<IMovementStrategy>) Arrays.asList(
 	    											   (IMovementStrategy) new ExploreStrategy(null), 
 	    											   (IMovementStrategy) new HealthStrategy(), 
 	    											   (IMovementStrategy) new KeyStrategy()
@@ -30,8 +32,8 @@ public class AIStrategy implements IMovementStrategy {
 	}
 	
 	@Override
-	public Coordinate move(Coordinate currentPos, HashMap<Coordinate, MapTile> worldView) {		
-		return currentStrategy.move(currentPos, worldView);
+	public Coordinate move(Direction direction, Coordinate currentPos, HashMap<Coordinate, MapTile> worldView) {		
+		return currentStrategy.move(direction, currentPos, worldView);
 	}
 	
 
