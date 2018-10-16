@@ -2,6 +2,7 @@ package mycontroller;
 
 import java.util.*;
 import world.Car;
+import world.World;
 
 import java.util.HashMap;
 
@@ -10,6 +11,7 @@ import utilities.Coordinate;
 import world.WorldSpatial;
 
 public class Astaralt {
+	
 		public Stack<Coordinate> aStarSearch(Coordinate start,
 	            Coordinate goal)
 	{
@@ -18,16 +20,17 @@ public class Astaralt {
 //		Coordinate endNode = pointNodeMap.get(goal);
 		
 		// setup for A*
-		HashMap<Coordinate,MapTile> parentMap = new HashMap<Coordinate,MapTile>();
+		HashMap<Coordinate,Coordinate> parentMap = new HashMap<Coordinate,Coordinate>();
+		//parentMap = World.getMap();
 		HashSet<Coordinate> visited = new HashSet<Coordinate>();
 		Map<Coordinate, Double> distances = initializeAllToInfinity();
 		
 		Queue<Coordinate> priorityQueue = initQueue();
 		
 		//  enque StartNode, with distance 0
-		startNode.setDistanceToStart(new Double(0));
-		distances.put(startNode, new Double(0));
-		priorityQueue.add(startNode);
+		start.setDistanceToStart(new Double(0));
+		distances.put(start, new Double(0));
+		priorityQueue.add(start);
 		Coordinate current = null;
 	
 		while (!priorityQueue.isEmpty()) 
@@ -37,7 +40,7 @@ public class Astaralt {
 			if (!visited.contains(current) ){
 				visited.add(current);
 				// if last element in PQ reached
-				if (current.equals(endNode)) return reconstructPath(parentMap, startNode, endNode, 0);
+				if (current.equals(goal)) return reconstructPath(parentMap, start, goal, 0);
 				
 				Set<Coordinate> neighbors = getNeighbors(current);
 				for (Coordinate neighbor : neighbors) {
@@ -73,11 +76,28 @@ public class Astaralt {
 	private HashMap<Coordinate, Double> initializeAllToInfinity() {
         HashMap<Coordinate, Double> distances = new HashMap<>();
  
-        Iterator<Coordinate> iter = pointNodeMap.values().iterator();
+        Iterator<Coordinate> iter = parentMap.values().iterator();
         while (iter.hasNext()) {
             Coordinate node = iter.next();
             distances.put(node, Double.POSITIVE_INFINITY);
         }
         return distances;
+    }
+	
+	private PriorityQueue<Coordinate> initQueue() {
+        return new PriorityQueue<>(10, new Comparator<Coordinate>()) {
+            public int compare(MapNode x, MapNode y) {
+                if (x.getDistanceToStart() < y.getDistanceToStart())   
+                {
+                	return -1;
+                }               
+                if (x.getDistanceToStart() > y.getDistanceToStart())
+                {
+                    return 1;
+                }
+                
+                return 0;
+            };
+        };
     }
 }

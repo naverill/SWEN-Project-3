@@ -15,47 +15,41 @@ public class AStar {
     //public static final int DIAGONAL_COST = 14;
     public static final int V_H_COST = 10;
     
-    static class Cell{  
-        int heuristicCost = 0; //Heuristic cost
-    int finalCost = 0; //G+H
-    int i, j;
-    Cell parent; 
-    
-    Cell(int i, int j){
-        this.i = i;
-        this.j = j; 
-    }
+//    static class Cell{  
+//        int heuristicCost = 0; //Heuristic cost
+//    int finalCost = 0; //G+H
+//    int i, j;
+//    Cell parent; 
+//    
+//    Cell(int i, int j){
+//        this.i = i;
+//        this.j = j; 
+//    }
     
     @Override
-    public String toString(){
-        return "["+this.i+", "+this.j+"]";
-    }
-}
+//    public String toString(){
+//        return "["+this.i+", "+this.j+"]";
+//    }
+//}
 
 //Blocked cells are just null Cell values in grid
-static Cell [][] grid = new Cell[5][5];
-private HashMap<Coordinate, MapTile> overall = new HashMap<Coordinate, MapTile>();
-static PriorityQueue<Cell> open;
+//static Cell [][] grid = new Cell[5][5];
+private HashMap<Coordinate, MapTile.Type> overall = new HashMap<Coordinate, MapTile.Type>();
+private static PriorityQueue<Coordinate> open;
  
-static boolean closed[][];
-static int startI, startJ;
-static int endI, endJ;
+private static boolean closed[][];
+//static int startI, startJ;
+//static int endI, endJ;
+
+private static Coordinate start;
+private static Coordinate end;
         
-public static void setBlocked(int i, int j){
-    grid[i][j] = null;
+public static void setBlocked(HashMap<Coordinate, MapTile.Type> overall, Coordinate blocked){
+    if(overall.getValue(blocked))
 }
 
-public static void setStartCell(int i, int j){
-    startI = i;
-    startJ = j;
-}
 
-public static void setEndCell(int i, int j){
-    endI = i;
-    endJ = j; 
-}
-
-static void checkAndUpdateCost(Cell current, Cell t, int cost){
+static void checkAndUpdateCost(Coordinate current, Coordinate t, int cost){
     if(t == null || closed[t.i][t.j])return;
     int t_final_cost = t.heuristicCost+cost;
     
