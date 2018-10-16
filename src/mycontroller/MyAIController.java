@@ -44,8 +44,6 @@ public class MyAIController extends CarController {
 		Coordinate nextPos = strategy.move(getOrientation(), currentPos, mapExpert.getWorldMap());
 		
 		coordinateToMovement(currentPos, nextPos);
-
-
 	}
 	
 	private void coordinateToMovement(Coordinate current, Coordinate next) {
@@ -117,8 +115,6 @@ public class MyAIController extends CarController {
 		}
 	}
 	
-	
-	
 	public void getViewSpecifics(HashMap<Coordinate, MapTile> currentView){
 		for (Entry<Coordinate, MapTile>  entry : currentView.entrySet()) {
 			MapTile thing = entry.getValue();
@@ -129,9 +125,7 @@ public class MyAIController extends CarController {
 				}
 			}
 		}		
-	}
-		
-	
+	}	
 }
 
 

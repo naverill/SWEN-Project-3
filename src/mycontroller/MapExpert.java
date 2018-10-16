@@ -10,7 +10,7 @@ import utilities.Coordinate;
 
 public class MapExpert {
 	private HashMap<Coordinate, MapTile.Type> worldMap = new HashMap<>();
-	private HashMap<Coordinate, Boolean> explored;
+	private HashMap<Coordinate, Boolean> explored = new HashMap<>();
 	private ArrayList<Coordinate> keys;
 	
 	public MapExpert(HashMap<Coordinate, MapTile> worldTiles) {
@@ -58,24 +58,14 @@ public class MapExpert {
 	}
 	
 	public void updateMap(HashMap<Coordinate, MapTile> updates) {
-		HashMap<Coordinate, MapTile.Type> updatedPoints = new HashMap<>();
-		for (Entry<Coordinate, MapTile>  entry : updates.entrySet()) {
-			updatedPoints.put(entry.getKey(),entry.getValue().getType());
+		for(Coordinate key : updates.keySet()) {
+			worldMap.put(key, updates.get(key).getType());
+			explored.put(key, true);
+			
 		}
-		this.worldMap.putAll(updatedPoints); 
-		
-		markExplored(updatedPoints);
-
 	}
+
 	
-	public void markExplored(HashMap<Coordinate, MapTile.Type> tiles) {
-		HashMap<Coordinate, Boolean> updates = new HashMap<>();
-		for (Entry<Coordinate, MapTile.Type>  entry : tiles.entrySet()) {
-			updates.put(entry.getKey(), true);
-		}
-		this.explored.putAll(updates); 
-	}
-
 	public HashMap<Coordinate, MapTile.Type> getWorldMap() {
 		return worldMap;
 	}
