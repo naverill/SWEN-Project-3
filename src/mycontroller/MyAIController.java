@@ -36,10 +36,8 @@ public class MyAIController extends CarController{
 		for (Entry<Coordinate, MapTile>  entry : currentMap.entrySet()) {
 			worldMap.put(entry.getKey(),entry.getValue().getType());
 		}
-		for (Entry<Coordinate, MapTile>  entry : currentMap.entrySet()) {
-			worldMap.put(entry.getKey(),entry.getValue().getType());
-		}
 		mapExpert = new MapExpert(worldMap);
+		System.out.println(mapExpert.getNeighbours(new Coordinate(2,17)));
 		System.out.println(worldMap);
 		System.out.println(World.MAP_WIDTH);
 		System.out.println(World.MAP_HEIGHT);

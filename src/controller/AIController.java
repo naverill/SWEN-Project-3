@@ -65,6 +65,8 @@ public class AIController extends CarController {
 		}
 	}
 	
+	
+	
 	public void generateMapExpert() {
 		HashMap<Coordinate,MapTile> currentMap = getMap();
 		HashMap<Coordinate, MapTile.Type> worldMap = new HashMap<>();
