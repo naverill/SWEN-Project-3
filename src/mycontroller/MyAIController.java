@@ -46,7 +46,7 @@ public class MyAIController extends CarController {
 	
 	private void determineState() {
 		// TODO Auto-generated method stub
-		if(sensor.hasAllKeys()) {
+//		if(sensor.hasAllKeys()) {
 			//if state!=exit
 				//do exit strategy
 	}

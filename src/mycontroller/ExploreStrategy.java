@@ -16,11 +16,11 @@ public class ExploreStrategy implements IMovementStrategy {
 		populateUnexploredTiles(map);
 	}
 	
-	@Override
-	public Coordinate move(Direction currentDirection, Coordinate currentPos, HashMap<Coordinate, MapTile> worldView) {		
-		
-		
-	}
+//	@Override
+//	public Coordinate move(Direction currentDirection, Coordinate currentPos, HashMap<Coordinate, MapTile> worldView) {		
+//		
+//		
+//	}
 	
 	public void updateState(HashMap<Coordinate, MapTile> state) {
 		
@@ -38,6 +38,12 @@ public class ExploreStrategy implements IMovementStrategy {
 			}
 		}
 		
+	}
+
+	@Override
+	public Coordinate move(Direction direction, Coordinate currentPos, HashMap<Coordinate, MapTile> hashMap) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 

@@ -58,5 +58,8 @@ public class WorldSensor {
 		System.out.println("yeet");
 		return true;
 	}
-
+	
+	public Car getCar() {
+		return car;
+	}
 }
