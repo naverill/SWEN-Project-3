@@ -2,10 +2,8 @@ package mycontroller;
 
 import java.util.HashMap;
 
-import mycontroller.MyAIController.RelativeDirection;
 import tiles.MapTile;
 import utilities.Coordinate;
-import world.Car;
 import world.WorldSpatial;
 import world.WorldSpatial.Direction;
 
