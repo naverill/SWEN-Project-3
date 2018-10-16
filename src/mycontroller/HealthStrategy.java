@@ -11,15 +11,15 @@ import world.WorldSpatial.Direction;
 
 public class HealthStrategy implements IMovementStrategy {
 	ArrayList<Coordinate> health = new ArrayList<>();
-	PathFinder healthPath;
+	Path healthPath;
 
 	@Override
 	public Coordinate move(Direction direction, Coordinate currentPos, HashMap<Coordinate, MapTile> worldView) {
 		if(healthPath==null) {
-			healthPath = new PathFinder(currentPos, health, worldView);
+			healthPath = new Path(currentPos, health, worldView);
 		}
 		if(healthPath.isEmpty()) {
-			healthPath = new PathFinder(currentPos, health, worldView);
+			healthPath = new Path(currentPos, health, worldView);
 		} 
 		
 		return healthPath.getNextMove();

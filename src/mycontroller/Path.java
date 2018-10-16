@@ -7,10 +7,10 @@ import java.util.Stack;
 import tiles.MapTile;
 import utilities.Coordinate;
 
-public class PathFinder {
+public class Path {
 	public Stack<Coordinate> pathMoves;
 
-	public PathFinder(Coordinate start, ArrayList<Coordinate> end, HashMap<Coordinate, MapTile> tiles) {
+	public Path(Coordinate start, ArrayList<Coordinate> end, HashMap<Coordinate, MapTile> tiles) {
 		pathMoves = getPath(start, end, tiles);
 	}
 	

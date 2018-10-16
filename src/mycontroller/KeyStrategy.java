@@ -10,14 +10,14 @@ import world.WorldSpatial.Direction;
 
 public class KeyStrategy implements IMovementStrategy {
 	static private ArrayList<Coordinate> keys;
-	PathFinder keyPath;
+	Path keyPath;
 
 	@Override
 	public Coordinate move(Direction direction, Coordinate currentPos, HashMap<Coordinate, MapTile> worldView) {
 		// TODO Auto-generated method stub
 		
 		if(keyPath.isEmpty()) {
-			keyPath = new PathFinder(currentPos, keys, worldView);
+			keyPath = new Path(currentPos, keys, worldView);
 		} 
 		
 		return keyPath.getNextMove();

@@ -30,12 +30,12 @@ public class MyAIController extends CarController {
 
 	@Override
 	public void update() {
-		// TODO Auto-generated method stub
+		Coordinate currentPos =  new Coordinate(getPosition());
+
 		HashMap<Coordinate, MapTile> currentView = getView();
 		sensor.updateMap(currentView);
-		strategy.updateState(currentView);
+		strategy.updateState(currentView, currentPos);
 		
-		Coordinate currentPos =  new Coordinate(getPosition());
 		
 		Coordinate nextPos = strategy.move(getOrientation(), currentPos, sensor.getWorldMap());
 		
