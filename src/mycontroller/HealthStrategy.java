@@ -9,7 +9,7 @@ import utilities.Coordinate;
 import world.WorldSpatial.Direction;
 
 public class HealthStrategy implements IMovementStrategy {
-	ArrayList<Coordinate> health = new ArrayList<>();
+	static ArrayList<Coordinate> health = new ArrayList<>();
 	Path healthPath;
 
 	@Override
@@ -26,6 +26,13 @@ public class HealthStrategy implements IMovementStrategy {
 	
 	public boolean foundHealth() {
 		return !health.isEmpty();
+	}
+
+	public static void addHealth(Coordinate key) {
+		// TODO Auto-generated method stub
+		if(!health.contains(key)) {
+			health.add(key);
+		}
 	}
 
 }

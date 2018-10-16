@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import tiles.HealthTrap;
 import tiles.LavaTrap;
 import tiles.MapTile;
 import tiles.MapTile.Type;
@@ -52,6 +53,7 @@ public class MapExpert {
 		updateKey(updates);
 	}
 	
+	//probably code duplication
 	public void updateKey(HashMap<Coordinate, MapTile> updates) {
 		for (Entry<Coordinate, MapTile>  entry : updates.entrySet()) {
 			MapTile tile = entry.getValue();
@@ -60,6 +62,15 @@ public class MapExpert {
 					System.out.println("found key in"+entry.getKey());
 					KeyStrategy.addKey(entry.getKey());
 				}
+			}
+		}
+	}
+	//probably code duplication
+	public void updateHealth(HashMap<Coordinate, MapTile> updates) {
+		for (Entry<Coordinate, MapTile>  entry : updates.entrySet()) {
+			MapTile tile = entry.getValue();
+			if(tile instanceof HealthTrap) {
+				HealthStrategy.addHealth(entry.getKey());
 			}
 		}
 	}
