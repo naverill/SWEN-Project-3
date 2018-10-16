@@ -13,7 +13,7 @@ public class HealthStrategy implements IMovementStrategy {
 	Path healthPath;
 
 	@Override
-	public Coordinate move(Direction direction, Coordinate currentPos, HashMap<Coordinate, MapTile> worldView) {
+	public Coordinate move(Direction direction, Coordinate currentPos, HashMap<Coordinate, MapTile.Type> worldView) {
 		if(healthPath==null) {
 			healthPath = new Path(currentPos, health, worldView);
 		}

@@ -21,7 +21,6 @@ public class AIController extends CarController {
 	
 	// Car Speed to move at
 	private final int CAR_MAX_SPEED = 1;
-	//TODO(naverill) remove this
 	
 	public AIController(Car car) {
 		super(car);
@@ -36,10 +35,7 @@ public class AIController extends CarController {
 		// Gets what the car can see
 		HashMap<Coordinate, MapTile> currentView = getView();
 		HashMap<Coordinate,MapTile> currentMap = getMap();
-		if(initializeFlag) {
-			generateMapExpert();
-			initializeFlag = !initializeFlag;
-		}
+
 		getViewSpecifics(currentView);
 
 		// checkStateChange();
@@ -63,23 +59,6 @@ public class AIController extends CarController {
 				isFollowingWall = true;
 			}
 		}
-	}
-	
-	
-	
-	public void generateMapExpert() {
-		HashMap<Coordinate,MapTile> currentMap = getMap();
-		HashMap<Coordinate, MapTile.Type> worldMap = new HashMap<>();
-		for (Entry<Coordinate, MapTile>  entry : currentMap.entrySet()) {
-			worldMap.put(entry.getKey(),entry.getValue().getType());
-		}
-		for (Entry<Coordinate, MapTile>  entry : currentMap.entrySet()) {
-			worldMap.put(entry.getKey(),entry.getValue().getType());
-		}
-		mapExpert = new MapExpert(worldMap);
-		System.out.println(worldMap);
-		System.out.println(World.MAP_WIDTH);
-		System.out.println(World.MAP_HEIGHT);
 	}
 	
 	public void getViewSpecifics(HashMap<Coordinate, MapTile> currentView){

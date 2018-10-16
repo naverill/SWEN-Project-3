@@ -17,7 +17,7 @@ public class ExploreStrategy implements IMovementStrategy {
 	}
 
 	@Override
-	public Coordinate move(Direction currentDirection, Coordinate currentPos, HashMap<Coordinate, MapTile> worldView) {		
+	public Coordinate move(Direction currentDirection, Coordinate currentPos, HashMap<Coordinate, MapTile.Type> worldView) {		
 		if (isFollowingWall) {
 			// If wall no longer on left, turn left
 			if(!checkFollowingWall(currentPos, currentDirection, worldView)) {
@@ -54,7 +54,7 @@ public class ExploreStrategy implements IMovementStrategy {
 		 * @param currentView what the car can currently see
 		 * @return
 		 */
-		private boolean checkWallAhead(Coordinate currentPosition, WorldSpatial.Direction orientation, HashMap<Coordinate, MapTile> currentView){
+		private boolean checkWallAhead(Coordinate currentPosition, WorldSpatial.Direction orientation, HashMap<Coordinate, MapTile.Type> currentView){
 			switch(orientation){
 			case EAST:
 				return checkEast(currentPosition, currentView);
@@ -75,7 +75,7 @@ public class ExploreStrategy implements IMovementStrategy {
 		 * @param currentView
 		 * @return
 		 */
-		private boolean checkFollowingWall(Coordinate currentPosition, WorldSpatial.Direction orientation, HashMap<Coordinate, MapTile> currentView) {
+		private boolean checkFollowingWall(Coordinate currentPosition, WorldSpatial.Direction orientation, HashMap<Coordinate, MapTile.Type> currentView) {
 			
 			switch(orientation){
 			case EAST:
@@ -99,44 +99,44 @@ public class ExploreStrategy implements IMovementStrategy {
 		 * checkNorth will check up to wallSensitivity amount of tiles to the top.
 		 * checkSouth will check up to wallSensitivity amount of tiles below.
 		 */
-		public boolean checkEast(Coordinate currentPosition, HashMap<Coordinate, MapTile> currentView){
+		public boolean checkEast(Coordinate currentPosition, HashMap<Coordinate, MapTile.Type> currentView){
 			// Check tiles to my right
 			for(int i = 0; i <= wallSensitivity; i++){
-				MapTile tile = currentView.get(new Coordinate(currentPosition.x + i, currentPosition.y));
-				if(tile.isType(MapTile.Type.WALL)){
+				MapTile.Type tile = currentView.get(new Coordinate(currentPosition.x + i, currentPosition.y));
+				if(tile.equals(MapTile.Type.WALL)){
 					return true;
 				}
 			}
 			return false;
 		}
 		
-		public boolean checkWest(Coordinate currentPosition, HashMap<Coordinate,MapTile> currentView){
+		public boolean checkWest(Coordinate currentPosition, HashMap<Coordinate, MapTile.Type> currentView){
 			// Check tiles to my left
 			for(int i = 0; i <= wallSensitivity; i++){
-				MapTile tile = currentView.get(new Coordinate(currentPosition.x-i, currentPosition.y));
-				if(tile.isType(MapTile.Type.WALL)){
+				MapTile.Type tile = currentView.get(new Coordinate(currentPosition.x-i, currentPosition.y));
+				if(tile.equals(MapTile.Type.WALL)){
 					return true;
 				}
 			}
 			return false;
 		}
 		
-		public boolean checkNorth(Coordinate currentPosition, HashMap<Coordinate,MapTile> currentView){
+		public boolean checkNorth(Coordinate currentPosition, HashMap<Coordinate, MapTile.Type> currentView){
 			// Check tiles to towards the top
 			for(int i = 0; i <= wallSensitivity; i++){
-				MapTile tile = currentView.get(new Coordinate(currentPosition.x, currentPosition.y+i));
-				if(tile.isType(MapTile.Type.WALL)){
+				MapTile.Type tile = currentView.get(new Coordinate(currentPosition.x, currentPosition.y+i));
+				if(tile.equals(MapTile.Type.WALL)){
 					return true;
 				}
 			}
 			return false;
 		}
 		
-		public boolean checkSouth(Coordinate currentPosition, HashMap<Coordinate,MapTile> currentView){
+		public boolean checkSouth(Coordinate currentPosition, HashMap<Coordinate, MapTile.Type> currentView){
 			// Check tiles towards the bottom
 			for(int i = 0; i <= wallSensitivity; i++){
-				MapTile tile = currentView.get(new Coordinate(currentPosition.x, currentPosition.y-i));
-				if(tile.isType(MapTile.Type.WALL)){
+				MapTile.Type tile = currentView.get(new Coordinate(currentPosition.x, currentPosition.y-i));
+				if(tile.equals(MapTile.Type.WALL)){
 					return true;
 				}
 			}

@@ -24,46 +24,28 @@ public class MyAIController extends CarController {
 	private Car car;
 	private int maxForwardVelocity = 1;
 	private int maxReverseVelocity = -1;
-	
-	HashMap<Coordinate, MapTile> worldView = new HashMap<>();
-	
+		
 	public MyAIController(Car car) {
 		super(car);
 		this.car = car;
 		strategy = new AIStrategy();
+		HashMap<Coordinate, MapTile> worldMap = getMap();
+		mapExpert = new MapExpert(worldMap);
 	}
 
 	@Override
 	public void update() {
 		// TODO Auto-generated method stub
 		HashMap<Coordinate, MapTile> currentView = getView();
-		worldView.putAll(currentView);
-
+		mapExpert.updateMap(currentView);
+		
 		Coordinate currentPos =  new Coordinate(getPosition());
 		
-		Coordinate nextPos = strategy.move(getOrientation(), currentPos, worldView);
+		Coordinate nextPos = strategy.move(getOrientation(), currentPos, mapExpert.getWorldMap());
 		
 		coordinateToMovement(currentPos, nextPos);
-		if(initializeFlag) {
-			generateMapExpert();
-			initializeFlag = !initializeFlag;
-		}
-		HashMap<Coordinate, MapTile> currentView = getView();
-		mapExpert.updateMap(currentView);
-		mapExpert.markTiles(currentView);
-	}
-	
-	public void generateMapExpert() {
-		HashMap<Coordinate,MapTile> currentMap = getMap();
-		HashMap<Coordinate, MapTile.Type> worldMap = new HashMap<>();
-		for (Entry<Coordinate, MapTile>  entry : currentMap.entrySet()) {
-			worldMap.put(entry.getKey(),entry.getValue().getType());
-		}
-		mapExpert = new MapExpert(worldMap);
-		System.out.println(mapExpert.getNeighbours(new Coordinate(2,17)));
-		System.out.println(worldMap);
-		System.out.println(World.MAP_WIDTH);
-		System.out.println(World.MAP_HEIGHT);
+
+
 	}
 	
 	private void coordinateToMovement(Coordinate current, Coordinate next) {
@@ -134,10 +116,8 @@ public class MyAIController extends CarController {
 			return null;
 		}
 	}
-	private final Coordinate NORTH = new Coordinate(0, 1);
-	private final Coordinate SOUTH = new Coordinate(1, 0);
-	private final Coordinate EAST = new Coordinate(0, -1);
-	private final Coordinate WEST = new Coordinate(-1, 0);
+	
+	
 	
 	public void getViewSpecifics(HashMap<Coordinate, MapTile> currentView){
 		for (Entry<Coordinate, MapTile>  entry : currentView.entrySet()) {

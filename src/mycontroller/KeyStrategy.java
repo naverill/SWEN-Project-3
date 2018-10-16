@@ -13,7 +13,7 @@ public class KeyStrategy implements IMovementStrategy {
 	Path keyPath;
 
 	@Override
-	public Coordinate move(Direction direction, Coordinate currentPos, HashMap<Coordinate, MapTile> worldView) {
+	public Coordinate move(Direction direction, Coordinate currentPos, HashMap<Coordinate, MapTile.Type> worldView) {
 		// TODO Auto-generated method stub
 		
 		if(keyPath.isEmpty()) {

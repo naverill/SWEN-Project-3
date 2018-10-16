@@ -32,7 +32,7 @@ public class AIStrategy implements IMovementStrategy {
 	}
 	
 	@Override
-	public Coordinate move(Direction direction, Coordinate currentPos, HashMap<Coordinate, MapTile> worldView) {		
+	public Coordinate move(Direction direction, Coordinate currentPos, HashMap<Coordinate, MapTile.Type> worldView) {		
 		return currentStrategy.move(direction, currentPos, worldView);
 	}
 	

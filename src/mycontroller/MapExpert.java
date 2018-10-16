@@ -9,14 +9,18 @@ import tiles.MapTile.Type;
 import utilities.Coordinate;
 
 public class MapExpert {
-	private HashMap<Coordinate, MapTile.Type> worldMap;
-	private HashMap<Coordinate, MapTile.Type> markedTiles;
+	private HashMap<Coordinate, MapTile.Type> worldMap = new HashMap<>();
+	private HashMap<Coordinate, Boolean> explored;
 	private ArrayList<Coordinate> keys;
 	
-	public MapExpert(HashMap<Coordinate, Type> worldMap) {
+	public MapExpert(HashMap<Coordinate, MapTile> worldTiles) {
 		super();
-		this.worldMap = worldMap;
 		this.keys = new ArrayList<>();
+		
+		HashMap<Coordinate, MapTile.Type> worldMap = new HashMap<>();
+		for (Entry<Coordinate, MapTile>  entry : worldTiles.entrySet()) {
+			worldMap.put(entry.getKey(),entry.getValue().getType());
+		}
 	}
 	
 	public void addKey(Coordinate key) {
@@ -59,14 +63,17 @@ public class MapExpert {
 			updatedPoints.put(entry.getKey(),entry.getValue().getType());
 		}
 		this.worldMap.putAll(updatedPoints); 
+		
+		markExplored(updatedPoints);
+
 	}
 	
-	public void markTiles(HashMap<Coordinate, MapTile> tiles) {
-		HashMap<Coordinate, MapTile.Type> tilesToMark= new HashMap<>();
-		for (Entry<Coordinate, MapTile>  entry : tiles.entrySet()) {
-			tilesToMark.put(entry.getKey(),entry.getValue().getType());
+	public void markExplored(HashMap<Coordinate, MapTile.Type> tiles) {
+		HashMap<Coordinate, Boolean> updates = new HashMap<>();
+		for (Entry<Coordinate, MapTile.Type>  entry : tiles.entrySet()) {
+			updates.put(entry.getKey(), true);
 		}
-		this.worldMap.putAll(tilesToMark); 
+		this.explored.putAll(updates); 
 	}
 
 	public HashMap<Coordinate, MapTile.Type> getWorldMap() {
@@ -74,10 +81,7 @@ public class MapExpert {
 	}
 	
 	public boolean hasSeenTile(Coordinate coor) {
-		if(markedTiles.containsKey(coor)) {
-			return true;
-		}
-		return false;
+		return explored.get(coor);
 	}
 	
 }
