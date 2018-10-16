@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Stack;
 
+import tiles.HealthTrap;
 import tiles.MapTile;
 import utilities.Coordinate;
 import world.WorldSpatial.Direction;
@@ -30,8 +31,11 @@ public class HealthStrategy implements IMovementStrategy {
 
 	@Override
 	public void updateState(HashMap<Coordinate, MapTile> state) {
-		// TODO Auto-generated method stub
-		
+		for(Coordinate coordinate : state.keySet()) {
+			if(state.get(coordinate) instanceof HealthTrap) {
+				health.add(coordinate);
+			}
+		}
 	}
 
 }

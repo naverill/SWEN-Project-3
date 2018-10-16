@@ -3,6 +3,7 @@ package mycontroller;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import tiles.LavaTrap;
 import tiles.MapTile;
 import utilities.Coordinate;
 import world.WorldSpatial.Direction;
@@ -28,8 +29,14 @@ public class KeyStrategy implements IMovementStrategy {
 
 	@Override
 	public void updateState(HashMap<Coordinate, MapTile> state) {
-		// TODO Auto-generated method stub
-		
+		for(Coordinate coordinate : state.keySet()) {
+			MapTile tile = state.get(coordinate);
+			if(tile instanceof LavaTrap) {
+				if(((LavaTrap) tile).getKey() != 0){
+					keys.add(coordinate);
+				} 
+			}
+		}
 	}
 	
 

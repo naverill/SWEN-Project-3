@@ -16,7 +16,6 @@ public class AIStrategy implements IMovementStrategy {
 		kExploreStrat,
 		kHealthStrat,
 		kKeyStrat,
-		kPathFollowStrat
 	}
 	
 	public List<IMovementStrategy>  strategies = new ArrayList<>();
