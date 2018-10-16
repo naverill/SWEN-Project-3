@@ -1,11 +1,8 @@
 package mycontroller;
 
-import java.util.Arrays;
 import java.util.HashMap;
 
-import java.util.Map.Entry;
 import controller.CarController;
-import tiles.LavaTrap;
 import tiles.MapTile;
 import utilities.Coordinate;
 import world.Car;
