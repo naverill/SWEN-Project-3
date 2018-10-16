@@ -22,12 +22,13 @@ public class MyAIController extends CarController{
 	@Override
 	public void update() {
 		// TODO Auto-generated method stub
-		HashMap<Coordinate, MapTile> currentView = getView();
-		
 		if(initializeFlag) {
 			generateMapExpert();
 			initializeFlag = !initializeFlag;
 		}
+		HashMap<Coordinate, MapTile> currentView = getView();
+		mapExpert.updateMap(currentView);
+		mapExpert.markTiles(currentView);
 	}
 	
 	public void generateMapExpert() {

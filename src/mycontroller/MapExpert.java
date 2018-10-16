@@ -2,6 +2,7 @@ package mycontroller;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 import tiles.MapTile;
 import tiles.MapTile.Type;
@@ -9,6 +10,7 @@ import utilities.Coordinate;
 
 public class MapExpert {
 	private HashMap<Coordinate, MapTile.Type> worldMap;
+	private HashMap<Coordinate, MapTile.Type> markedTiles;
 	private ArrayList<Coordinate> keys;
 	
 	public MapExpert(HashMap<Coordinate, Type> worldMap) {
@@ -51,8 +53,20 @@ public class MapExpert {
 		return neighbours;
 	}
 	
-	public void setWorldMap(HashMap<Coordinate, MapTile.Type> worldMap) {
-		this.worldMap = worldMap;
+	public void updateMap(HashMap<Coordinate, MapTile> updates) {
+		HashMap<Coordinate, MapTile.Type> updatedPoints = new HashMap<>();
+		for (Entry<Coordinate, MapTile>  entry : updates.entrySet()) {
+			updatedPoints.put(entry.getKey(),entry.getValue().getType());
+		}
+		this.worldMap.putAll(updatedPoints); 
+	}
+	
+	public void markTiles(HashMap<Coordinate, MapTile> tiles) {
+		HashMap<Coordinate, MapTile.Type> tilesToMark= new HashMap<>();
+		for (Entry<Coordinate, MapTile>  entry : tiles.entrySet()) {
+			tilesToMark.put(entry.getKey(),entry.getValue().getType());
+		}
+		this.worldMap.putAll(tilesToMark); 
 	}
 
 	public HashMap<Coordinate, MapTile.Type> getWorldMap() {
