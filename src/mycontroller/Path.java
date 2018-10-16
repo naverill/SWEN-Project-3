@@ -29,4 +29,8 @@ public class Path {
 	public boolean endPath() {
 		return pathMoves.isEmpty();
 	}
+	
+	public void clearPath() {
+		pathMoves.clear();
+	}
 }

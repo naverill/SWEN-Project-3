@@ -7,20 +7,23 @@ import java.util.HashMap;
 
 import tiles.MapTile;
 import utilities.Coordinate;
-import world.WorldSpatial;
-import world.WorldSpatial.Direction;
 
-public class ExploreStrategy implements IMovementStrategy {	
+public class ExploreStrategy extends BasicStrategy {	
 	ArrayList<Coordinate> unexploredTiles = new ArrayList<Coordinate>();
-	
 	
 	ExploreStrategy(HashMap<Coordinate, MapTile> map){
 		populateUnexploredTiles(map);
 	}
 	
 	@Override
-	public Coordinate move(HashMap<Coordinate, MapTile> worldView) {		
+	public Coordinate move(HashMap<Coordinate, MapTile> worldView) {
+		Coordinate exploreTile = path.getNextMove();
 		
+		if(path.endPath()) {
+			path = new Path(WorldSensor.getCurrentPosition(), unexploredTiles, worldView);
+		}
+		
+		return exploreTile;
 	}
 	
 	public void updateState(HashMap<Coordinate, MapTile> state) {

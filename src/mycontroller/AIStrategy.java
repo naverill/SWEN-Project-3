@@ -15,14 +15,14 @@ public class AIStrategy implements IMovementStrategy {
 		kKeyStrat,
 	}
 	
-	public List<IMovementStrategy>  strategies = new ArrayList<>();
-	private IMovementStrategy currentStrategy;
+	public List<BasicStrategy>  strategies = new ArrayList<>();
+	private BasicStrategy currentStrategy;
 
 	public AIStrategy(HashMap<Coordinate, MapTile> map) {
-	    strategies = (List<IMovementStrategy>) Arrays.asList(
-	    											   (IMovementStrategy) new ExploreStrategy(map), 
-	    											   (IMovementStrategy) new HealthStrategy(), 
-	    											   (IMovementStrategy) new KeyStrategy()
+	    strategies = (List<BasicStrategy>) Arrays.asList(
+	    											   (BasicStrategy) new ExploreStrategy(map), 
+	    											   (BasicStrategy) new HealthStrategy(), 
+	    											   (BasicStrategy) new KeyStrategy()
 	    											   );
 		
 		currentStrategy = strategies.get(StrategyKey.kExploreStrat.ordinal());

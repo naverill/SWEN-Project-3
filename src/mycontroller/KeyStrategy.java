@@ -7,19 +7,20 @@ import tiles.LavaTrap;
 import tiles.MapTile;
 import utilities.Coordinate;
 
-public class KeyStrategy implements IMovementStrategy {
+public class KeyStrategy extends BasicStrategy {
 	static private ArrayList<Coordinate> keys;
-	Path keyPath;
+	ArrayList<Coordinate> collected = new ArrayList<>();
 
 	@Override
 	public Coordinate move(HashMap<Coordinate, MapTile> worldView) {
-		// TODO Auto-generated method stub
+		Coordinate keyTile = path.getNextMove();
 		
-		if(keyPath.endPath()) {
-			keyPath = new Path(WorldSensor.getCurrentPosition(), keys, worldView);
+		if(path.endPath()) {
+			collected.add(keyTile);
+			path = new Path(WorldSensor.getCurrentPosition(), keys, worldView);
 		} 
 		
-		return keyPath.getNextMove();
+		return path.getNextMove();
 	}
 	
 	public boolean foundKey() {
@@ -37,6 +38,4 @@ public class KeyStrategy implements IMovementStrategy {
 			}
 		}
 	}
-	
-
 }
