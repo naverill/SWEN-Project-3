@@ -7,10 +7,10 @@ import java.util.Stack;
 import tiles.MapTile;
 import utilities.Coordinate;
 
-public class Path {
+public class PathFinder {
 	public Stack<Coordinate> pathMoves;
 
-	public Path(Coordinate start, ArrayList<Coordinate> end, HashMap<Coordinate, MapTile.Type> tiles) {
+	public PathFinder(Coordinate start, ArrayList<Coordinate> end, HashMap<Coordinate, MapTile> tiles) {
 		pathMoves = getPath(start, end, tiles);
 	}
 	
@@ -19,7 +19,7 @@ public class Path {
 		return pathMoves.pop();
 	}
 	
-	private Stack<Coordinate> getPath(Coordinate start, ArrayList<Coordinate> end, HashMap<Coordinate, MapTile.Type> tiles){
+	private Stack<Coordinate> getPath(Coordinate start, ArrayList<Coordinate> end, HashMap<Coordinate, MapTile> tiles){
 		Stack<Coordinate> path = new Stack<>();
 		
 		return path;

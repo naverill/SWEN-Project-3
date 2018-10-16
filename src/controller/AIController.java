@@ -1,6 +1,5 @@
 package controller;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
@@ -9,7 +8,6 @@ import tiles.LavaTrap;
 import tiles.MapTile;
 import utilities.Coordinate;
 import world.Car;
-import world.World;
 import world.WorldSpatial;
 
 public class AIController extends CarController {
@@ -28,13 +26,11 @@ public class AIController extends CarController {
 	
 	// Coordinate initialGuess;
 	// boolean notSouth = true;
-	private boolean initializeFlag = true;
 	private MapExpert mapExpert;
 	@Override
 	public void update() {
 		// Gets what the car can see
 		HashMap<Coordinate, MapTile> currentView = getView();
-		HashMap<Coordinate,MapTile> currentMap = getMap();
 
 		getViewSpecifics(currentView);
 

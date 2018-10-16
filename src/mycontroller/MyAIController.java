@@ -11,37 +11,33 @@ import utilities.Coordinate;
 import world.Car;
 import world.WorldSpatial;
 import world.WorldSpatial.Direction;
-import world.WorldSpatial.RelativeDirection;
-import world.World;
 
 public class MyAIController extends CarController {
 	IMovementStrategy strategy;
-	private boolean initializeFlag = true;
-	private MapExpert mapExpert;
+	private WorldSensor sensor;
 
 	enum RelativeDirection {LEFT, RIGHT, FORWARD, BACKWARD}
 	
 	private Car car;
-	private int maxForwardVelocity = 1;
-	private int maxReverseVelocity = -1;
 		
 	public MyAIController(Car car) {
 		super(car);
 		this.car = car;
-		strategy = new AIStrategy();
 		HashMap<Coordinate, MapTile> worldMap = getMap();
-		mapExpert = new MapExpert(worldMap);
+		sensor = new WorldSensor(worldMap);
+		strategy = new AIStrategy(worldMap);
 	}
 
 	@Override
 	public void update() {
 		// TODO Auto-generated method stub
 		HashMap<Coordinate, MapTile> currentView = getView();
-		mapExpert.updateMap(currentView);
+		sensor.updateMap(currentView);
+		strategy.updateState(currentView);
 		
 		Coordinate currentPos =  new Coordinate(getPosition());
 		
-		Coordinate nextPos = strategy.move(getOrientation(), currentPos, mapExpert.getWorldMap());
+		Coordinate nextPos = strategy.move(getOrientation(), currentPos, sensor.getWorldMap());
 		
 		coordinateToMovement(currentPos, nextPos);
 	}
@@ -97,6 +93,9 @@ public class MyAIController extends CarController {
 	
 	public Direction absoluteToRelativePosition(Coordinate current, Coordinate next) {
 		Coordinate pos = new Coordinate(next.x - current.x, next.y - current.y);
+
+		System.out.println("("+ next.x + "," + next.y + ")");
+		System.out.println("("+ pos.x + "," + pos.y + ")");
 		
 		if(pos.equals(NORTH)) {
 			return Direction.NORTH;
@@ -113,18 +112,6 @@ public class MyAIController extends CarController {
 		} else {
 			return null;
 		}
-	}
-	
-	public void getViewSpecifics(HashMap<Coordinate, MapTile> currentView){
-		for (Entry<Coordinate, MapTile>  entry : currentView.entrySet()) {
-			MapTile thing = entry.getValue();
-			if(thing instanceof LavaTrap) {
-				if(((LavaTrap) thing).getKey()!=0) {
-					System.out.println("found key in"+entry.getKey());
-					mapExpert.addKey(entry.getKey());
-				}
-			}
-		}		
 	}	
 }
 
