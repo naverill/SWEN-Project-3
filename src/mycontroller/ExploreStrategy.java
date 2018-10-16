@@ -1,43 +1,44 @@
 package mycontroller;
 
-import world.Car;
-
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import tiles.MapTile;
 import utilities.Coordinate;
 import world.WorldSpatial;
+import world.WorldSpatial.Direction;
 
-public class ExploreStrategy implements IMovementStrategy {
+public class ExploreStrategy implements IMovementStrategy {	
+	ArrayList<Coordinate> unexploredTiles = new ArrayList<Coordinate>();
+
 	
-	private static HashMap<Coordinate,MapTile> viewed = new HashMap<Coordinate,MapTile>();
-	private Car car;
-	
-	public ExploreStrategy(Car car) {
-		this.car = car;
+	ExploreStrategy(HashMap<Coordinate, MapTile> map){
+		populateUnexploredTiles(map);
 	}
-
+	
 	@Override
-	public void move() {
-		// TODO Auto-generated method stub
-		HashMap<Coordinate, MapTile> currentView = car.getView();
+	public Coordinate move(Direction currentDirection, Coordinate currentPos, HashMap<Coordinate, MapTile> worldView) {		
 		
 		
 	}
 	
-	public void storeSurround(HashMap<Coordinate, MapTile> currentView) {
+	public void updateState(HashMap<Coordinate, MapTile> state) {
 		
-		for (HashMap.Entry<Coordinate, MapTile> entry : currentView.entrySet()) {
-			if(!viewed.containsKey(entry.getKey())) {
-				viewed.put(entry.getKey(), entry.getValue());
+	}
+	
+	
+	private void populateUnexploredTiles(HashMap<Coordinate, MapTile> map) {
+		for(Coordinate coordinate : map.keySet()) {
+			MapTile tile = map.get(coordinate);
+			
+			if(tile.getType().equals(MapTile.Type.ROAD) || tile.getType().equals(MapTile.Type.TRAP)) {
+				//TODO() if tile has a path to it (not blocked by mud/walls)
+				unexploredTiles.add(coordinate);
+				
 			}
 		}
+		
 	}
-	
-	public void getFinish(HashMap<Coordinate, MapTile> currentView) {
-		for (HashMap.Entry<Coordinate, MapTile> entry : currentView.entrySet()) {
-			System.out.println(entry.getValue());
-		}
-	}
+
 
 }
