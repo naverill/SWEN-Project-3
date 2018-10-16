@@ -9,7 +9,7 @@ import utilities.Coordinate;
 import world.WorldSpatial.Direction;
 
 public class KeyStrategy implements IMovementStrategy {
-	ArrayList<Coordinate> keys;
+	static ArrayList<Coordinate> keys = new ArrayList<>();;
 	Path keyPath;
 
 	@Override
@@ -23,8 +23,17 @@ public class KeyStrategy implements IMovementStrategy {
 		return keyPath.getNextMove();
 	}
 	
-	public boolean foundKey() {
-		return !keys.isEmpty();
+	public static void addKey(Coordinate key) {
+		if(!keys.contains(key)) {
+			keys.add(key);
+		}
 	}
-
+	
+	public void removeKey(Coordinate key) {
+		keys.remove(key);
+	}
+	
+//	public boolean foundKey() {
+//		return !keys.isEmpty();
+//	}
 }

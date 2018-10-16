@@ -16,7 +16,6 @@ import world.World;
 
 public class MyAIController extends CarController {
 	IMovementStrategy strategy;
-	private boolean initializeFlag = true;
 	private MapExpert mapExpert;
 
 	enum RelativeDirection {LEFT, RIGHT, FORWARD, BACKWARD}
@@ -109,22 +108,10 @@ public class MyAIController extends CarController {
 			
 		}else if (pos.equals(WEST)) {
 			return Direction.WEST;
-			
+
 		} else {
 			return null;
 		}
-	}
-	
-	public void getViewSpecifics(HashMap<Coordinate, MapTile> currentView){
-		for (Entry<Coordinate, MapTile>  entry : currentView.entrySet()) {
-			MapTile thing = entry.getValue();
-			if(thing instanceof LavaTrap) {
-				if(((LavaTrap) thing).getKey()!=0) {
-					System.out.println("found key in"+entry.getKey());
-					mapExpert.addKey(entry.getKey());
-				}
-			}
-		}		
 	}	
 }
 

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import tiles.LavaTrap;
 import tiles.MapTile;
 import tiles.MapTile.Type;
 import utilities.Coordinate;
@@ -11,27 +12,13 @@ import utilities.Coordinate;
 public class MapExpert {
 	private HashMap<Coordinate, MapTile.Type> worldMap = new HashMap<>();
 	private HashMap<Coordinate, Boolean> explored = new HashMap<>();
-	private ArrayList<Coordinate> keys;
 	
 	public MapExpert(HashMap<Coordinate, MapTile> worldTiles) {
-		super();
-		this.keys = new ArrayList<>();
-		
+		super();		
 		HashMap<Coordinate, MapTile.Type> worldMap = new HashMap<>();
 		for (Entry<Coordinate, MapTile>  entry : worldTiles.entrySet()) {
 			worldMap.put(entry.getKey(),entry.getValue().getType());
 		}
-	}
-	
-	public void addKey(Coordinate key) {
-		if(!keys.contains(key)) {
-			keys.add(key);
-			System.out.println(keys);
-		}
-	}
-	
-	public void removeKey(Coordinate key) {
-		keys.remove(key);
 	}
 	
 	public  HashMap<Coordinate, MapTile.Type> getNeighbours(Coordinate key){
@@ -61,7 +48,19 @@ public class MapExpert {
 		for(Coordinate key : updates.keySet()) {
 			worldMap.put(key, updates.get(key).getType());
 			explored.put(key, true);
-			
+		}
+		updateKey(updates);
+	}
+	
+	public void updateKey(HashMap<Coordinate, MapTile> updates) {
+		for (Entry<Coordinate, MapTile>  entry : updates.entrySet()) {
+			MapTile tile = entry.getValue();
+			if(tile instanceof LavaTrap) {
+				if(((LavaTrap) tile).getKey()!=0) {
+					System.out.println("found key in"+entry.getKey());
+					KeyStrategy.addKey(entry.getKey());
+				}
+			}
 		}
 	}
 
@@ -72,6 +71,12 @@ public class MapExpert {
 	
 	public boolean hasSeenTile(Coordinate coor) {
 		return explored.get(coor);
+	}
+	
+	public void getKey(HashMap<Coordinate, MapTile> currentView){
+		for (Entry<Coordinate, MapTile>  entry : currentView.entrySet()) {
+			
+		}		
 	}
 	
 }
