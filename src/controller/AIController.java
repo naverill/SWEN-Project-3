@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import mycontroller.MapExpert;
+import tiles.LavaTrap;
 import tiles.MapTile;
 import utilities.Coordinate;
 import world.Car;
@@ -27,26 +29,19 @@ public class AIController extends CarController {
 	
 	// Coordinate initialGuess;
 	// boolean notSouth = true;
-	private HashMap<Coordinate, MapTile.Type> hey;
-	private boolean flag = true;
+	private boolean initializeFlag = true;
+	private MapExpert mapExpert;
 	@Override
 	public void update() {
 		// Gets what the car can see
 		HashMap<Coordinate, MapTile> currentView = getView();
 		HashMap<Coordinate,MapTile> currentMap = getMap();
-		hey = new HashMap<>();
-		if(flag) {
-			for (Entry<Coordinate, MapTile>  entry : currentMap.entrySet()) {
-				hey.put(entry.getKey(),entry.getValue().getType());
-			}
-			for (Entry<Coordinate, MapTile>  entry : currentMap.entrySet()) {
-				hey.put(entry.getKey(),entry.getValue().getType());
-			}System.out.println(hey);
-			System.out.println(World.MAP_WIDTH);
-			System.out.println(World.MAP_HEIGHT);
-			flag = !flag;
+		if(initializeFlag) {
+			generateMapExpert();
+			initializeFlag = !initializeFlag;
 		}
-		
+		getViewSpecifics(currentView);
+
 		// checkStateChange();
 		if(getSpeed() < CAR_MAX_SPEED){       // Need speed to turn and progress toward the exit
 			applyForwardAcceleration();   // Tough luck if there's a wall in the way
@@ -69,6 +64,36 @@ public class AIController extends CarController {
 			}
 		}
 	}
+	
+	
+	
+	public void generateMapExpert() {
+		HashMap<Coordinate,MapTile> currentMap = getMap();
+		HashMap<Coordinate, MapTile.Type> worldMap = new HashMap<>();
+		for (Entry<Coordinate, MapTile>  entry : currentMap.entrySet()) {
+			worldMap.put(entry.getKey(),entry.getValue().getType());
+		}
+		for (Entry<Coordinate, MapTile>  entry : currentMap.entrySet()) {
+			worldMap.put(entry.getKey(),entry.getValue().getType());
+		}
+		mapExpert = new MapExpert(worldMap);
+		System.out.println(worldMap);
+		System.out.println(World.MAP_WIDTH);
+		System.out.println(World.MAP_HEIGHT);
+	}
+	
+	public void getViewSpecifics(HashMap<Coordinate, MapTile> currentView){
+		for (Entry<Coordinate, MapTile>  entry : currentView.entrySet()) {
+			MapTile thing = entry.getValue();
+			if(thing instanceof LavaTrap) {
+				if(((LavaTrap) thing).getKey()!=0) {
+					System.out.println("found key in"+entry.getKey());
+					mapExpert.addKey(entry.getKey());
+				}
+			}
+		}		
+	}
+	
 
 	/**
 	 * Check if you have a wall in front of you!
