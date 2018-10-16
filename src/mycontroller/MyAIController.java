@@ -9,7 +9,9 @@ import tiles.LavaTrap;
 import tiles.MapTile;
 import utilities.Coordinate;
 import world.Car;
+import world.WorldSpatial;
 import world.WorldSpatial.Direction;
+import world.WorldSpatial.RelativeDirection;
 import world.World;
 
 public class MyAIController extends CarController {
@@ -17,8 +19,17 @@ public class MyAIController extends CarController {
 	private boolean initializeFlag = true;
 	private MapExpert mapExpert;
 
+	enum RelativeDirection {LEFT, RIGHT, FORWARD, BACKWARD}
+	
+	private Car car;
+	private int maxForwardVelocity = 1;
+	private int maxReverseVelocity = -1;
+	
+	HashMap<Coordinate, MapTile> worldView;
+	
 	public MyAIController(Car car) {
 		super(car);
+		this.car = car;
 		strategy = new AIStrategy();
 	}
 
@@ -28,7 +39,9 @@ public class MyAIController extends CarController {
 		HashMap<Coordinate, MapTile> currentView = getView();
 		worldView.putAll(currentView);
 
-		Coordinate next = strategy.move(worldView);
+		Coordinate currentPos =  new Coordinate(getPosition());
+;
+		Coordinate nextPos = strategy.move(currentPos, worldView);
 		
 		if(initializeFlag) {
 			generateMapExpert();
@@ -52,48 +65,146 @@ public class MyAIController extends CarController {
 		System.out.println(World.MAP_HEIGHT);
 	}
 	
-	private void coordinateToMovement(Coordinate next) {
-		Coordinate current = toCoordinate(getPosition());
+	private void coordinateToMovement(Coordinate current, Coordinate next) {
+		Direction nextDirection = absoluteToRelativePosition(current, next);
 
-		Direction nextDir = positionDelta(new Coordinate(next.x - current.x, next.y - current.y));
-		
-		Direction currDir = getOrientation();
-		
-		if(nextDir!=null && currDir!=null) {
-			while(!currDir.equals(nextDir)) {
-				turnRight();
-				currDir = getOrientation();
+		if(current.equals(next)) {
+			while(!isStopped()) {
+				applyBrake();
+			}
+			return;
+		} else {
+			if(isStopped()) {
+				//apply acceleration so car can turn
+				changeDirection(nextDirection);
 			}
 		}
 		
-		
+		changeOrientation(getOrientation(), nextDirection);
+		changeDirection(nextDirection);
 	}
 	
-	public Direction positionDelta(Coordinate pos) {
+	private void changeOrientation(Direction current, Direction next) {
+		while(!current.equals(next) && !next.equals(WorldSpatial.reverseDirection(current))) {
+			if (next.equals(leftDirection(current))) {
+				turnLeft();
+			} else if (next.equals(rightDirection(current))) {
+				turnRight();
+			}
+			current = getOrientation();
+		}
+	}
+	
+	public Direction getGlobalOrientation() {
+		return getOrientation();
+	}
+	
+	public MyAIController getInstance() {
+		return this;
+	}
+	
+	private void changeDirection(Direction nextDirection) {
+		if(nextDirection.equals(getOrientation())) {
+			goForward();
+		} else {
+			goBackward();
+		}
+	}
+	
+	private void goForward() {
+		Coordinate currentPos =  new Coordinate(getPosition());
+		MapTile tile = worldView.get(new Coordinate(currentPos.x, currentPos.y));
+		
+		while(car.getVelocity() < maxForwardVelocity) {
+			applyForwardAcceleration();
+			
+			//go faster over traps
+			if (tile.isType(MapTile.Type.TRAP)) {
+				applyForwardAcceleration();
+				
+				//update knowledge about max forward velocity (why is it private?????)
+				if(car.getVelocity() > maxForwardVelocity) {
+					maxForwardVelocity = car.getVelocity();
+				}
+			}
+		}
+	}
+	
+	private void goBackward() {
+		Coordinate currentPos =  new Coordinate(getPosition());
+		MapTile tile = worldView.get(new Coordinate(currentPos.x, currentPos.y));
+
+		while(car.getVelocity() > maxReverseVelocity) {
+			applyReverseAcceleration();
+			
+			//go faster over trap tiles 
+			if (tile.isType(MapTile.Type.TRAP)) {
+				applyReverseAcceleration();
+				
+				//update knowledge about max reverse velocity
+				if(car.getVelocity() < maxReverseVelocity) {
+					maxReverseVelocity = car.getVelocity();
+				}
+			}
+		}
+	}
+	
+	public Direction leftDirection(Direction curr) {
+		switch (curr) {
+			case NORTH:
+				return Direction.WEST;
+			case SOUTH:
+				return Direction.EAST;
+			case EAST:
+				return Direction.NORTH;
+			case WEST:
+				return Direction.SOUTH;
+		}
+		return Direction.NORTH; // should never happen
+	}
+	
+	public Direction rightDirection(Direction curr) {
+		switch (curr) {
+			case NORTH:
+				return Direction.EAST;
+			case SOUTH:
+				return Direction.WEST;
+			case EAST:
+				return Direction.SOUTH;
+			case WEST:
+				return Direction.NORTH;
+		}
+		return Direction.NORTH; // should never happen
+	}
+	
+	private boolean isStopped() {
+		return car.getVelocity() == 0;
+	}
+	
+	private final Coordinate NORTH = new Coordinate(0, 1);
+	private final Coordinate SOUTH = new Coordinate(1, 0);
+	private final Coordinate EAST = new Coordinate(0, -1);
+	private final Coordinate WEST = new Coordinate(-1, 0);
+	
+	public Direction absoluteToRelativePosition(Coordinate current, Coordinate next) {
+		Coordinate pos = new Coordinate(next.x - current.x, next.y - current.y);
+		
 		if(pos.equals(NORTH)) {
 			return Direction.NORTH;
+			
 		} else if (pos.equals(SOUTH)) {
 			return Direction.SOUTH;
+			
 		} else if (pos.equals(EAST)) {
 			return Direction.EAST;
+			
 		}else if (pos.equals(WEST)) {
 			return Direction.WEST;
+			
 		} else {
 			return null;
 		}
 	}
-	
-	private Coordinate toCoordinate(String position) {
-		int[] pos = Arrays.stream(position
-				.replace("(", "")
-				.replace(")", "")
-				.split(","))
-                .mapToInt(Integer::parseInt)
-                .toArray();
-		return new Coordinate(pos[0], pos[1]);
-		
-	}
-	
 	private final Coordinate NORTH = new Coordinate(0, 1);
 	private final Coordinate SOUTH = new Coordinate(1, 0);
 	private final Coordinate EAST = new Coordinate(0, -1);
@@ -110,6 +221,8 @@ public class MyAIController extends CarController {
 			}
 		}		
 	}
+		
+	
 }
 
 
