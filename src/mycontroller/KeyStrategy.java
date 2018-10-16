@@ -9,21 +9,21 @@ import utilities.Coordinate;
 
 public class KeyStrategy implements IMovementStrategy {
 	ArrayList<Coordinate> keys;
-	Stack<Coordinate> keyPath = new Stack<>();
+	Path keyPath;
 
 	@Override
 	public Coordinate move(HashMap<Coordinate, MapTile> worldView) {
 		// TODO Auto-generated method stub
 		
 		if(keyPath.isEmpty()) {
-			keyPath = new Path();
+			keyPath = new Path(null, keys, worldView);
 		} 
 		
-		return keyPath.pop();
+		return keyPath.getNextMove();
 	}
 	
 	public boolean foundKey() {
-		return !key.isEmpty();
+		return !keys.isEmpty();
 	}
 
 }

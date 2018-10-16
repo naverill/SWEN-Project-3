@@ -9,15 +9,18 @@ import utilities.Coordinate;
 
 public class HealthStrategy implements IMovementStrategy {
 	ArrayList<Coordinate> health = new ArrayList<>();
-	Stack<Coordinate> healthPath = new Stack<>();
+	Path healthPath;
 
 	@Override
 	public Coordinate move(HashMap<Coordinate, MapTile> worldView) {
+		if(healthPath==null) {
+			healthPath = new Path(null, health, worldView);
+		}
 		if(healthPath.isEmpty()) {
-			healthPath = new Path();
+			healthPath = new Path(null, health, worldView);
 		} 
 		
-		return healthPath.pop();
+		return healthPath.getNextMove();
 	}
 	
 	public boolean foundHealth() {

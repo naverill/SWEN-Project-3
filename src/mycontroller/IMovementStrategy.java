@@ -7,5 +7,5 @@ import utilities.Coordinate;
 
 public interface IMovementStrategy {
 
-	public void move(HashMap<Coordinate, MapTile> worldView);
+	public Coordinate move(HashMap<Coordinate, MapTile> worldView);
 }

@@ -24,4 +24,9 @@ public class Path {
 		
 		return path;
 	}
+
+
+	public boolean isEmpty() {
+		return pathMoves.isEmpty();
+	}
 }

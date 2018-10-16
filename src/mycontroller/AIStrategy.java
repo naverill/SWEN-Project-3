@@ -21,7 +21,7 @@ public class AIStrategy implements IMovementStrategy {
 
 	public AIStrategy() {
 	    strategies = (ArrayList<IMovementStrategy>) Arrays.asList(
-	    											   (IMovementStrategy) new ExploreStrategy(), 
+	    											   (IMovementStrategy) new ExploreStrategy(null), 
 	    											   (IMovementStrategy) new HealthStrategy(), 
 	    											   (IMovementStrategy) new KeyStrategy()
 	    											   );
@@ -30,8 +30,8 @@ public class AIStrategy implements IMovementStrategy {
 	}
 	
 	@Override
-	public void move(HashMap<Coordinate, MapTile> worldView) {		
-		currentStrategy.move(worldView);
+	public Coordinate move(HashMap<Coordinate, MapTile> worldView) {		
+		return currentStrategy.move(worldView);
 	}
 	
 

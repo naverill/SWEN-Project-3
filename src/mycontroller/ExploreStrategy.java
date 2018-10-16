@@ -15,8 +15,8 @@ public class ExploreStrategy implements IMovementStrategy {
 	}
 
 	@Override
-	public void move(HashMap<Coordinate, MapTile> worldView) {
-		
+	public Coordinate move(HashMap<Coordinate, MapTile> worldView) {
+		return null;	
 	}
 
 }

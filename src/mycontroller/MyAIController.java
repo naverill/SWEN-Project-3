@@ -12,7 +12,7 @@ import world.Car;
 import world.WorldSpatial.Direction;
 import world.World;
 
-public class MyAIController extends CarController{
+public class MyAIController extends CarController {
 	IMovementStrategy strategy;
 	private boolean initializeFlag = true;
 	private MapExpert mapExpert;
@@ -52,28 +52,34 @@ public class MyAIController extends CarController{
 		System.out.println(World.MAP_HEIGHT);
 	}
 	
-	private void coorinateToMovement(Coordinate next) {
+	private void coordinateToMovement(Coordinate next) {
 		Coordinate current = toCoordinate(getPosition());
 
-		Direction nextD = positionDelta(new Coordinate(next.x - current.x, next.y - current.y));
+		Direction nextDir = positionDelta(new Coordinate(next.x - current.x, next.y - current.y));
 		
-		Direction currD = getOrientation();
+		Direction currDir = getOrientation();
+		
+		if(nextDir!=null && currDir!=null) {
+			while(!currDir.equals(nextDir)) {
+				turnRight();
+				currDir = getOrientation();
+			}
+		}
 		
 		
 	}
 	
-	public Coordinate positionDelta(Coordinate pos) {
-		switch (d) {
-		case NORTH:
-			return new Coordinate( 0,  1);
-		case EAST:
-			return new Coordinate( 1,  0);
-		case SOUTH:
-			return new Coordinate( 0, -1);
-		case WEST:
-			return new Coordinate(-1,  0);
-		default:
-			return new Coordinate( 0,  0); // Should never happen
+	public Direction positionDelta(Coordinate pos) {
+		if(pos.equals(NORTH)) {
+			return Direction.NORTH;
+		} else if (pos.equals(SOUTH)) {
+			return Direction.SOUTH;
+		} else if (pos.equals(EAST)) {
+			return Direction.EAST;
+		}else if (pos.equals(WEST)) {
+			return Direction.WEST;
+		} else {
+			return null;
 		}
 	}
 	
@@ -87,6 +93,11 @@ public class MyAIController extends CarController{
 		return new Coordinate(pos[0], pos[1]);
 		
 	}
+	
+	private final Coordinate NORTH = new Coordinate(0, 1);
+	private final Coordinate SOUTH = new Coordinate(1, 0);
+	private final Coordinate EAST = new Coordinate(0, -1);
+	private final Coordinate WEST = new Coordinate(-1, 0);
 	
 	public void getViewSpecifics(HashMap<Coordinate, MapTile> currentView){
 		for (Entry<Coordinate, MapTile>  entry : currentView.entrySet()) {
