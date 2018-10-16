@@ -1,16 +1,18 @@
 package controller;
 
 import java.util.HashMap;
+import tiles.MapTile.Type;
 
 import tiles.MapTile;
 import utilities.Coordinate;
 import world.Car;
+
 import world.WorldSpatial;
 
 public class AIController extends CarController {
 	
 	// How many minimum units the wall is away from the player.
-	private int wallSensitivity = 1;
+	private int wallSensitivity = 3;
 	
 	private boolean isFollowingWall = false; // This is set to true when the car starts sticking to a wall.
 	
@@ -28,6 +30,15 @@ public class AIController extends CarController {
 	public void update() {
 		// Gets what the car can see
 		HashMap<Coordinate, MapTile> currentView = getView();
+		
+//		for (HashMap.Entry<Coordinate, MapTile> entry : currentView.entrySet()) {
+//			
+//			if ((entry.getValue() ) {
+//				
+//			}
+//			
+//		}
+		
 		
 		// checkStateChange();
 		if(getSpeed() < CAR_MAX_SPEED){       // Need speed to turn and progress toward the exit
