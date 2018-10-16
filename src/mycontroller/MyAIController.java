@@ -33,11 +33,10 @@ public class MyAIController extends CarController {
 		Coordinate currentPos =  new Coordinate(getPosition());
 
 		HashMap<Coordinate, MapTile> currentView = getView();
-		sensor.updateMap(currentView);
-		strategy.updateState(currentView, currentPos);
+		sensor.updateMap(currentView, currentPos);
+		strategy.updateState(currentView);
 		
-		
-		Coordinate nextPos = strategy.move(getOrientation(), currentPos, sensor.getWorldMap());
+		Coordinate nextPos = strategy.move(sensor.getWorldMap());
 		
 		coordinateToMovement(currentPos, nextPos);
 	}

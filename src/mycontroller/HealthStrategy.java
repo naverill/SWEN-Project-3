@@ -14,12 +14,12 @@ public class HealthStrategy implements IMovementStrategy {
 	Path healthPath;
 
 	@Override
-	public Coordinate move(Direction direction, Coordinate currentPos, HashMap<Coordinate, MapTile> worldView) {
+	public Coordinate move(HashMap<Coordinate, MapTile> worldView) {
 		if(healthPath==null) {
-			healthPath = new Path(currentPos, health, worldView);
+			healthPath = new Path(WorldSensor.getCurrentPosition(), health, worldView);
 		}
 		if(healthPath.isEmpty()) {
-			healthPath = new Path(currentPos, health, worldView);
+			healthPath = new Path(WorldSensor.getCurrentPosition(), health, worldView);
 		} 
 		
 		return healthPath.getNextMove();

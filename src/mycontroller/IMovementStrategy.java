@@ -8,7 +8,7 @@ import world.WorldSpatial.Direction;
 
 public interface IMovementStrategy {
 
-	public Coordinate move(Direction direction, Coordinate currentPos, HashMap<Coordinate, MapTile> hashMap);
+	public Coordinate move(HashMap<Coordinate, MapTile> hashMap);
 	
 	public void updateState(HashMap<Coordinate, MapTile> state);
 }

@@ -13,11 +13,11 @@ public class KeyStrategy implements IMovementStrategy {
 	Path keyPath;
 
 	@Override
-	public Coordinate move(Direction direction, Coordinate currentPos, HashMap<Coordinate, MapTile> worldView) {
+	public Coordinate move(HashMap<Coordinate, MapTile> worldView) {
 		// TODO Auto-generated method stub
 		
 		if(keyPath.isEmpty()) {
-			keyPath = new Path(currentPos, keys, worldView);
+			keyPath = new Path(WorldSensor.getCurrentPosition(), keys, worldView);
 		} 
 		
 		return keyPath.getNextMove();

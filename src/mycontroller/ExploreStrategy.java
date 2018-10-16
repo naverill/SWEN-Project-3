@@ -19,7 +19,7 @@ public class ExploreStrategy implements IMovementStrategy {
 	}
 	
 	@Override
-	public Coordinate move(Direction currentDirection, Coordinate currentPos, HashMap<Coordinate, MapTile> worldView) {		
+	public Coordinate move(HashMap<Coordinate, MapTile> worldView) {		
 		
 	}
 	
@@ -30,7 +30,7 @@ public class ExploreStrategy implements IMovementStrategy {
 			}
 		}
 		
-        Collections.sort(unexploredTiles, new CoordinateSort());
+        Collections.sort(unexploredTiles, new CoordinateComparator(WorldSensor.getCurrentPosition()));
 	}
 	
 	
@@ -47,10 +47,10 @@ public class ExploreStrategy implements IMovementStrategy {
 		
 	}
 	
-	class CoordinateSort implements Comparator<Coordinate> {
+	class CoordinateComparator implements Comparator<Coordinate> {
 		Coordinate currentPosition;
 		
-		CoordinateSort(Coordinate position){
+		CoordinateComparator(Coordinate position){
 			this.currentPosition = position;
 		}
 		

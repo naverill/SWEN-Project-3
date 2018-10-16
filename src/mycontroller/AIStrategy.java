@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import tiles.MapTile;
-import tiles.MapTile.Type;
 import utilities.Coordinate;
 import world.WorldSpatial.Direction;
 
@@ -32,8 +31,8 @@ public class AIStrategy implements IMovementStrategy {
 	}
 	
 	@Override
-	public Coordinate move(Direction direction, Coordinate currentPos, HashMap<Coordinate, MapTile> worldView) {		
-		return currentStrategy.move(direction, currentPos, worldView);
+	public Coordinate move(HashMap<Coordinate, MapTile> worldView) {		
+		return currentStrategy.move(worldView);
 	}
 
 	@Override

@@ -10,7 +10,7 @@ import utilities.Coordinate;
 
 public class WorldSensor {
 	static public HashMap<Coordinate, MapTile> map = new HashMap<>();
-	private Coordinate currentPosition;
+	static private Coordinate currentPosition;
 	
 	public WorldSensor(HashMap<Coordinate, MapTile> worldTiles) {
 		map.putAll(worldTiles);
@@ -39,12 +39,17 @@ public class WorldSensor {
 		return neighbours;
 	}
 	
-	public void updateMap(HashMap<Coordinate, MapTile> view) {
+	public void updateMap(HashMap<Coordinate, MapTile> view, Coordinate position) {
+		currentPosition = position;
 		map.putAll(view);
 	}
 	
 	public HashMap<Coordinate, MapTile> getWorldMap() {
 		return map;
+	}
+	
+	static public Coordinate getCurrentPosition() {
+		return new Coordinate(currentPosition.x, currentPosition.y);
 	}
 
 }
