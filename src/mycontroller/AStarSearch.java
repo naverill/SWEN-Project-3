@@ -8,6 +8,10 @@ import utilities.Coordinate;
 import world.WorldSpatial;
 import tiles.MapTile;
 import tiles.TrapTile;
+import tiles.MudTrap;
+import tiles.LavaTrap;
+import tiles.GrassTrap;
+
 
 public class AStarSearch {
 	
@@ -16,7 +20,7 @@ public class AStarSearch {
 	private static Coordinate goal;
 	private static Coordinate beforeStart;
 	
-	private static MapExpert mapExpert;
+	private static WorldSensor mapExpert;
 	
 	private static ArrayList<Coordinate> exploredTiles;
 	private static HashMap<Coordinate, Float> unExplored;
@@ -24,12 +28,21 @@ public class AStarSearch {
 	private static HashMap<Coordinate, Coordinate> cameFrom;
 	private static HashMap<Coordinate, Float> gCosts;
 	
-	private static HashMap<Coordinate, MapTile.Type> neighbourTiles;
+	private static HashMap<Coordinate, MapTile> neighbourTiles;
+	private static HashMap<Coordinate, MapTile> worldMap;
 	
-	HashMap<Coordinate, MapTile.Type> worldMap = new HashMap<>();
-	worldMap = mapExpert.getWorldMap();
+	private static final float LAVA_MULTIPLIER = 100.0f;
+	private static final float ICE_MULTIPLIER = 0.5f;
 	
-	public static ArrayList<Coordinate> findBestPath(HashMap<Coordinate, MapTile> iMap, Coordinate iBeforeStart,
+	public AStarSearch() {
+		//this.start = start;
+		//this.goal = goal;
+		worldMap = mapExpert.getWorldMap();
+	}
+	 
+	
+	
+	public static Stack<Coordinate> findBestPath(HashMap<Coordinate, MapTile> iMap, Coordinate iBeforeStart,
             Coordinate iStart, Coordinate iGoal) {
 		
 		map = iMap;
@@ -60,7 +73,7 @@ public class AStarSearch {
 			
 			
 			
-			ArrayList<Coordinate> neighbours = (ArrayList<Coordinate>) neighbourTiles.keySet();
+			ArrayList<Coordinate> neighbours = getValidNeighbours(curr);
 			
 			for (Coordinate neighbour: neighbours) {
 				if (exploredTiles.contains(neighbour)) {
@@ -91,20 +104,27 @@ public class AStarSearch {
 		return null;
 	}
 	
+	
+	
 	private static Coordinate getLowestFCost() {
 		return Collections.min(unExplored.entrySet(), Map.Entry.comparingByValue()).getKey();
 	}
+	
+	
 	
 	private static float calcGCosts(Coordinate current, Coordinate neighbour, Coordinate cameFrom) {
 		float gCost = getManhattanDistance(current, neighbour);
 		
 		//add trap multipliers if needed
-		if (worldMap.get(neighbour) )) {
-			
+		MapTile tile = worldMap.get(neighbour);
+		if (tile instanceof LavaTrap) {
+			gCost *= (100 - mapExpert.Car.getHealth());
 		}
 		
 		return gCost;
 	}
+	
+	
 	
 	private static ArrayList<Coordinate> getValidNeighbours(Coordinate current) {
 		neighbourTiles = new HashMap<>();
@@ -113,18 +133,33 @@ public class AStarSearch {
 		
 		for (Coordinate neighbour: neighbourTiles.keySet()) {
 			
+			if (!worldMap.containsKey(neighbour)) {
+				continue;
+			}
+				
+			MapTile tile = worldMap.get(neighbour);
+			if (tile.isType(MapTile.Type.WALL) || tile.isType(MapTile.Type.EMPTY) || tile instanceof MudTrap) {
+				continue;
+			}
+			
+			validNeighbours.add(neighbour);
+			
 		}
 		
 		return validNeighbours;
 	}
+	
+	
 	
 	private static float calcHCost(Coordinate neighbour, Coordinate goal) {
 		float hCost = getManhattanDistance(neighbour, goal);
 		return hCost;
 	}
 	
-	private static ArrayList<Coordinate> reconstructPath(Coordinate goal) {
-		ArrayList<Coordinate> path = new ArrayList<>();
+	
+	
+	private static Stack<Coordinate> reconstructPath(Coordinate goal) {
+		Stack<Coordinate> path = new Stack<>();
         path.add(goal);
         Coordinate current = goal;
         while (cameFrom.containsKey(current)) {
@@ -135,6 +170,8 @@ public class AStarSearch {
         Collections.reverse(path);
         return path;
 	}
+	
+	
 	
 	private static float getManhattanDistance(Coordinate from, Coordinate to) {
 		return (float) (Math.abs(to.x - from.x) + Math.abs(to.y - from.y));
