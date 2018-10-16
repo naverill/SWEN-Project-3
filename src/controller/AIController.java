@@ -2,17 +2,19 @@ package controller;
 
 import java.util.HashMap;
 import java.util.Map.Entry;
+import tiles.MapTile.Type;
 
 import tiles.LavaTrap;
 import tiles.MapTile;
 import utilities.Coordinate;
 import world.Car;
+
 import world.WorldSpatial;
 
 public class AIController extends CarController {
 	
 	// How many minimum units the wall is away from the player.
-	private int wallSensitivity = 1;
+	private int wallSensitivity = 3;
 	
 	private boolean isFollowingWall = false; // This is set to true when the car starts sticking to a wall.
 	
