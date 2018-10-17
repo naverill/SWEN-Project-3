@@ -2,6 +2,7 @@ package mycontroller;
 
 import java.util.HashMap;
 import java.util.Set;
+import java.util.Stack;
 
 import tiles.HealthTrap;
 import tiles.LavaTrap;
@@ -13,6 +14,7 @@ import world.WorldSpatial.Direction;
 public class WorldSensor {
 	static public HashMap<Coordinate, MapTile> map = new HashMap<>();
 	public static Car car;
+	public static final int LAVA_COST = 5;
 	
 	public WorldSensor(HashMap<Coordinate, MapTile> worldTiles, Car car) {
 		this.car = car;
@@ -84,4 +86,16 @@ public class WorldSensor {
 	public static boolean isStart(MapTile tile) {
 		return tile.getType().equals(MapTile.Type.START);
 	}
+	
+	public boolean hasEnoughHealth(Stack<Coordinate> path) {
+		float currentHealth = car.getHealth();
+		float healthBuffer = 0;
+		for(Coordinate coor: path) {
+			if(map.get(coor) instanceof LavaTrap) {
+				healthBuffer+=LAVA_COST;
+			}
+		}
+		return currentHealth>healthBuffer;
+	}
+
 }
