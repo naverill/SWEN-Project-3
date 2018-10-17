@@ -39,6 +39,10 @@ public class MyAIController extends CarController {
 	}
 	
 	private void coordinateToMovement(Coordinate current, Coordinate next) {
+		if(Path.invalidMove(next)) {
+			return;
+		}
+		
 		Direction nextDirection = absoluteToRelativePosition(current, next);
 
 		if(current.equals(next)) {
@@ -82,11 +86,6 @@ public class MyAIController extends CarController {
 		return car.getVelocity() == 0;
 	}
 	
-	private final Coordinate NORTH = new Coordinate(0, 1);
-	private final Coordinate EAST = new Coordinate(1, 0);
-	private final Coordinate SOUTH = new Coordinate(0, -1);
-	private final Coordinate WEST = new Coordinate(-1, 0);
-	
 	public Direction absoluteToRelativePosition(Coordinate current, Coordinate next) {
 		Coordinate pos = new Coordinate(next.x - current.x, next.y - current.y);
 
@@ -108,7 +107,12 @@ public class MyAIController extends CarController {
 		} else {
 			return null;
 		}
-	}	
+	}
+	
+	private final Coordinate NORTH = new Coordinate(0, 1);
+	private final Coordinate EAST = new Coordinate(1, 0);
+	private final Coordinate SOUTH = new Coordinate(0, -1);
+	private final Coordinate WEST = new Coordinate(-1, 0);
 }
 
 
