@@ -89,10 +89,9 @@ public class AStarSearch {
 				if (!unExplored.containsKey(neighbour)) {
 					unExplored.put(neighbour, Float.MAX_VALUE);
 				}
-				//this is null
-				//System.out.println(cameFrom.get(curr));
+				
 				gCost = gCosts.get(curr) + calcGCosts(curr, neighbour, cameFrom.get(curr));
-				//System.out.println(x);
+				
 				if (gCosts.containsKey(neighbour)) {
 					if (gCost >= gCosts.get(neighbour)) {
 						continue;
@@ -102,7 +101,7 @@ public class AStarSearch {
 				cameFrom.put(neighbour, curr);
 				gCosts.put(neighbour, gCost);
 				float hcost = calcHCost(neighbour, goal);
-				//System.out.println(hcost);
+				
 				fCost = gCost + hcost;
 				
 				unExplored.put(neighbour, fCost);
@@ -133,10 +132,37 @@ public class AStarSearch {
 		}if(tile instanceof HealthTrap) {
 			gCost*= ICE_MULTIPLIER;
 		}
+		Coordinate coor = new Coordinate(mapExpert.car.getPosition());
+		if (worldMap.get(coor).getType().equals(MapTile.Type.START)) {
+			Direction nb = absoluteToRelativePosition(current, neighbour);
+			if (!WorldSensor.car.getOrientation().equals(nb)) {
+				gCost *= 10;
+			}
+		}
 		return gCost;
 	}
 	
-	
+public static Direction absoluteToRelativePosition(Coordinate current, Coordinate next) {
+		
+		Coordinate pos = new Coordinate(next.x - current.x, next.y - current.y);
+		
+		if (pos.x > 0) {
+			return Direction.EAST;
+		}
+		else if (pos.y < 0) {
+			return Direction.SOUTH;
+			
+		} else if (pos.x < 0) {
+			return Direction.WEST;
+			
+		}else if (pos.y > 0) {
+			return Direction.NORTH;
+			
+		} else {
+			
+			return null;
+		}
+	}
 	
 	private static ArrayList<Coordinate> getValidNeighbours(Coordinate current) {
 		neighbourTiles = new HashMap<>();

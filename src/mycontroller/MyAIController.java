@@ -45,7 +45,10 @@ public class MyAIController extends CarController {
 		if(Path.invalidMove(next)) {
 			return;
 		}
-		System.out.println(next);
+//		System.out.println(sensor.getWorldMap().get(next).getType());
+//		System.out.println(current);
+//		System.out.println(next);
+		
 		Direction nextDirection = absoluteToRelativePosition(current, next);
 
 		if(current.equals(next)) {
@@ -57,32 +60,41 @@ public class MyAIController extends CarController {
 		} else {
 			if(isStopped()) {
 				//apply acceleration so car can turn
+				applyForwardAcceleration();
+				//applyBrake();
+				//changeAcceleration(nextDirection);
 				
-				changeAcceleration(nextDirection);
 			}
 		}
 		
 		changeOrientation(getOrientation(), nextDirection);
-		changeAcceleration(nextDirection);
+		applyForwardAcceleration();
+		//applyBrake();
+		//applyReverseAcceleration();
+		//changeAcceleration(nextDirection);
 	}
 	
 	private void changeOrientation(Direction current, Direction next) {
 		
 		if (!current.equals(next) && !next.equals(WorldSpatial.reverseDirection(current))) {
 			//next direction is left of current
-			//System.out.println(next);
 			if (next.equals(WorldSpatial.changeDirection(current, WorldSpatial.RelativeDirection.LEFT))) {
 				turnLeft();
+				
 			//next direction is right of current
 			} else if (next.equals(WorldSpatial.changeDirection(current, WorldSpatial.RelativeDirection.RIGHT))) {
-			//	System.out.println("hey");
+
 				turnRight();
+				
 			}
 			current = getOrientation();
 		}
 	}
 	
 	private void changeAcceleration(Direction nextDirection) {
+		System.out.println(getOrientation());
+		System.out.println(nextDirection);
+		
 		if(nextDirection.equals(getOrientation())) {
 			applyForwardAcceleration();
 		} else {
@@ -98,17 +110,34 @@ public class MyAIController extends CarController {
 		
 		Coordinate pos = new Coordinate(next.x - current.x, next.y - current.y);
 		
-		if(pos.equals(NORTH)) {
-			return Direction.NORTH;
-			
-		} else if (pos.equals(SOUTH)) {
+//		if(pos.equals(NORTH)) {
+//			return Direction.NORTH;
+//			
+//		} else if (pos.equals(SOUTH)) {
+//			return Direction.SOUTH;
+//			
+//		} else if (pos.equals(EAST)) {
+//			return Direction.EAST;
+//			
+//		}else if (pos.equals(WEST)) {
+//			return Direction.WEST;
+//			
+//		} else {
+//			
+//			return null;
+//		}
+		
+		if (pos.x > 0) {
+			return Direction.EAST;
+		}
+		else if (pos.y < 0) {
 			return Direction.SOUTH;
 			
-		} else if (pos.equals(EAST)) {
-			return Direction.EAST;
-			
-		}else if (pos.equals(WEST)) {
+		} else if (pos.x < 0) {
 			return Direction.WEST;
+			
+		}else if (pos.y > 0) {
+			return Direction.NORTH;
 			
 		} else {
 			

@@ -20,9 +20,15 @@ public class ExploreStrategy extends BasicStrategy {
 	@Override
 	public Coordinate move(HashMap<Coordinate, MapTile> worldView) {		
 		if(path.endPath()) {
-			path = new Path(worldView, WorldSensor.getCurrentPosition(), new ArrayList<>(goal.subList(0, NODES_OUTSIDE_VIEW)));
+			if (goal.size() > 40) {
+				path = new Path(worldView, WorldSensor.getCurrentPosition(), new ArrayList<>(goal.subList(0, NODES_OUTSIDE_VIEW)));
+			}
+			else {
+				path = new Path(worldView, WorldSensor.getCurrentPosition(), goal);
+			}
+			
 		}
-		
+		//System.out.println(goal);
 		return path.getNextMove();
 	}
 	

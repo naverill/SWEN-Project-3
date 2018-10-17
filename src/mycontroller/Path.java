@@ -36,10 +36,16 @@ public class Path {
 		for(Coordinate coordinate : end) {
 			currCost = AStarSearch.findBestPath(tiles, start, start, coordinate);
 			
-			if(currCost.getSecond() < minCost.getSecond()) {
-				minCost.setFirst(currCost.getFirst());
-				minCost.setSecond(currCost.getSecond());
+			if (currCost != null) {
+				if(currCost.getSecond() < minCost.getSecond()) {
+					minCost.setFirst(currCost.getFirst());
+					minCost.setSecond(currCost.getSecond());
+				}
 			}
+			else {
+				continue;
+			}
+			
 		}
 		//System.out.println(minCost.getFirst());
 		return minCost.getFirst();
