@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.Stack;
 
+import tiles.HealthTrap;
 import tiles.LavaTrap;
 import tiles.MapTile;
 import utilities.Coordinate;
@@ -71,6 +72,14 @@ public class WorldSensor {
 			}
 		}
 		return currentHealth>healthBuffer;
+	}
+	
+	public boolean isHealing() {
+		return map.get(getCurrentPosition()) instanceof HealthTrap;
+	}
+	
+	public boolean isDoneHealing() {
+		return car.getHealth()==100;
 	}
 
 }
