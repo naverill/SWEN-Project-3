@@ -10,7 +10,9 @@ import mycontroller.WorldSensor;
 import tiles.MapTile;
 import utilities.Coordinate;
 
-public class ExploreStrategy extends BasicStrategy {		
+public class ExploreStrategy extends BasicStrategy {
+	static final int NODES_OUTSIDE_VIEW = 40; //number of nodes bordering view of Car
+	
 	ExploreStrategy(HashMap<Coordinate, MapTile> map){
 		populateUnexploredTiles(map);
 	}
@@ -20,7 +22,7 @@ public class ExploreStrategy extends BasicStrategy {
 		Coordinate exploreTile = path.getNextMove();
 		
 		if(path.endPath()) {
-			path = new Path(WorldSensor.getCurrentPosition(), goal, worldView);
+			path = new Path(WorldSensor.getCurrentPosition(), (ArrayList<Coordinate>) goal.subList(0, NODES_OUTSIDE_VIEW), worldView);
 		}
 		
 		return exploreTile;
