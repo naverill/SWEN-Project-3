@@ -313,7 +313,6 @@ public class Car extends Sprite{
 	}
 	
 	public Set<Integer> getKeys(){
-		System.out.println(keys);
 		return this.keys;
 	}
 

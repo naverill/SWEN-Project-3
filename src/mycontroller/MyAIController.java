@@ -101,8 +101,8 @@ public class MyAIController extends CarController {
 	private final Coordinate WEST = new Coordinate(-1, 0);
 	
 	public Direction absoluteToRelativePosition(Coordinate current, Coordinate next) {
+		System.out.println(next);
 		Coordinate pos = new Coordinate(next.x - current.x, next.y - current.y);
-
 		System.out.println("("+ next.x + "," + next.y + ")");
 		System.out.println("("+ pos.x + "," + pos.y + ")");
 		
