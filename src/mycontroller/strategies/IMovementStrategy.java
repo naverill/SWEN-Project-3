@@ -11,5 +11,8 @@ public interface IMovementStrategy {
 	public Move move(HashMap<Coordinate, MapTile> hashMap);
 	
 	public void updateState(HashMap<Coordinate, MapTile> state);
+	
+	public void reset(HashMap<Coordinate, MapTile> map);
+
 }
 

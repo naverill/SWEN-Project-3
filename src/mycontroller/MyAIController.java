@@ -41,7 +41,16 @@ public class MyAIController extends CarController {
 	}
 	
 	private void moveCar(Move move) {
-		if(Path.invalidMove(move.getTarget())) return;
+		System.out.println("Current: " + move.getCurrent());
+		System.out.println("Target: " + move.getTarget());
+		System.out.println("Direction: " + move.getDirection());
+		System.out.println("Relative: " + move.getRelativeDirection());
+		System.out.println();
+		
+		if(Path.invalidMove(move)) {
+			strategy.reset(sensor.getWorldMap());
+			return;
+		};
 		
 		if(move.getAcceleration().equals(Move.Acceleration.ACCELERATE)) {
 			applyForwardAcceleration();

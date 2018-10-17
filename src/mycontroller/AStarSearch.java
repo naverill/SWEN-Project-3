@@ -4,17 +4,12 @@ import java.util.*;
 
 import javax.swing.text.Utilities;
 
-import world.Car;
-import world.World;
+
 import tiles.MapTile;
 import utilities.Coordinate;
-import world.WorldSpatial;
 import world.WorldSpatial.Direction;
-import tiles.MapTile;
-import tiles.TrapTile;
 import tiles.MudTrap;
 import tiles.LavaTrap;
-import tiles.GrassTrap;
 import tiles.HealthTrap;
 
 
@@ -130,7 +125,7 @@ public class AStarSearch {
 		}if(tile instanceof HealthTrap) {
 			gCost*= ICE_MULTIPLIER;
 		}
-		Coordinate coor = new Coordinate(mapExpert.car.getPosition());
+		Coordinate coor = mapExpert.getCurrentPosition();
 		if (worldMap.get(coor).getType().equals(MapTile.Type.START)) {
 			Direction nb = absoluteToRelativePosition(current, neighbour);
 			if (!WorldSensor.car.getOrientation().equals(nb)) {
@@ -208,28 +203,6 @@ public static Direction absoluteToRelativePosition(Coordinate current, Coordinat
 	private static float getManhattanDistance(Coordinate from, Coordinate to) {
 		return (float) (Math.abs(to.x - from.x) + Math.abs(to.y - from.y));
 	}
-	
-	
-//	public static Direction getRelativeDirection(Coordinate from, Coordinate to) {
-//        // They must be either vertical or horizontal from one another.
-//        assert (Utilities.XOR(from.x == to.x, from.y == to.y));
-//
-//        final int xDisplacement = to.x - from.x;
-//        final int yDisplacement = to.y - from.y;
-//
-//        if (xDisplacement > 0) {
-//            return Direction.EAST;
-//        } else if (xDisplacement < 0) {
-//            return Direction.WEST;
-//        } else if (yDisplacement > 0) {
-//            return Direction.NORTH;
-//        } else if (yDisplacement < 0) {
-//            return Direction.SOUTH;
-//        }
-//
-//        // This shouldn't happen, due to the assert statement at the beginning.
-//        return null;
-//    }
 
 }
 	

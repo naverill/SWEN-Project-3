@@ -40,6 +40,11 @@ public class AIStrategy implements IMovementStrategy {
 			strategies.get(key.ordinal()).updateState(state);
 		}	
 	}
+
+	@Override
+	public void reset(HashMap<Coordinate, MapTile> map) {
+		currentStrategy.reset(map);
+	}
 	
 
 }

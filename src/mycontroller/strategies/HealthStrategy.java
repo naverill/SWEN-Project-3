@@ -1,5 +1,6 @@
 package mycontroller.strategies;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import mycontroller.Move;
@@ -26,6 +27,11 @@ public class HealthStrategy extends BasicStrategy {
 				goal.add(coordinate);
 			}
 		}
+	}
+	
+	public void reset(HashMap<Coordinate, MapTile> map) {
+		path.clearPath();
+		path = new Path(map, WorldSensor.getCurrentPosition(), goal);
 	}
 
 }

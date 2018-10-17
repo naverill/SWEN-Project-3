@@ -7,6 +7,7 @@ import java.util.Stack;
 import tiles.MapTile;
 import utilities.Coordinate;
 import world.World;
+import world.WorldSpatial.Direction;
 
 public class Path {
 	public Stack<Coordinate> pathCoordinates = new Stack<>();
@@ -60,8 +61,12 @@ public class Path {
 		pathCoordinates.clear();
 	}
 	
-	public static boolean invalidMove(Coordinate c) {
-		return c.equals(invalid) || invalidXCoordinate(c) || invalidYCoordinate(c);
+	public static boolean invalidMove(Move move) {
+		return move.getTarget().equals(invalid) || invalidXCoordinate(move.getTarget()) || invalidYCoordinate(move.getTarget()) || notCardinalMovement(move);
+	}
+	
+	public static boolean notCardinalMovement(Move move) {
+		return absoluteToCardinal(move.getCurrent(), move.getTarget())==null;
 	}
 	
 	public static boolean invalidXCoordinate(Coordinate c) {
@@ -73,4 +78,31 @@ public class Path {
 	}
 	
 	public static final Coordinate invalid = new Coordinate(-1, -1);
+	
+	public static Direction absoluteToCardinal(Coordinate current, Coordinate next) {
+		
+		Coordinate pos = new Coordinate(next.x - current.x, next.y - current.y);
+		
+		if(pos.equals(NORTH)) {
+			return Direction.NORTH;
+			
+		} else if (pos.equals(SOUTH)) {
+			return Direction.SOUTH;
+			
+		} else if (pos.equals(EAST)) {
+			return Direction.EAST;
+			
+		}else if (pos.equals(WEST)) {
+			return Direction.WEST;
+			
+		} else {
+			
+			return null;
+		}
+	}
+	
+	private static final Coordinate NORTH = new Coordinate(0, 1);
+	private static final Coordinate EAST = new Coordinate(1, 0);
+	private static final Coordinate SOUTH = new Coordinate(0, -1);
+	private static final Coordinate WEST = new Coordinate(-1, 0);
 }
