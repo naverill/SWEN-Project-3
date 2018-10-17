@@ -25,8 +25,12 @@ public class AIStrategy implements IMovementStrategy {
 	    											   (BasicStrategy) new HealthStrategy(), 
 	    											   (BasicStrategy) new KeyStrategy()
 	    											   );
-		
+		determineState();
 		currentStrategy = strategies.get(StrategyKey.kExploreStrat.ordinal());
+	}
+	
+	public void determineState() {
+		
 	}
 	
 	@Override
