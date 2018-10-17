@@ -26,6 +26,8 @@ public class Path {
 	}
 	
 	private Stack<Coordinate> getPath(Coordinate start, ArrayList<Coordinate> end, HashMap<Coordinate, MapTile> tiles){		
+		//use this function (right now is in worldsensor)
+		//isHealthEnough();
 		return pathMoves;
 	}
 
