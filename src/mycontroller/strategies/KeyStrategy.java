@@ -10,7 +10,6 @@ import tiles.MapTile;
 import utilities.Coordinate;
 
 public class KeyStrategy extends BasicStrategy {
-	static private ArrayList<Coordinate> keys;
 	ArrayList<Coordinate> collected = new ArrayList<>();
 
 	@Override
@@ -19,14 +18,10 @@ public class KeyStrategy extends BasicStrategy {
 		
 		if(path.endPath()) {
 			collected.add(keyTile);
-			path = new Path(WorldSensor.getCurrentPosition(), keys, worldView);
+			path = new Path(WorldSensor.getCurrentPosition(), goal, worldView);
 		} 
 		
 		return path.getNextMove();
-	}
-	
-	public boolean foundKey() {
-		return !keys.isEmpty();
 	}
 
 	@Override
@@ -35,7 +30,7 @@ public class KeyStrategy extends BasicStrategy {
 			MapTile tile = state.get(coordinate);
 			if(tile instanceof LavaTrap) {
 				if(((LavaTrap) tile).getKey() != 0){
-					keys.add(coordinate);
+					goal.add(coordinate);
 				} 
 			}
 		}

@@ -1,5 +1,6 @@
 package mycontroller.strategies;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import mycontroller.Path;
@@ -7,7 +8,9 @@ import tiles.MapTile;
 import utilities.Coordinate;
 
 public abstract class BasicStrategy implements IMovementStrategy{
-	Path path = new Path();
+	protected Path path = new Path();
+	protected ArrayList<Coordinate> goal = new ArrayList<>();
+
 
 	@Override
 	public abstract Coordinate move(HashMap<Coordinate, MapTile> hashMap);
@@ -17,6 +20,10 @@ public abstract class BasicStrategy implements IMovementStrategy{
 	
 	public void reset() {
 		path.clearPath();
+	}
+	
+	public boolean foundGoalTile() {
+		return !goal.isEmpty();
 	}
 
 }

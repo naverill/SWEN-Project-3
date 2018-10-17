@@ -43,8 +43,7 @@ public class WorldSensor {
 		return neighbours;
 	}
 	
-	public void updateMap(HashMap<Coordinate, MapTile> view, Coordinate position) {
-		currentPosition = position;
+	public void updateMap(HashMap<Coordinate, MapTile> view) {
 		map.putAll(view);
 	}
 	
@@ -61,7 +60,7 @@ public class WorldSensor {
 	}
 	
 	static public Coordinate getCurrentPosition() {
-		return new Coordinate(currentPosition.x, currentPosition.y);
+		return new Coordinate(car.getPosition());
 	}
 
 }
