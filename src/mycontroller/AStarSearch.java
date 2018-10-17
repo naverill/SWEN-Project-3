@@ -1,11 +1,15 @@
 package mycontroller;
 
 import java.util.*;
+
+import javax.swing.text.Utilities;
+
 import world.Car;
 import world.World;
 import tiles.MapTile;
 import utilities.Coordinate;
 import world.WorldSpatial;
+import world.WorldSpatial.Direction;
 import tiles.MapTile;
 import tiles.TrapTile;
 import tiles.MudTrap;
@@ -65,6 +69,7 @@ public class AStarSearch {
 			curr = getLowestFCost();
 			
 			if (curr.equals(goal)) {
+				//System.out.println(cameFrom);
 				return new Pair<Stack<Coordinate>, Float>(reconstructPath(curr), gCosts.get(goal));
 			}
 			
@@ -74,7 +79,7 @@ public class AStarSearch {
 			
 			
 			ArrayList<Coordinate> neighbours = getValidNeighbours(curr);
-			System.out.println(neighbours);
+			//System.out.println(neighbours);
 
 			for (Coordinate neighbour: neighbours) {
 				if (exploredTiles.contains(neighbour)) {
@@ -85,9 +90,9 @@ public class AStarSearch {
 					unExplored.put(neighbour, Float.MAX_VALUE);
 				}
 				//this is null
-
+				System.out.println(cameFrom.get(curr));
 				gCost = gCosts.get(curr) + calcGCosts(curr, neighbour, cameFrom.get(curr));
-				
+				//System.out.println(x);
 				if (gCosts.containsKey(neighbour)) {
 					if (gCost >= gCosts.get(neighbour)) {
 						continue;
@@ -96,10 +101,13 @@ public class AStarSearch {
 				
 				cameFrom.put(neighbour, curr);
 				gCosts.put(neighbour, gCost);
-				fCost = gCost + calcHCost(neighbour, goal);
+				float hcost = calcHCost(neighbour, goal);
+				//System.out.println(hcost);
+				fCost = gCost + hcost;
+				
 				unExplored.put(neighbour, fCost);
 			}
-		
+			
 		}
 		
 		
@@ -133,7 +141,7 @@ public class AStarSearch {
 	private static ArrayList<Coordinate> getValidNeighbours(Coordinate current) {
 		neighbourTiles = new HashMap<>();
 		ArrayList<Coordinate> validNeighbours = new ArrayList<>();
-		System.out.println(current);
+		//System.out.println(current);
 		neighbourTiles = mapExpert.getNeighbours(current);
 		
 		for (Coordinate neighbour: neighbourTiles.keySet()) {
@@ -168,7 +176,7 @@ public class AStarSearch {
             path.add(current);
         }
 
-        Collections.reverse(path);
+        //Collections.reverse(path);
         return path;
 	}
 	
@@ -177,6 +185,29 @@ public class AStarSearch {
 	private static float getManhattanDistance(Coordinate from, Coordinate to) {
 		return (float) (Math.abs(to.x - from.x) + Math.abs(to.y - from.y));
 	}
+	
+	
+//	public static Direction getRelativeDirection(Coordinate from, Coordinate to) {
+//        // They must be either vertical or horizontal from one another.
+//        assert (Utilities.XOR(from.x == to.x, from.y == to.y));
+//
+//        final int xDisplacement = to.x - from.x;
+//        final int yDisplacement = to.y - from.y;
+//
+//        if (xDisplacement > 0) {
+//            return Direction.EAST;
+//        } else if (xDisplacement < 0) {
+//            return Direction.WEST;
+//        } else if (yDisplacement > 0) {
+//            return Direction.NORTH;
+//        } else if (yDisplacement < 0) {
+//            return Direction.SOUTH;
+//        }
+//
+//        // This shouldn't happen, due to the assert statement at the beginning.
+//        return null;
+//    }
+
 }
 	
 
