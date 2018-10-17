@@ -1,6 +1,5 @@
 package mycontroller.strategies;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import mycontroller.Path;

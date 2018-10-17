@@ -1,19 +1,15 @@
 package mycontroller;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import tiles.MapTile;
-import tiles.MapTile.Type;
 import utilities.Coordinate;
 import world.Car;
 
 public class WorldSensor {
 	static public HashMap<Coordinate, MapTile> map = new HashMap<>();
 	public static Car car;
-	private static Coordinate currentPosition;
 	
 	public WorldSensor(HashMap<Coordinate, MapTile> worldTiles, Car car) {
 		this.car = car;

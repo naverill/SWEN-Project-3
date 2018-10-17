@@ -4,7 +4,6 @@ import java.util.HashMap;
 
 import tiles.MapTile;
 import utilities.Coordinate;
-import world.WorldSpatial.Direction;
 
 public interface IMovementStrategy {
 

@@ -14,7 +14,6 @@ import world.WorldSpatial.Direction;
 public class MyAIController extends CarController {
 	IMovementStrategy strategy;
 	private WorldSensor sensor;
-	private enum states {KEY, HEALTH, EXPLORE}
 	enum RelativeDirection {LEFT, RIGHT, FORWARD, BACKWARD}
 	
 	private Car car;
