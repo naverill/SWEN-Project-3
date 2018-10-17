@@ -67,7 +67,6 @@ public class ExploreStrategy extends BasicStrategy {
 			if(tile.getType().equals(MapTile.Type.ROAD) || tile.getType().equals(MapTile.Type.TRAP)) {
 				//TODO() if tile has a path to it (not blocked by mud/walls)
 				goal.add(coordinate);
-				
 			}
 		}
         Collections.sort(goal, new CoordinateComparator(WorldSensor.getCurrentPosition()));
