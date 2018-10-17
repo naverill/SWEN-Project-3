@@ -3,6 +3,7 @@ package mycontroller.strategies;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import mycontroller.Move;
 import mycontroller.Path;
 import mycontroller.WorldSensor;
 import tiles.LavaTrap;
@@ -11,12 +12,12 @@ import utilities.Coordinate;
 
 public class KeyStrategy extends BasicStrategy {
 	@Override
-	public Coordinate move(HashMap<Coordinate, MapTile> worldView) {
+	public Move move(HashMap<Coordinate, MapTile> worldView) {
 		if(path.endPath()) {
 			path = new Path(worldView, WorldSensor.getCurrentPosition(), goal);
 		} 
-		
-		return path.getNextMove();
+		//TODO handle types of tiles and acceleration/deceleration
+		return new Move(path.getNextMove(), Move.Acceleration.ACCELERATE);
 	}
 
 	@Override

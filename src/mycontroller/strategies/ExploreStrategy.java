@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 
+import mycontroller.Move;
 import mycontroller.Path;
 import mycontroller.WorldSensor;
 import tiles.MapTile;
@@ -18,7 +19,7 @@ public class ExploreStrategy extends BasicStrategy {
 	}
 	
 	@Override
-	public Coordinate move(HashMap<Coordinate, MapTile> worldView) {		
+	public Move move(HashMap<Coordinate, MapTile> worldView) {		
 		if(path.endPath()) {
 			if (goal.size() > 40) {
 				path = new Path(worldView, WorldSensor.getCurrentPosition(), new ArrayList<>(goal.subList(0, NODES_OUTSIDE_VIEW)));
@@ -28,8 +29,9 @@ public class ExploreStrategy extends BasicStrategy {
 			}
 			
 		}
-		//System.out.println(goal);
-		return path.getNextMove();
+		
+		//TODO handle types of tiles and acceleration/deceleration
+		return new Move(path.getNextMove(), Move.Acceleration.ACCELERATE);
 	}
 	
 	public void updateState(HashMap<Coordinate, MapTile> state) {

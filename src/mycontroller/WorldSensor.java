@@ -6,6 +6,7 @@ import java.util.Set;
 import tiles.MapTile;
 import utilities.Coordinate;
 import world.Car;
+import world.WorldSpatial.Direction;
 
 public class WorldSensor {
 	static public HashMap<Coordinate, MapTile> map = new HashMap<>();
@@ -51,12 +52,18 @@ public class WorldSensor {
 		int numKeys = car.numKeys;
 		Set<Integer> currKeys = car.getKeys();
 		for (int i = 1; i <= numKeys; i++) if (!currKeys.contains(i)) return false;
-		System.out.println("yeet");
 		return true;
 	}
 	
 	static public Coordinate getCurrentPosition() {
 		return new Coordinate(car.getPosition());
 	}
-
+	
+	static public Direction getOrientation() {
+		return car.getOrientation();
+	}
+	
+	static public MapTile getTypeAtCoordinate(Coordinate coordinate) {
+		return map.get(coordinate);
+	}
 }

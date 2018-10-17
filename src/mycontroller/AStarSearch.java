@@ -69,7 +69,6 @@ public class AStarSearch {
 			curr = getLowestFCost();
 			
 			if (curr.equals(goal)) {
-				//System.out.println(cameFrom);
 				return new Pair<Stack<Coordinate>, Float>(reconstructPath(curr), gCosts.get(goal));
 			}
 			
@@ -79,7 +78,6 @@ public class AStarSearch {
 			
 			
 			ArrayList<Coordinate> neighbours = getValidNeighbours(curr);
-			//System.out.println(neighbours);
 
 			for (Coordinate neighbour: neighbours) {
 				if (exploredTiles.contains(neighbour)) {
@@ -167,7 +165,6 @@ public static Direction absoluteToRelativePosition(Coordinate current, Coordinat
 	private static ArrayList<Coordinate> getValidNeighbours(Coordinate current) {
 		neighbourTiles = new HashMap<>();
 		ArrayList<Coordinate> validNeighbours = new ArrayList<>();
-		//System.out.println(current);
 		neighbourTiles = mapExpert.getNeighbours(current);
 		
 		for (Coordinate neighbour: neighbourTiles.keySet()) {
@@ -202,7 +199,6 @@ public static Direction absoluteToRelativePosition(Coordinate current, Coordinat
             path.add(current);
         }
 
-        //Collections.reverse(path);
         path.pop();
         return path;
 	}
