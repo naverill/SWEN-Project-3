@@ -18,14 +18,12 @@ public class ExploreStrategy extends BasicStrategy {
 	}
 	
 	@Override
-	public Coordinate move(HashMap<Coordinate, MapTile> worldView) {
-		Coordinate exploreTile = path.getNextMove();
-		
+	public Coordinate move(HashMap<Coordinate, MapTile> worldView) {		
 		if(path.endPath()) {
-			path = new Path(WorldSensor.getCurrentPosition(), (ArrayList<Coordinate>) goal.subList(0, NODES_OUTSIDE_VIEW), worldView);
+			path = new Path(worldView, WorldSensor.getCurrentPosition(), new ArrayList<>(goal.subList(0, NODES_OUTSIDE_VIEW)));
 		}
 		
-		return exploreTile;
+		return path.getNextMove();
 	}
 	
 	public void updateState(HashMap<Coordinate, MapTile> state) {

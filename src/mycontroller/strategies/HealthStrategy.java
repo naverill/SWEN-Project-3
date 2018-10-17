@@ -10,14 +10,12 @@ import utilities.Coordinate;
 
 public class HealthStrategy extends BasicStrategy {
 	@Override
-	public Coordinate move(HashMap<Coordinate, MapTile> worldView) {
-		Coordinate healthTile = path.getNextMove();
-		
+	public Coordinate move(HashMap<Coordinate, MapTile> worldView) {		
 		if(path.endPath()) {
-			path = new Path(WorldSensor.getCurrentPosition(), goal, worldView);
+			path = new Path(worldView, WorldSensor.getCurrentPosition(), goal);
 		}
 		
-		return healthTile;
+		return 	path.getNextMove();
 	}
 
 	@Override

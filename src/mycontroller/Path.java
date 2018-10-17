@@ -9,33 +9,46 @@ import utilities.Coordinate;
 import world.World;
 
 public class Path {
-	public Stack<Coordinate> pathMoves = new Stack<>();
+	public Stack<Coordinate> pathCoordinates = new Stack<>();
 		
 	public Path() {}
 
-	public Path(Coordinate start, ArrayList<Coordinate> end, HashMap<Coordinate, MapTile> tiles) {
-		pathMoves = getPath(start, end, tiles);
+	public Path(HashMap<Coordinate, MapTile> tiles, Coordinate start, ArrayList<Coordinate> end) {
+		pathCoordinates = getPath(tiles, start, end);
 	}
 	
 	
 	public Coordinate getNextMove(){
-		if(pathMoves.empty()) {
+		if(pathCoordinates.empty()) {
 			return invalid;
 		}
-		return pathMoves.pop();
+		return pathCoordinates.pop();
 	}
 	
-	private Stack<Coordinate> getPath(Coordinate start, ArrayList<Coordinate> end, HashMap<Coordinate, MapTile> tiles){		
-		return pathMoves;
+	private Stack<Coordinate> getPath( HashMap<Coordinate, MapTile> tiles, Coordinate start, ArrayList<Coordinate> end){		
+		Pair<Stack<Coordinate>, Float> currCost;
+		
+		Pair<Stack<Coordinate>, Float> minCost = new Pair<>(new Stack<>(), Float.MAX_VALUE);
+
+		for(Coordinate coordinate : end) {
+			currCost = AStarSearch.findBestPath(tiles, start, start, coordinate);
+			
+			if(currCost.getSecond() < minCost.getSecond()) {
+				minCost.setFirst(currCost.getFirst());
+				minCost.setSecond(currCost.getSecond());
+			}
+		}
+		
+		return minCost.getFirst();
 	}
 
 
 	public boolean endPath() {
-		return pathMoves.isEmpty();
+		return pathCoordinates.isEmpty();
 	}
 	
 	public void clearPath() {
-		pathMoves.clear();
+		pathCoordinates.clear();
 	}
 	
 	public static boolean invalidMove(Coordinate c) {

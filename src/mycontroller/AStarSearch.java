@@ -44,9 +44,10 @@ public class AStarSearch {
 	 
 	
 	
-	public static Stack<Coordinate> findBestPath(HashMap<Coordinate, MapTile> iMap, Coordinate iBeforeStart,
+	public static Pair<Stack<Coordinate>, Float> findBestPath(HashMap<Coordinate, MapTile> iMap, Coordinate iBeforeStart,
             Coordinate iStart, Coordinate iGoal) {
 		
+
 		map = iMap;
 		start = iStart;
 		goal = iGoal;
@@ -67,7 +68,7 @@ public class AStarSearch {
 			curr = getLowestFCost();
 			
 			if (curr.equals(goal)) {
-				return reconstructPath(curr);
+				return new Pair<Stack<Coordinate>, Float>(reconstructPath(curr), gCosts.get(goal));
 			}
 			
 			unExplored.remove(curr);
@@ -134,6 +135,7 @@ public class AStarSearch {
 	private static ArrayList<Coordinate> getValidNeighbours(Coordinate current) {
 		neighbourTiles = new HashMap<>();
 		ArrayList<Coordinate> validNeighbours = new ArrayList<>();
+		System.out.println(current);
 		neighbourTiles = mapExpert.getNeighbours(current);
 		
 		for (Coordinate neighbour: neighbourTiles.keySet()) {
