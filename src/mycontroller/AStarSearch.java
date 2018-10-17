@@ -22,22 +22,23 @@ public class AStarSearch {
 	
 	private static WorldSensor mapExpert;
 	
-	private static ArrayList<Coordinate> exploredTiles;
-	private static HashMap<Coordinate, Float> unExplored;
+	private static ArrayList<Coordinate> exploredTiles = new ArrayList<>();
+	private static HashMap<Coordinate, Float> unExplored = new HashMap<>();
 	
-	private static HashMap<Coordinate, Coordinate> cameFrom;
-	private static HashMap<Coordinate, Float> gCosts;
+	private static HashMap<Coordinate, Coordinate> cameFrom = new HashMap<>();
+	private static HashMap<Coordinate, Float> gCosts = new HashMap<>();
 	
 	private static HashMap<Coordinate, MapTile> neighbourTiles;
-	private static HashMap<Coordinate, MapTile> worldMap;
+	private static HashMap<Coordinate, MapTile> worldMap = new HashMap<>();
 	
 	private static final float LAVA_MULTIPLIER = 100.0f;
 	private static final float ICE_MULTIPLIER = 0.5f;
 	
-	public AStarSearch() {
+	public AStarSearch(WorldSensor mapExpert) {
 		//this.start = start;
 		//this.goal = goal;
-		worldMap = mapExpert.getWorldMap();
+		this.mapExpert = mapExpert;
+		worldMap = this.mapExpert.getWorldMap();
 	}
 	 
 	
@@ -83,8 +84,9 @@ public class AStarSearch {
 				if (!unExplored.containsKey(neighbour)) {
 					unExplored.put(neighbour, Float.MAX_VALUE);
 				}
-				
-				gCost = gCosts.get(neighbour) + calcGCosts(curr, neighbour, cameFrom.get(curr));
+				//this is null
+
+				gCost = gCosts.get(curr) + calcGCosts(curr, neighbour, cameFrom.get(curr));
 				
 				if (gCosts.containsKey(neighbour)) {
 					if (gCost >= gCosts.get(neighbour)) {
