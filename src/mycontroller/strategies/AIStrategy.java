@@ -60,48 +60,63 @@ public class AIStrategy implements IMovementStrategy {
 		}
 		//has all keys? try to finish
 		else if(sensor.hasAllKeys()) {
-			//already doing finish strategy?
-			if(!currentStrategy.equals(strategies.get(StrategyKey.kFinishStrat.ordinal()))){
-				//TODO magic number if car full health
-				if(sensor.car.getHealth()==100) {
-					currentStrategy=strategies.get(StrategyKey.kFinishStrat.ordinal());
-				}else {
-					currentStrategy=strategies.get(StrategyKey.kFinishStrat.ordinal());
-				}
-			}
+			tryToFinish();
 		}
 		//if there are keys to find
 		else if(!strategies.get(StrategyKey.kKeyStrat.ordinal()).goal.isEmpty()) {
-			//already doing key strategy?
-			if(!currentStrategy.equals(strategies.get(StrategyKey.kKeyStrat.ordinal()))){
-				//simulate movement (can be null)
-				Stack<Coordinate> stack = strategies.get(StrategyKey.kKeyStrat.ordinal()).simulateMovement(
-						sensor.getWorldMap()).pathCoordinates;
-				if(sensor.hasEnoughHealth(stack)) {
-					currentStrategy = strategies.get(StrategyKey.kKeyStrat.ordinal());
-				}else {
-					currentStrategy = strategies.get(StrategyKey.kHealthStrat.ordinal());
-				}
-			}
+			tryToFindKeys();
 		}
 		else {
-			//if none of the aboe apply, it's probably healing
-			if(currentStrategy.equals(strategies.get(StrategyKey.kHealthStrat.ordinal()))){
-				if(sensor.isHealing()) {
-					//if it's done healing and has explored everything resume keyfinding
-					if(sensor.isDoneHealing()){
-						if(hasExploredEverything()) {
-							currentStrategy = strategies.get(StrategyKey.kKeyStrat.ordinal());
-						}else {
-							currentStrategy = strategies.get(StrategyKey.kExploreStrat.ordinal());
-						}
-					}
-					//still healing
-					return;
-				}
-			}
+			//probably healing
+			currentlyHealing();
 		}	
 	}
+	
+	private void tryToFinish() {
+		//already doing finish strategy?
+		if(!currentStrategy.equals(strategies.get(StrategyKey.kFinishStrat.ordinal()))){
+			//TODO magic number if car full health
+			if(sensor.car.getHealth()==100) {
+				currentStrategy=strategies.get(StrategyKey.kFinishStrat.ordinal());
+			}else {
+				currentStrategy=strategies.get(StrategyKey.kFinishStrat.ordinal());
+			}
+		}
+	}
+
+	private void tryToFindKeys() {
+		//already doing key strategy?
+		if(!currentStrategy.equals(strategies.get(StrategyKey.kKeyStrat.ordinal()))){
+			//simulate movement (can be null)
+			Stack<Coordinate> stack = strategies.get(StrategyKey.kKeyStrat.ordinal()).simulateMovement(
+					sensor.getWorldMap()).pathCoordinates;
+			if(sensor.hasEnoughHealth(stack)) {
+				currentStrategy = strategies.get(StrategyKey.kKeyStrat.ordinal());
+			}else {
+				currentStrategy = strategies.get(StrategyKey.kHealthStrat.ordinal());
+			}
+		}
+	}
+	
+	private void currentlyHealing() {
+		//if none of the above apply, it's probably healing
+		if(currentStrategy.equals(strategies.get(StrategyKey.kHealthStrat.ordinal()))){
+			if(sensor.isHealing()) {
+				//if it's done healing and has explored everything resume keyfinding
+				if(sensor.isDoneHealing()){
+					if(hasExploredEverything()) {
+						currentStrategy = strategies.get(StrategyKey.kKeyStrat.ordinal());
+					}else {
+						currentStrategy = strategies.get(StrategyKey.kExploreStrat.ordinal());
+					}
+				}
+				//still healing
+				return;
+			}
+		}
+	}
+
+
 	//returns true if it has explored everything
 	public boolean hasExploredEverything(){
 		return strategies.get(StrategyKey.kExploreStrat.ordinal()).goal.isEmpty();
