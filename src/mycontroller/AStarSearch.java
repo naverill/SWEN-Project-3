@@ -120,7 +120,9 @@ public class AStarSearch {
 		//add trap multipliers if needed
 		MapTile tile = worldMap.get(neighbour);
 		if (tile instanceof LavaTrap) {
-			gCost *= (100 - mapExpert.getCar().getHealth());
+//			gCost *= (100 - mapExpert.getCar().getHealth());
+			gCost *= LAVA_MULTIPLIER;
+
 		}
 		
 		return gCost;
