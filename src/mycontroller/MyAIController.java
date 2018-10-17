@@ -32,20 +32,12 @@ public class MyAIController extends CarController {
 		Coordinate currentPos =  new Coordinate(getPosition());
 
 		HashMap<Coordinate, MapTile> currentView = getView();
-		sensor.updateMap(currentView, currentPos);
+		sensor.updateMap(currentView);
 		strategy.updateState(currentView);
 		
-		determineState();
 		Coordinate nextPos = strategy.move(sensor.getWorldMap());
 		
 		coordinateToMovement(currentPos, nextPos);
-	}
-	
-	private void determineState() {
-		// TODO Auto-generated method stub
-//		if(sensor.hasAllKeys()) {
-			//if state!=exit
-				//do exit strategy
 	}
 
 	private void coordinateToMovement(Coordinate current, Coordinate next) {

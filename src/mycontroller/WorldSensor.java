@@ -11,8 +11,8 @@ import utilities.Coordinate;
 import world.Car;
 
 public class WorldSensor {
-	static public HashMap<Coordinate, MapTile> map = new HashMap<>();
-	private Car car;
+	public static HashMap<Coordinate, MapTile> map = new HashMap<>();
+	private static Car car;
 	
 	public WorldSensor(HashMap<Coordinate, MapTile> worldTiles, Car car) {
 		this.car = car;
@@ -42,8 +42,7 @@ public class WorldSensor {
 		return neighbours;
 	}
 	
-	public void updateMap(HashMap<Coordinate, MapTile> view, Coordinate position) {
-		currentPosition = position;
+	public void updateMap(HashMap<Coordinate, MapTile> view) {
 		map.putAll(view);
 	}
 	
@@ -60,7 +59,7 @@ public class WorldSensor {
 	}
 	
 	static public Coordinate getCurrentPosition() {
-		return new Coordinate(currentPosition.x, currentPosition.y);
+		return new Coordinate(car.getPosition());
 	}
 
 }
