@@ -11,6 +11,7 @@ import tiles.TrapTile;
 import tiles.MudTrap;
 import tiles.LavaTrap;
 import tiles.GrassTrap;
+import tiles.HealthTrap;
 
 
 public class AStarSearch {
@@ -122,9 +123,9 @@ public class AStarSearch {
 		if (tile instanceof LavaTrap) {
 //			gCost *= (100 - mapExpert.getCar().getHealth());
 			gCost *= LAVA_MULTIPLIER;
-
+		}if(tile instanceof HealthTrap) {
+			gCost*= ICE_MULTIPLIER;
 		}
-		
 		return gCost;
 	}
 	

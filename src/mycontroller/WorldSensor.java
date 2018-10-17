@@ -12,7 +12,8 @@ import world.Car;
 
 public class WorldSensor {
 	static public HashMap<Coordinate, MapTile> map = new HashMap<>();
-	private Car car;
+	public static Car car;
+	private static Coordinate currentPosition;
 	
 	public WorldSensor(HashMap<Coordinate, MapTile> worldTiles, Car car) {
 		this.car = car;
