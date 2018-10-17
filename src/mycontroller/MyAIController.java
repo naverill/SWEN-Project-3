@@ -10,6 +10,7 @@ import utilities.Coordinate;
 import world.Car;
 import world.WorldSpatial;
 import world.WorldSpatial.Direction;
+import mycontroller.AStarSearch;
 
 public class MyAIController extends CarController {
 	IMovementStrategy strategy;
@@ -24,6 +25,7 @@ public class MyAIController extends CarController {
 		HashMap<Coordinate, MapTile> worldMap = getMap();
 		sensor = new WorldSensor(worldMap, car);
 		strategy = new AIStrategy(worldMap);
+		new AStarSearch(sensor);
 	}
 
 	@Override
