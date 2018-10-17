@@ -1,10 +1,12 @@
-package mycontroller;
+package mycontroller.strategies;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 
+import mycontroller.Path;
+import mycontroller.WorldSensor;
 import tiles.MapTile;
 import utilities.Coordinate;
 
@@ -47,16 +49,13 @@ public class ExploreStrategy extends BasicStrategy {
 		@Override
 	    public int compare(Coordinate c1, Coordinate c2)
 	    {	
-			//sort according to closest x value
-	        if (Math.abs(currentPosition.x - c1.x)  < Math.abs(currentPosition.x - c2.x)) {
-	            return -1;
-	        //if equal, sort according to closest y value 
-	        } else if (Math.abs(currentPosition.x - c1.x) == Math.abs(currentPosition.x - c2.x)) {
-	            return Math.abs(currentPosition.y - c1.y) - Math.abs(currentPosition.y - c2.y);
-	        } else {
-	            return 1;
-	        }
+			//compare points based on euclidean distance from current position
+			return Double.compare(dist(currentPosition, c1), dist(currentPosition, c2));
 	    }
+		
+		private double dist(Coordinate c1, Coordinate c2) {
+			return Math.sqrt(Math.pow((c1.x - c2.x), 2) + Math.pow((c1.y - c2.y), 2));
+		}
 	};
 	
 	
@@ -70,6 +69,6 @@ public class ExploreStrategy extends BasicStrategy {
 				
 			}
 		}
-		
+        Collections.sort(unexploredTiles, new CoordinateComparator(WorldSensor.getCurrentPosition()));
 	}
 }

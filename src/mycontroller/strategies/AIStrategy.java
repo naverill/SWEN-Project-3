@@ -1,4 +1,4 @@
-package mycontroller;
+package mycontroller.strategies;
 
 import java.util.ArrayList;
 import java.util.Arrays;

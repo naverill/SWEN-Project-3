@@ -3,6 +3,8 @@ package mycontroller;
 import java.util.HashMap;
 
 import controller.CarController;
+import mycontroller.strategies.AIStrategy;
+import mycontroller.strategies.IMovementStrategy;
 import tiles.MapTile;
 import utilities.Coordinate;
 import world.Car;
@@ -21,7 +23,7 @@ public class MyAIController extends CarController {
 		super(car);
 		this.car = car;
 		HashMap<Coordinate, MapTile> worldMap = getMap();
-		sensor = new WorldSensor(worldMap);
+		sensor = new WorldSensor(worldMap, new Coordinate(getPosition()));
 		strategy = new AIStrategy(worldMap);
 	}
 

@@ -12,7 +12,8 @@ public class WorldSensor {
 	static public HashMap<Coordinate, MapTile> map = new HashMap<>();
 	static private Coordinate currentPosition;
 	
-	public WorldSensor(HashMap<Coordinate, MapTile> worldTiles) {
+	public WorldSensor(HashMap<Coordinate, MapTile> worldTiles, Coordinate position) {
+		currentPosition = position;
 		map.putAll(worldTiles);
 	}
 

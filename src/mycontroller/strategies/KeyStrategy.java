@@ -1,8 +1,10 @@
-package mycontroller;
+package mycontroller.strategies;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import mycontroller.Path;
+import mycontroller.WorldSensor;
 import tiles.LavaTrap;
 import tiles.MapTile;
 import utilities.Coordinate;

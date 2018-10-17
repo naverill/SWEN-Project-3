@@ -1,7 +1,8 @@
-package mycontroller;
+package mycontroller.strategies;
 
 import java.util.HashMap;
 
+import mycontroller.Path;
 import tiles.MapTile;
 import utilities.Coordinate;
 
