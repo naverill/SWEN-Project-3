@@ -22,9 +22,10 @@ public class HealthStrategy extends BasicStrategy {
 	public void updateState(HashMap<Coordinate, MapTile> state) {
 		for(Coordinate coordinate : state.keySet()) {
 			if(state.get(coordinate) instanceof HealthTrap) {
-				goal.add(coordinate);
+				if(!goal.contains(coordinate)) {
+					goal.add(coordinate);
+				}
 			}
 		}
 	}
-
 }

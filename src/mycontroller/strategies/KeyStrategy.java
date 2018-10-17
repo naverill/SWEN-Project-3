@@ -24,7 +24,8 @@ public class KeyStrategy extends BasicStrategy {
 		for(Coordinate coordinate : state.keySet()) {
 			MapTile tile = state.get(coordinate);
 			if(tile instanceof LavaTrap) {
-				if(((LavaTrap) tile).getKey() != 0){
+				int possibleKey = ((LavaTrap) tile).getKey();
+				if((possibleKey!=0)&&!goal.contains(coordinate)){
 					goal.add(coordinate);
 				} 
 			}
