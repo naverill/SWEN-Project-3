@@ -1,11 +1,10 @@
 package mycontroller;
 
-import java.util.Arrays;
 import java.util.HashMap;
 
-import java.util.Map.Entry;
 import controller.CarController;
-import tiles.LavaTrap;
+import mycontroller.strategies.AIStrategy;
+import mycontroller.strategies.IMovementStrategy;
 import tiles.MapTile;
 import utilities.Coordinate;
 import world.Car;
@@ -24,25 +23,28 @@ public class MyAIController extends CarController {
 		super(car);
 		this.car = car;
 		HashMap<Coordinate, MapTile> worldMap = getMap();
-		sensor = new WorldSensor(worldMap);
+		sensor = new WorldSensor(worldMap, new Coordinate(getPosition()));
 		strategy = new AIStrategy(worldMap);
 	}
 
 	@Override
 	public void update() {
-		// TODO Auto-generated method stub
+		Coordinate currentPos =  new Coordinate(getPosition());
+
 		HashMap<Coordinate, MapTile> currentView = getView();
-		sensor.updateMap(currentView);
+		sensor.updateMap(currentView, currentPos);
 		strategy.updateState(currentView);
 		
-		Coordinate currentPos =  new Coordinate(getPosition());
-		
-		Coordinate nextPos = strategy.move(getOrientation(), currentPos, sensor.getWorldMap());
+		Coordinate nextPos = strategy.move(sensor.getWorldMap());
 		
 		coordinateToMovement(currentPos, nextPos);
 	}
 	
 	private void coordinateToMovement(Coordinate current, Coordinate next) {
+		if(Path.invalidMove(next)) {
+			return;
+		}
+		
 		Direction nextDirection = absoluteToRelativePosition(current, next);
 
 		if(current.equals(next)) {
@@ -86,11 +88,6 @@ public class MyAIController extends CarController {
 		return car.getVelocity() == 0;
 	}
 	
-	private final Coordinate NORTH = new Coordinate(0, 1);
-	private final Coordinate EAST = new Coordinate(1, 0);
-	private final Coordinate SOUTH = new Coordinate(0, -1);
-	private final Coordinate WEST = new Coordinate(-1, 0);
-	
 	public Direction absoluteToRelativePosition(Coordinate current, Coordinate next) {
 		Coordinate pos = new Coordinate(next.x - current.x, next.y - current.y);
 
@@ -112,7 +109,12 @@ public class MyAIController extends CarController {
 		} else {
 			return null;
 		}
-	}	
+	}
+	
+	private final Coordinate NORTH = new Coordinate(0, 1);
+	private final Coordinate EAST = new Coordinate(1, 0);
+	private final Coordinate SOUTH = new Coordinate(0, -1);
+	private final Coordinate WEST = new Coordinate(-1, 0);
 }
 
 

@@ -3,7 +3,6 @@ package controller;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-import mycontroller.MapExpert;
 import tiles.LavaTrap;
 import tiles.MapTile;
 import utilities.Coordinate;
@@ -26,13 +25,10 @@ public class AIController extends CarController {
 	
 	// Coordinate initialGuess;
 	// boolean notSouth = true;
-	private MapExpert mapExpert;
 	@Override
 	public void update() {
 		// Gets what the car can see
 		HashMap<Coordinate, MapTile> currentView = getView();
-
-		getViewSpecifics(currentView);
 
 		// checkStateChange();
 		if(getSpeed() < CAR_MAX_SPEED){       // Need speed to turn and progress toward the exit
@@ -55,18 +51,6 @@ public class AIController extends CarController {
 				isFollowingWall = true;
 			}
 		}
-	}
-	
-	public void getViewSpecifics(HashMap<Coordinate, MapTile> currentView){
-		for (Entry<Coordinate, MapTile>  entry : currentView.entrySet()) {
-			MapTile thing = entry.getValue();
-			if(thing instanceof LavaTrap) {
-				if(((LavaTrap) thing).getKey()!=0) {
-					System.out.println("found key in"+entry.getKey());
-					mapExpert.addKey(entry.getKey());
-				}
-			}
-		}		
 	}
 	
 

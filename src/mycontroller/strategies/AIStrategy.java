@@ -1,4 +1,4 @@
-package mycontroller;
+package mycontroller.strategies;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -6,10 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import tiles.MapTile;
-import tiles.MapTile.Type;
 import utilities.Coordinate;
-import world.WorldSpatial.Direction;
-
 
 public class AIStrategy implements IMovementStrategy {
 	enum StrategyKey {
@@ -18,22 +15,22 @@ public class AIStrategy implements IMovementStrategy {
 		kKeyStrat,
 	}
 	
-	public List<IMovementStrategy>  strategies = new ArrayList<>();
-	private IMovementStrategy currentStrategy;
+	public List<BasicStrategy>  strategies = new ArrayList<>();
+	private BasicStrategy currentStrategy;
 
 	public AIStrategy(HashMap<Coordinate, MapTile> map) {
-	    strategies = (List<IMovementStrategy>) Arrays.asList(
-	    											   (IMovementStrategy) new ExploreStrategy(map), 
-	    											   (IMovementStrategy) new HealthStrategy(), 
-	    											   (IMovementStrategy) new KeyStrategy()
+	    strategies = (List<BasicStrategy>) Arrays.asList(
+	    											   (BasicStrategy) new ExploreStrategy(map), 
+	    											   (BasicStrategy) new HealthStrategy(), 
+	    											   (BasicStrategy) new KeyStrategy()
 	    											   );
 		
 		currentStrategy = strategies.get(StrategyKey.kExploreStrat.ordinal());
 	}
 	
 	@Override
-	public Coordinate move(Direction direction, Coordinate currentPos, HashMap<Coordinate, MapTile> worldView) {		
-		return currentStrategy.move(direction, currentPos, worldView);
+	public Coordinate move(HashMap<Coordinate, MapTile> worldView) {		
+		return currentStrategy.move(worldView);
 	}
 
 	@Override

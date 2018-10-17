@@ -1,26 +1,28 @@
-package mycontroller;
+package mycontroller.strategies;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import mycontroller.Path;
+import mycontroller.WorldSensor;
 import tiles.LavaTrap;
 import tiles.MapTile;
 import utilities.Coordinate;
-import world.WorldSpatial.Direction;
 
-public class KeyStrategy implements IMovementStrategy {
+public class KeyStrategy extends BasicStrategy {
 	static private ArrayList<Coordinate> keys;
-	PathFinder keyPath;
+	ArrayList<Coordinate> collected = new ArrayList<>();
 
 	@Override
-	public Coordinate move(Direction direction, Coordinate currentPos, HashMap<Coordinate, MapTile> worldView) {
-		// TODO Auto-generated method stub
+	public Coordinate move(HashMap<Coordinate, MapTile> worldView) {
+		Coordinate keyTile = path.getNextMove();
 		
-		if(keyPath.isEmpty()) {
-			keyPath = new PathFinder(currentPos, keys, worldView);
+		if(path.endPath()) {
+			collected.add(keyTile);
+			path = new Path(WorldSensor.getCurrentPosition(), keys, worldView);
 		} 
 		
-		return keyPath.getNextMove();
+		return path.getNextMove();
 	}
 	
 	public boolean foundKey() {
@@ -38,6 +40,4 @@ public class KeyStrategy implements IMovementStrategy {
 			}
 		}
 	}
-	
-
 }
