@@ -20,8 +20,11 @@ public class Path {
 	
 	public Coordinate getNextMove(){
 		if(pathCoordinates.empty()) {
+			
 			return invalid;
 		}
+		//System.out.println(pathCoordinates);
+		
 		return pathCoordinates.pop();
 	}
 	
@@ -38,7 +41,7 @@ public class Path {
 				minCost.setSecond(currCost.getSecond());
 			}
 		}
-		
+		//System.out.println(minCost.getFirst());
 		return minCost.getFirst();
 	}
 

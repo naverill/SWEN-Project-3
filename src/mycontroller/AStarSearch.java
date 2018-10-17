@@ -90,7 +90,7 @@ public class AStarSearch {
 					unExplored.put(neighbour, Float.MAX_VALUE);
 				}
 				//this is null
-				System.out.println(cameFrom.get(curr));
+				//System.out.println(cameFrom.get(curr));
 				gCost = gCosts.get(curr) + calcGCosts(curr, neighbour, cameFrom.get(curr));
 				//System.out.println(x);
 				if (gCosts.containsKey(neighbour)) {
@@ -177,6 +177,7 @@ public class AStarSearch {
         }
 
         //Collections.reverse(path);
+        path.pop();
         return path;
 	}
 	

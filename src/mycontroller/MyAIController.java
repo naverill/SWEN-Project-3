@@ -45,10 +45,11 @@ public class MyAIController extends CarController {
 		if(Path.invalidMove(next)) {
 			return;
 		}
-		
+		System.out.println(next);
 		Direction nextDirection = absoluteToRelativePosition(current, next);
 
 		if(current.equals(next)) {
+			
 			while(!isStopped()) {
 				applyBrake();
 			}
@@ -56,6 +57,7 @@ public class MyAIController extends CarController {
 		} else {
 			if(isStopped()) {
 				//apply acceleration so car can turn
+				
 				changeAcceleration(nextDirection);
 			}
 		}
@@ -65,12 +67,15 @@ public class MyAIController extends CarController {
 	}
 	
 	private void changeOrientation(Direction current, Direction next) {
-		while(!current.equals(next) && !next.equals(WorldSpatial.reverseDirection(current))) {
+		
+		if (!current.equals(next) && !next.equals(WorldSpatial.reverseDirection(current))) {
 			//next direction is left of current
+			//System.out.println(next);
 			if (next.equals(WorldSpatial.changeDirection(current, WorldSpatial.RelativeDirection.LEFT))) {
 				turnLeft();
 			//next direction is right of current
 			} else if (next.equals(WorldSpatial.changeDirection(current, WorldSpatial.RelativeDirection.RIGHT))) {
+			//	System.out.println("hey");
 				turnRight();
 			}
 			current = getOrientation();
@@ -90,10 +95,8 @@ public class MyAIController extends CarController {
 	}
 	
 	public Direction absoluteToRelativePosition(Coordinate current, Coordinate next) {
-		System.out.println(next);
+		
 		Coordinate pos = new Coordinate(next.x - current.x, next.y - current.y);
-		System.out.println("("+ next.x + "," + next.y + ")");
-		System.out.println("("+ pos.x + "," + pos.y + ")");
 		
 		if(pos.equals(NORTH)) {
 			return Direction.NORTH;
@@ -108,6 +111,7 @@ public class MyAIController extends CarController {
 			return Direction.WEST;
 			
 		} else {
+			
 			return null;
 		}
 	}
