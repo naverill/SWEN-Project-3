@@ -69,17 +69,14 @@ public class AStarSearch {
 			curr = getLowestFCost();
 			
 			if (curr.equals(goal)) {
-				//System.out.println(cameFrom);
+				
 				return new Pair<Stack<Coordinate>, Float>(reconstructPath(curr), gCosts.get(goal));
 			}
 			
 			unExplored.remove(curr);
 			exploredTiles.add(curr);
-			
-			
-			
+		
 			ArrayList<Coordinate> neighbours = getValidNeighbours(curr);
-			//System.out.println(neighbours);
 
 			for (Coordinate neighbour: neighbours) {
 				if (exploredTiles.contains(neighbour)) {

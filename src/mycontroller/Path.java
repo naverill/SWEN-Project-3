@@ -10,11 +10,12 @@ import world.World;
 
 public class Path {
 	public Stack<Coordinate> pathCoordinates = new Stack<>();
-		
+	public Stack<Coordinate> nullPath = new Stack<>();
 	public Path() {}
 
 	public Path(HashMap<Coordinate, MapTile> tiles, Coordinate start, ArrayList<Coordinate> end) {
-		pathCoordinates = getPath(tiles, start, end);
+		//pathCoordinates = getPath(tiles, start, end);
+		//nullPath = new Coordinate(1,0);
 	}
 	
 	
@@ -28,7 +29,7 @@ public class Path {
 		return pathCoordinates.pop();
 	}
 	
-	private Stack<Coordinate> getPath( HashMap<Coordinate, MapTile> tiles, Coordinate start, ArrayList<Coordinate> end){		
+	public Stack<Coordinate> getPath( HashMap<Coordinate, MapTile> tiles, Coordinate start, ArrayList<Coordinate> end){		
 		Pair<Stack<Coordinate>, Float> currCost;
 		
 		Pair<Stack<Coordinate>, Float> minCost = new Pair<>(new Stack<>(), Float.MAX_VALUE);
@@ -41,10 +42,15 @@ public class Path {
 					minCost.setFirst(currCost.getFirst());
 					minCost.setSecond(currCost.getSecond());
 				}
+
 			}
 			else {
+				nullPath.push(coordinate);
+				
+				//return null;
 				continue;
 			}
+				
 			
 		}
 		//System.out.println(minCost.getFirst());

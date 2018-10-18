@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Stack;
 
 import mycontroller.Path;
 import mycontroller.WorldSensor;
@@ -12,9 +13,11 @@ import utilities.Coordinate;
 
 public class ExploreStrategy extends BasicStrategy {
 	static final int NODES_OUTSIDE_VIEW = 40; //number of nodes bordering view of Car
-	
+	Stack<Coordinate> paths;
+	public static final Coordinate invalid = new Coordinate(-1, -1);
 	ExploreStrategy(HashMap<Coordinate, MapTile> map){
 		populateUnexploredTiles(map);
+		paths = new Stack<>();
 	}
 	
 	@Override
@@ -22,14 +25,35 @@ public class ExploreStrategy extends BasicStrategy {
 		if(path.endPath()) {
 			if (goal.size() > 40) {
 				path = new Path(worldView, WorldSensor.getCurrentPosition(), new ArrayList<>(goal.subList(0, NODES_OUTSIDE_VIEW)));
+				paths = path.getPath(worldView, WorldSensor.getCurrentPosition(), new ArrayList<>(goal.subList(0, NODES_OUTSIDE_VIEW)));
 			}
 			else {
 				path = new Path(worldView, WorldSensor.getCurrentPosition(), goal);
+				paths = path.getPath(worldView, WorldSensor.getCurrentPosition(), goal);
 			}
 			
 		}
-		//System.out.println(goal);
-		return path.getNextMove();
+		
+		
+
+		if(paths.empty()) {
+			
+			return invalid;
+		}
+		else {
+			for (Coordinate c : path.nullPath) {
+				goal.remove(c);
+			}
+			//System.out.println(x);
+			System.out.println(goal);
+			return paths.pop();
+		}
+//		System.out.println("null" + path.nullPath);
+//		System.out.println("before" + goal);
+		
+		//System.out.println("after" + goal);
+
+		//return path.getNextMove();
 	}
 	
 	public void updateState(HashMap<Coordinate, MapTile> state) {

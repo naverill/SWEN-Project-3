@@ -37,7 +37,7 @@ public class MyAIController extends CarController {
 		strategy.updateState(currentView);
 		
 		Coordinate nextPos = strategy.move(sensor.getWorldMap());
-		
+		//System.out.println(currentPos);
 		coordinateToMovement(currentPos, nextPos);
 	}
 
@@ -46,32 +46,32 @@ public class MyAIController extends CarController {
 			return;
 		}
 //		System.out.println(sensor.getWorldMap().get(next).getType());
-//		System.out.println(current);
+		
 //		System.out.println(next);
 		
 		Direction nextDirection = absoluteToRelativePosition(current, next);
 
-		if(current.equals(next)) {
-			
-			while(!isStopped()) {
-				applyBrake();
-			}
-			return;
-		} else {
+//		if(current.equals(next)) {
+//			
+//			while(!isStopped()) {
+//				applyBrake();
+//			}
+//			return;
+//		} else {
 			if(isStopped()) {
 				//apply acceleration so car can turn
-				applyForwardAcceleration();
+				//applyForwardAcceleration();
 				//applyBrake();
-				//changeAcceleration(nextDirection);
+				changeAcceleration(nextDirection);
 				
 			}
-		}
+		//}
 		
 		changeOrientation(getOrientation(), nextDirection);
-		applyForwardAcceleration();
+		//applyForwardAcceleration();
 		//applyBrake();
 		//applyReverseAcceleration();
-		//changeAcceleration(nextDirection);
+		changeAcceleration(nextDirection);
 	}
 	
 	private void changeOrientation(Direction current, Direction next) {
@@ -92,13 +92,13 @@ public class MyAIController extends CarController {
 	}
 	
 	private void changeAcceleration(Direction nextDirection) {
-		System.out.println(getOrientation());
-		System.out.println(nextDirection);
-		
-		if(nextDirection.equals(getOrientation())) {
-			applyForwardAcceleration();
-		} else {
+//		System.out.println(getOrientation());
+//		System.out.println(nextDirection);
+		Direction rNext = WorldSpatial.reverseDirection(nextDirection);
+		if(rNext.equals(getOrientation())) {
 			applyReverseAcceleration();
+		} else {
+			applyForwardAcceleration();
 		}
 	}
 	
@@ -110,22 +110,6 @@ public class MyAIController extends CarController {
 		
 		Coordinate pos = new Coordinate(next.x - current.x, next.y - current.y);
 		
-//		if(pos.equals(NORTH)) {
-//			return Direction.NORTH;
-//			
-//		} else if (pos.equals(SOUTH)) {
-//			return Direction.SOUTH;
-//			
-//		} else if (pos.equals(EAST)) {
-//			return Direction.EAST;
-//			
-//		}else if (pos.equals(WEST)) {
-//			return Direction.WEST;
-//			
-//		} else {
-//			
-//			return null;
-//		}
 		
 		if (pos.x > 0) {
 			return Direction.EAST;
