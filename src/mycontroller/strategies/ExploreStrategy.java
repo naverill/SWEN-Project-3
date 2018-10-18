@@ -41,7 +41,6 @@ public class ExploreStrategy extends BasicStrategy {
 		}
 		
         Collections.sort(goal, new CoordinateComparator(WorldSensor.getCurrentPosition()));
-        System.out.println(goal);
 	}
 	
 	
@@ -67,12 +66,11 @@ public class ExploreStrategy extends BasicStrategy {
 	
 	//adds unexplored tiles to goal array
 	private void populateUnexploredTiles(HashMap<Coordinate, MapTile> map) {
-		Coordinate currentPosition = WorldSensor.getCurrentPosition();
 		for(Coordinate coordinate : map.keySet()) {
 			MapTile tile = map.get(coordinate);
 			
 			if(tile.getType().equals(MapTile.Type.ROAD) || tile.getType().equals(MapTile.Type.TRAP)) {
-				if(AStarSearch.findBestPath(map, currentPosition, currentPosition, coordinate)!=null) {
+				if(Path.hasPath(coordinate)) {
 					goal.add(coordinate);
 				}
 			}

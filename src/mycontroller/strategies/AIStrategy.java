@@ -12,12 +12,11 @@ import tiles.MapTile;
 import utilities.Coordinate;
 
 public class AIStrategy implements IMovementStrategy {
-	enum StrategyKey {
-		kExploreStrat,
-		kHealthStrat,
-		kKeyStrat,
-		kFinishStrat
-	}
+	private static final int EXPLORE = 0;
+	private static final int HEALTH = 1;
+	private static final int KEY = 2;
+	private static final int FINISH = 3;
+	private static final int NUM_STRATEGIES = 4;
 	
 	public List<BasicStrategy>  strategies = new ArrayList<>();
 	private BasicStrategy currentStrategy;
@@ -31,7 +30,7 @@ public class AIStrategy implements IMovementStrategy {
 	    											   (BasicStrategy) new KeyStrategy(),
 	    											   (BasicStrategy) new FinishStrategy()
 	    											   );
-		currentStrategy = strategies.get(StrategyKey.kExploreStrat.ordinal());
+		currentStrategy = strategies.get(EXPLORE);
 	}
 
 	
@@ -42,8 +41,8 @@ public class AIStrategy implements IMovementStrategy {
 
 	@Override
 	public void updateState(HashMap<Coordinate, MapTile> state) {
-		for(StrategyKey key : StrategyKey.values()) {
-			strategies.get(key.ordinal()).updateState(state);
+		for(int i=0; i< NUM_STRATEGIES; i++) {
+			strategies.get(i).updateState(state);
 		}	
 		determineState();
 	}
@@ -59,93 +58,79 @@ public class AIStrategy implements IMovementStrategy {
 	}
 	
 	public void determineState() {
-		//need to heal (can be null)
-		if(!strategies.get(StrategyKey.kKeyStrat.ordinal()).goal.isEmpty()) {
-			//have healthTile as goal, we can simulate movement
-			Stack<Coordinate> pathToHeal = strategies.get(StrategyKey.kHealthStrat.ordinal()).potentialPath(
-					sensor.getWorldMap()).pathCoordinates;
-			if(!sensor.dangerZone(pathToHeal)) {
-				currentStrategy = strategies.get(StrategyKey.kHealthStrat.ordinal());
-				System.out.println(currentStrategy.getClass());
-				return;
-			}
+		if(currentlyHealing() && !fullyHealed()) {
+			System.out.println(currentStrategy.getClass());
+			return;
 		}
 		
+		if(foundHealth() && nearCriticalHealth()) {
+			currentStrategy = strategies.get(HEALTH);
+			System.out.println(currentStrategy.getClass());
+			return;
+		}
+
 		//means we have enough health to do other things
-		if(!hasExploredEverything()) {
-			currentStrategy = strategies.get(StrategyKey.kExploreStrat.ordinal());
+		if(hasExploredEverything()) {
+			if(sensor.hasAllKeys()) {
+				tryToFinish();
+			} else {
+				tryToFindKeys();
+			}
+			System.out.println(currentStrategy.getClass());
+			return;
 		}
-		//has all keys? try to finish
-		else if(sensor.hasAllKeys()) {
-			tryToFinish();
-		}
-		//if there are keys to find (might be redundant, since if you have explored everything it must mean you have all the keys.)
-		else if(!strategies.get(StrategyKey.kKeyStrat.ordinal()).goal.isEmpty()) {
-			tryToFindKeys();
-		}
+
+		currentStrategy = strategies.get(EXPLORE);
+		System.out.println(currentStrategy.getClass());
 	}
 	
 	private void tryToFinish() {
-		//already doing finish strategy?
-		if(!currentStrategy.equals(strategies.get(StrategyKey.kFinishStrat.ordinal()))){
-			//possible bug, might need to heal along the way
-			Stack<Coordinate> pathToFinish = strategies.get(StrategyKey.kFinishStrat.ordinal()).potentialPath(
-					sensor.getWorldMap()).pathCoordinates;
-			//path to finish shouldnt be null since weve explored everything
-			if(sensor.hasEnoughHealth(pathToFinish)) {
-				currentStrategy=strategies.get(StrategyKey.kFinishStrat.ordinal());
-			}else {
-				currentStrategy=strategies.get(StrategyKey.kHealthStrat.ordinal());
-			}
+		Stack<Coordinate> pathToFinish = strategies.get(FINISH).potentialPath(
+				sensor.getWorldMap()).getPath();
+		
+		if(sensor.hasEnoughHealth(pathToFinish)) {
+			currentStrategy=strategies.get(FINISH);
+		} else {
+			currentStrategy = strategies.get(HEALTH);
 		}
-		else if(currentStrategy.equals(strategies.get(StrategyKey.kHealthStrat.ordinal()))) {
-			currentlyHealing();
-		}
-		System.out.println(currentStrategy.getClass());
 	}
 
 	private void tryToFindKeys() {
-		//already doing key strategy?
-		if(!currentStrategy.equals(strategies.get(StrategyKey.kKeyStrat.ordinal()))){
-			//simulate movement (can be null)
-			Stack<Coordinate> pathToKey = strategies.get(StrategyKey.kKeyStrat.ordinal()).potentialPath(
-					sensor.getWorldMap()).pathCoordinates;
-			//path to key shouldnt be null since weve explored everything
-			if(sensor.hasEnoughHealth(pathToKey)) {
-				currentStrategy = strategies.get(StrategyKey.kKeyStrat.ordinal());
-			}else {
-				currentStrategy = strategies.get(StrategyKey.kHealthStrat.ordinal());
-			}
-		}else if(currentStrategy.equals(strategies.get(StrategyKey.kHealthStrat.ordinal()))) {
-			currentlyHealing();
+		Stack<Coordinate> pathToKey = strategies.get(KEY).potentialPath(
+				sensor.getWorldMap()).getPath();
+		
+		if(sensor.hasEnoughHealth(pathToKey)) {
+			currentStrategy = strategies.get(KEY);
+		} else {
+			currentStrategy = strategies.get(HEALTH);
 		}
-		System.out.println(currentStrategy.getClass());
 	}
 	
-	private void currentlyHealing() {
-		if(sensor.isHealing()) {
-			//if it's done healing and has explored everything resume keyfinding
-			if(sensor.isDoneHealing()){
-				if(hasExploredEverything()) {
-					determineState();
-					System.out.println("pls no infinite loop");
-				}else {
-					currentStrategy = strategies.get(StrategyKey.kExploreStrat.ordinal());
-					System.out.println("for some reason it hasnt explored everything, something's wrong with the dangerZone check");
-				}
-			}
-			//still healing
-			System.out.println("im HEELING dont rush me fool");
-			return;
-		}
-		System.out.println(currentStrategy.getClass());
+	public boolean currentlyHealing() {
+		return sensor.isHealing() && currentStrategy==strategies.get(HEALTH); //and current strategy is health
 	}
-
+	
+	public boolean fullyHealed() {
+		return sensor.isDoneHealing();
+	}
 
 	//returns true if it has explored everything
 	public boolean hasExploredEverything(){
-		return strategies.get(StrategyKey.kExploreStrat.ordinal()).goal.isEmpty();
+		return strategies.get(EXPLORE).goal.isEmpty();
 	}
 	
+	public boolean keysCollected(){
+		return strategies.get(KEY).goal.isEmpty();
+	}
+	
+	public boolean foundHealth(){
+		return strategies.get(HEALTH).foundGoalTile();
+	}
+	
+	public boolean nearCriticalHealth() {
+		Stack<Coordinate> pathToHeal = strategies.get(HEALTH).potentialPath(sensor.getWorldMap()).getPath();
+		
+		return sensor.nearCriticalLowHealth(pathToHeal);
+	}
 
 }

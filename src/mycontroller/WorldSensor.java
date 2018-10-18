@@ -15,7 +15,7 @@ public class WorldSensor {
 	static public HashMap<Coordinate, MapTile> map = new HashMap<>();
 	public static Car car;
 	public static final int LAVA_COST = 5;
-	public static final int DANGER_RANGE = 10;
+	public static final int DANGER_RANGE = 20;
 	
 	public WorldSensor(HashMap<Coordinate, MapTile> worldTiles, Car car) {
 		this.car = car;
@@ -99,17 +99,18 @@ public class WorldSensor {
 		return currentHealth>healthBuffer;
 	}
 	
-	//HIGHWAYTO THEDANGERZONE
-	public boolean dangerZone(Stack<Coordinate> path) {
+	//HIGHWAY TO THEDANGERZONE
+	public boolean nearCriticalLowHealth(Stack<Coordinate> path) {
 		//move to healthTile before its too late
-		float currentHealth = car.getHealth()-DANGER_RANGE;
+		float currentHealth = car.getHealth() - DANGER_RANGE;
+		
 		float healthBuffer = 0;
 		for(Coordinate coor: path) {
 			if(map.get(coor) instanceof LavaTrap) {
 				healthBuffer+=LAVA_COST;
 			}
 		}
-		return currentHealth>healthBuffer;
+		return currentHealth <= healthBuffer;
 	}
 	
 	public boolean isHealing() {
