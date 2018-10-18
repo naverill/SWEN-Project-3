@@ -109,12 +109,16 @@ public class AStarSearch {
 	
 	private static float calcGCosts(Coordinate current, Coordinate neighbour, Coordinate cameFrom) {
 		float gCost = getManhattanDistance(current, neighbour);
-		
+		//TODO GRASS TILE MULTIPLIER
 		//add trap multipliers if needed
 		MapTile tile = worldMap.get(neighbour);
 		if (tile instanceof LavaTrap) {
 //			gCost *= (100 - mapExpert.getCar().getHealth());
-			gCost *= LAVA_MULTIPLIER;
+			if(((LavaTrap) tile).getKey()!=0) {
+				gCost *= ICE_MULTIPLIER;
+			}else {
+				gCost *= LAVA_MULTIPLIER;		
+			}
 		}if(tile instanceof HealthTrap) {
 			gCost*= ICE_MULTIPLIER;
 		}

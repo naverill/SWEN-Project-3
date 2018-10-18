@@ -18,6 +18,7 @@ public class KeyStrategy extends BasicStrategy {
 	
 	@Override
 	public Move move(HashMap<Coordinate, MapTile> worldView) {
+		
 		collectKey();
 		
 		if(path.endPath()) {
@@ -25,7 +26,9 @@ public class KeyStrategy extends BasicStrategy {
 		} 
 		//TODO handle types of tiles and acceleration/deceleration
 		Coordinate nextMove = path.getNextMove();
+		
 		MapTile nextTile = WorldSensor.getTileAtCoordinate(nextMove);
+		
 		Move.Acceleration acceleration = adjustAcceleration(nextTile);
 		
 		//TODO handle types of tiles and acceleration/deceleration
@@ -40,8 +43,9 @@ public class KeyStrategy extends BasicStrategy {
 			if(tile instanceof LavaTrap) {
 				if((isKey((LavaTrap) tile)) && !foundKey(coordinate)){
 					if(!collected(coordinate) && Path.hasPath(coordinate)) {
-						//System.out.println("add key");
+						
 						goal.add(coordinate);
+					//	System.out.println(goal);
 					}
 				} 
 			}

@@ -59,7 +59,9 @@ public class AIStrategy implements IMovementStrategy {
 	
 	public void determineState() {
 		if(currentlyHealing() && !fullyHealed()) {
-			System.out.println(currentStrategy.getClass());
+			//System.out.println("brake here");
+			WorldSensor.car.brake();
+			//System.out.println(currentStrategy.getClass());
 			return;
 		}
 		
@@ -71,13 +73,17 @@ public class AIStrategy implements IMovementStrategy {
 
 		//means we have enough health to do other things
 		if(hasExploredEverything()) {
+			
 			if(WorldSensor.hasAllKeys()) {
-				System.out.println("i have keys");
+				
 				tryToFinish();
+				
 			} else {
+				//System.out.println("i have keys");
 				tryToFindKeys();
+		
 			}
-			System.out.println(currentStrategy.getClass());
+			//System.out.println(currentStrategy.getClass());
 			return;
 		}
 
@@ -100,6 +106,7 @@ public class AIStrategy implements IMovementStrategy {
 	private void tryToFindKeys() {
 		Stack<Coordinate> pathToKey = strategies.get(KEY).potentialPath(
 				WorldSensor.getWorldMap()).getCurrentPath();
+		System.out.println(pathToKey+" tutu");
 		
 		if(WorldSensor.hasEnoughHealth(pathToKey)) {
 			currentStrategy = strategies.get(KEY);

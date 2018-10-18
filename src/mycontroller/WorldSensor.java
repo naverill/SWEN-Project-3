@@ -89,13 +89,14 @@ public class WorldSensor {
 	
 	public static boolean hasEnoughHealth(Stack<Coordinate> path) {
 		float currentHealth = car.getHealth();
-		float healthBuffer = 100 - DANGER_RANGE;
+		float healthBuffer = 0;
 		for(Coordinate coor: path) {
 			if(map.get(coor) instanceof LavaTrap) {
-				healthBuffer -= LAVA_COST;
+				healthBuffer += LAVA_COST;
 			}
 		}
-		return currentHealth == 100.0f;
+		System.out.println(healthBuffer);
+		return currentHealth > healthBuffer;
 	}
 	
 	//HIGHWAY TO THEDANGERZONE

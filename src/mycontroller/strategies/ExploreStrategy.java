@@ -43,7 +43,7 @@ public class ExploreStrategy extends BasicStrategy {
 		}
 		//check it for mudtraps
 		checkCurrentPath(state);
-		
+		//System.out.println(goal);
         Collections.sort(goal, new CoordinateComparator(WorldSensor.getCurrentPosition()));
 	}
 	
@@ -79,7 +79,7 @@ public class ExploreStrategy extends BasicStrategy {
 	
 	//adds unexplored tiles to goal array
 	private void populateUnexploredTiles(HashMap<Coordinate, MapTile> map) {
-		System.out.println(map);
+		//System.out.println(map);
 		for(Coordinate coordinate : map.keySet()) {
 			MapTile tile = map.get(coordinate);
 			

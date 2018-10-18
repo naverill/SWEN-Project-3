@@ -36,15 +36,20 @@ public abstract class BasicStrategy implements IMovementStrategy{
 	public Move.Acceleration adjustAcceleration(MapTile nextTile) {
 		Coordinate currentPosition = WorldSensor.getCurrentPosition();
 		
-		if(WorldSensor.isStart(WorldSensor.getTileAtCoordinate(currentPosition))) {
+		//WorldSensor.isStart(WorldSensor.getTileAtCoordinate(currentPosition))
+		if(WorldSensor.car.getSpeed() == 0.0f) {
+			
 			return Move.Acceleration.ACCELERATE;
 		} else if(WorldSensor.isTrap(nextTile)) {
 			return Move.Acceleration.ACCELERATE;
 		} else if (WorldSensor.isHealth(nextTile)) {
 			return Move.Acceleration.DECELERATE;
+		} else if (WorldSensor.isStart(WorldSensor.getTileAtCoordinate(currentPosition))){
+			return Move.Acceleration.ACCELERATE;
 		} else {
 			return Move.Acceleration.NEUTRAL;
 		}
+			
 	}
 	
 	public Path potentialPath(HashMap<Coordinate, MapTile> worldView) {
