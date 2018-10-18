@@ -41,15 +41,15 @@ public class MyAIController extends CarController {
 	}
 	
 	private void moveCar(Move move) {
-//		System.out.println("Current: " + move.getCurrent());
-//		System.out.println("Target: " + move.getTarget());
-//		System.out.println("Direction: " + move.getDirection());
-//		System.out.println("Relative: " + move.getRelativeDirection());
-//		System.out.println("Acceleration: " + move.getAcceleration());
-//		System.out.println("Velocity: " + WorldSensor.getVelocity());
-//		System.out.println();
+		System.out.println("Current: " + move.getCurrent());
+		System.out.println("Target: " + move.getTarget());
+		System.out.println("Direction: " + move.getDirection());
+		System.out.println("Relative: " + move.getRelativeDirection());
+		System.out.println("Acceleration: " + move.getAcceleration());
+		System.out.println("Velocity: " + WorldSensor.getVelocity());
+		System.out.println();
+		
 		if(Path.invalidMove(move)) {
-			
 			strategy.reset(WorldSensor.getWorldMap());
 			return;
 		};
@@ -62,15 +62,9 @@ public class MyAIController extends CarController {
 		
 		if(move.getAcceleration().equals(Move.Acceleration.ACCELERATE)) {
 			accelerate(move);
-
 		} else if (move.getAcceleration().equals(Move.Acceleration.BRAKE)){
-			if(!isStopped()) {
-				applyBrake();
-				strategy.applyBrake();
-			} else {
-				System.out.println("BRAKE");
-			}
-			
+			applyBrake();
+			System.out.println("BREAKING");
 		} else if (move.getAcceleration().equals(Move.Acceleration.DECELERATE)){
 			decelerate(move);
 		} else {

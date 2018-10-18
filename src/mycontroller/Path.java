@@ -85,7 +85,6 @@ public class Path {
 		return (c.y > World.MAP_HEIGHT) || (c.y < 0);
 	}
 	
-	public static final Coordinate invalid = new Coordinate(-1, -1);
 	
 	public static Direction absoluteToCardinal(Coordinate current, Coordinate next) {
 		
@@ -103,6 +102,9 @@ public class Path {
 		}else if (pos.equals(WEST)) {
 			return Direction.WEST;
 			
+		}else if (pos.equals(ORIGIN)) {
+			return WorldSensor.getOrientation();
+			
 		} else {
 			
 			return null;
@@ -117,4 +119,6 @@ public class Path {
 	private static final Coordinate EAST = new Coordinate(1, 0);
 	private static final Coordinate SOUTH = new Coordinate(0, -1);
 	private static final Coordinate WEST = new Coordinate(-1, 0);
+	private static final Coordinate ORIGIN = new Coordinate(0, 0);
+	public static final Coordinate invalid = new Coordinate(-1, -1);
 }

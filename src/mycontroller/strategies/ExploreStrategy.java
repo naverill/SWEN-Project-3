@@ -27,12 +27,8 @@ public class ExploreStrategy extends BasicStrategy {
 			path = potentialPath(worldView);
 		}
 		
-		Coordinate nextMove = path.getNextMove();
-		MapTile nextTile = WorldSensor.getTileAtCoordinate(nextMove);
-		Move.Acceleration acceleration = adjustAcceleration(nextTile);
-		
-		//TODO handle types of tiles and acceleration/deceleration
-		return new Move(nextMove, acceleration);
+		Coordinate nextMove = path.getNextMove();		
+		return new Move(nextMove);
 	}
 	
 	public void updateState(HashMap<Coordinate, MapTile> state) {
