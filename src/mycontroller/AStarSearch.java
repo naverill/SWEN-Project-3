@@ -39,6 +39,7 @@ public class AStarSearch {
 		//this.goal = goal;
 		this.mapExpert = mapExpert;
 		worldMap = this.mapExpert.getWorldMap();
+		System.out.println(mapExpert);
 	}
 	
 	public static Pair<Stack<Coordinate>, Float> findBestPath(HashMap<Coordinate, MapTile> iMap, Coordinate iBeforeStart,
@@ -101,8 +102,6 @@ public class AStarSearch {
 			}
 			
 		}
-		
-		
 		return null;
 	}
 	

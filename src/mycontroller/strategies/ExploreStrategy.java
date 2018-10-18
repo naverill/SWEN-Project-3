@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 
+import mycontroller.AStarSearch;
 import mycontroller.Move;
 import mycontroller.Path;
 import mycontroller.WorldSensor;
@@ -67,13 +68,14 @@ public class ExploreStrategy extends BasicStrategy {
 	
 	//adds unexplored tiles to goal array
 	private void populateUnexploredTiles(HashMap<Coordinate, MapTile> map) {
+		Coordinate currentPosition = WorldSensor.getCurrentPosition();
 		for(Coordinate coordinate : map.keySet()) {
 			MapTile tile = map.get(coordinate);
 			
 			if(tile.getType().equals(MapTile.Type.ROAD) || tile.getType().equals(MapTile.Type.TRAP)) {
-				//TODO() if tile has a path to it (not blocked by mud/walls)
-				goal.add(coordinate);
-				
+				if(AStarSearch.findBestPath(map, currentPosition, currentPosition, coordinate)!=null) {
+					goal.add(coordinate);
+				}
 			}
 		}
         Collections.sort(goal, new CoordinateComparator(WorldSensor.getCurrentPosition()));
