@@ -10,6 +10,7 @@ import mycontroller.Move;
 import mycontroller.Path;
 import mycontroller.WorldSensor;
 import tiles.MapTile;
+import tiles.MudTrap;
 import utilities.Coordinate;
 
 public class ExploreStrategy extends BasicStrategy {
@@ -70,9 +71,10 @@ public class ExploreStrategy extends BasicStrategy {
 			MapTile tile = map.get(coordinate);
 			
 			if(tile.getType().equals(MapTile.Type.ROAD) || tile.getType().equals(MapTile.Type.TRAP)) {
-				if(Path.hasPath(coordinate)) {
-					goal.add(coordinate);
-				}
+				
+					if(Path.hasPath(coordinate)) {
+						goal.add(coordinate);
+					}		
 			}
 		}
         Collections.sort(goal, new CoordinateComparator(WorldSensor.getCurrentPosition()));

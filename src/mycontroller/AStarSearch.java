@@ -169,6 +169,9 @@ public static Direction absoluteToRelativePosition(Coordinate current, Coordinat
 				
 			MapTile tile = worldMap.get(neighbour);
 			if (tile.isType(MapTile.Type.WALL) || tile.isType(MapTile.Type.EMPTY) || tile instanceof MudTrap) {
+				if (tile instanceof MudTrap) {
+					continue;
+				}
 				continue;
 			}
 			
