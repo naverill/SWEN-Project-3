@@ -1,6 +1,7 @@
 package mycontroller;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.Stack;
 
@@ -16,6 +17,7 @@ public class WorldSensor {
 	public static Car car;
 	public static final int LAVA_COST = 5;
 	public static final int DANGER_RANGE = 20;
+	private static Set<Integer> keysSeen = new HashSet<>();
 	
 	public WorldSensor(HashMap<Coordinate, MapTile> worldTiles, Car car) {
 		this.car = car;
@@ -53,11 +55,8 @@ public class WorldSensor {
 		return map;
 	}
 	
-	public boolean hasAllKeys() {
-		int numKeys = car.numKeys;
-		Set<Integer> currKeys = car.getKeys();
-		for (int i = 1; i <= numKeys; i++) if (!currKeys.contains(i)) return false;
-		return true;
+	public boolean hasAllKeys() {		
+		return keysSeen.equals(car.getKeys());
 	}
 	
 	static public Coordinate getCurrentPosition() {
@@ -90,13 +89,13 @@ public class WorldSensor {
 	
 	public boolean hasEnoughHealth(Stack<Coordinate> path) {
 		float currentHealth = car.getHealth();
-		float healthBuffer = 0;
+		float healthBuffer = 100 - DANGER_RANGE;
 		for(Coordinate coor: path) {
 			if(map.get(coor) instanceof LavaTrap) {
-				healthBuffer+=LAVA_COST;
+				healthBuffer -= LAVA_COST;
 			}
 		}
-		return currentHealth>healthBuffer;
+		return currentHealth == 100.0f;
 	}
 	
 	//HIGHWAY TO THEDANGERZONE
@@ -118,7 +117,11 @@ public class WorldSensor {
 	}
 	
 	public boolean isDoneHealing() {
-		return car.getHealth()==100;
+		return car.getHealth() == 100.0f;
+	}
+	
+	public static void addKey(int num) {
+		keysSeen.add(num);
 	}
 
 }

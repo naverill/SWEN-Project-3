@@ -2,6 +2,8 @@ package mycontroller.strategies;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import mycontroller.AStarSearch;
 import mycontroller.Move;
@@ -13,7 +15,7 @@ import utilities.Coordinate;
 
 public class KeyStrategy extends BasicStrategy {
 	protected ArrayList<Coordinate> collected = new ArrayList<>();
-
+	
 	@Override
 	public Move move(HashMap<Coordinate, MapTile> worldView) {
 		collectKey();
@@ -33,15 +35,22 @@ public class KeyStrategy extends BasicStrategy {
 			if(tile instanceof LavaTrap) {
 				if((isKey((LavaTrap) tile)) && !foundKey(coordinate)){
 					if(!collected(coordinate) && Path.hasPath(coordinate)) {
+						//System.out.println("add key");
 						goal.add(coordinate);
 					}
 				} 
 			}
 		}
+		//System.out.println(collected);
 	}
 	
 	public boolean isKey(LavaTrap tile) {
-		return tile.getKey()!=0;
+		int keyNum = tile.getKey();
+		if(keyNum !=0) {
+			WorldSensor.addKey(keyNum);
+			return true;
+		}
+		return false;
 	}
 	
 	public boolean foundKey(Coordinate key) {
@@ -56,6 +65,8 @@ public class KeyStrategy extends BasicStrategy {
 		Coordinate currentPosition = WorldSensor.getCurrentPosition();
 		if(goal.contains(currentPosition)) {
 			collected.add(currentPosition);
+			
+			
 			goal.remove(currentPosition);
 		}
 	}

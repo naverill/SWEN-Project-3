@@ -31,7 +31,7 @@ public class AStarSearch {
 	private static HashMap<Coordinate, MapTile> neighbourTiles;
 	private static HashMap<Coordinate, MapTile> worldMap = new HashMap<>();
 	
-	private static final float LAVA_MULTIPLIER = 100.0f;
+	private static final float LAVA_MULTIPLIER = 200.0f;
 	private static final float ICE_MULTIPLIER = 0.5f;
 	
 	public AStarSearch(WorldSensor mapExpert) {
