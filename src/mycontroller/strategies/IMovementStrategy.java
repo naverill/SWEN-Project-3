@@ -2,7 +2,7 @@ package mycontroller.strategies;
 
 import java.util.HashMap;
 
-import mycontroller.Move;
+import mycontroller.util.Move;
 import tiles.MapTile;
 import utilities.Coordinate;
 

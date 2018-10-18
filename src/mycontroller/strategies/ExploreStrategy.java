@@ -7,9 +7,9 @@ import java.util.HashMap;
 import java.util.Stack;
 
 import mycontroller.AStarSearch;
-import mycontroller.Move;
-import mycontroller.Path;
 import mycontroller.WorldSensor;
+import mycontroller.util.Move;
+import mycontroller.util.Path;
 import tiles.MapTile;
 import tiles.MudTrap;
 import utilities.Coordinate;

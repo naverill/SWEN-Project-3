@@ -123,5 +123,16 @@ public class WorldSensor {
 	public static void addKey(int num) {
 		keysSeen.add(num);
 	}
+	
+	public static boolean isBlocked(Coordinate coordinate, Direction direction) {
+		Coordinate delta = car.directionDelta(direction);
+		Coordinate adjacentCoordinate = new Coordinate(coordinate.x + delta.x, coordinate.y + delta.y);
+		
+		MapTile adjacentTile = getTileAtCoordinate(adjacentCoordinate);
+		if (adjacentTile.isType(MapTile.Type.WALL)) {System.out.println("BLOCKED: " + direction);}
+		return adjacentTile.isType(MapTile.Type.WALL);
+		
+		
+	}
 
 }

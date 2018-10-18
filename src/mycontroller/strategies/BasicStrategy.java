@@ -3,9 +3,9 @@ package mycontroller.strategies;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import mycontroller.Move;
-import mycontroller.Path;
 import mycontroller.WorldSensor;
+import mycontroller.util.Move;
+import mycontroller.util.Path;
 import tiles.MapTile;
 import utilities.Coordinate;
 

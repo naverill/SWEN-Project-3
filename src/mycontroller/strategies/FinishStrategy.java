@@ -2,8 +2,8 @@ package mycontroller.strategies;
 
 import java.util.HashMap;
 
-import mycontroller.Move;
 import mycontroller.WorldSensor;
+import mycontroller.util.Move;
 import tiles.MapTile;
 import tiles.MapTile.Type;
 import utilities.Coordinate;

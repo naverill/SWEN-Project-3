@@ -4,7 +4,7 @@ import java.util.*;
 
 import javax.swing.text.Utilities;
 
-
+import mycontroller.util.Pair;
 import tiles.MapTile;
 import utilities.Coordinate;
 import world.WorldSpatial.Direction;

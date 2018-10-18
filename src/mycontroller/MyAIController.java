@@ -6,9 +6,12 @@ import controller.CarController;
 import mycontroller.strategies.AIStrategy;
 import mycontroller.strategies.BasicStrategy;
 import mycontroller.strategies.IMovementStrategy;
+import mycontroller.util.Move;
+import mycontroller.util.Path;
 import tiles.MapTile;
 import utilities.Coordinate;
 import world.Car;
+import world.WorldSpatial;
 import mycontroller.AStarSearch;
 
 public class MyAIController extends CarController {
@@ -60,6 +63,18 @@ public class MyAIController extends CarController {
 			turnRight();
 		} 
 		
+		if(WorldSensor.isBlocked(move.getCurrent(), move.getDirection())) {
+			if(WorldSensor.getVelocity() >= 0) {
+				applyReverseAcceleration();
+			} 
+			return;
+		} else if (WorldSensor.isBlocked(move.getCurrent(), WorldSpatial.reverseDirection(move.getDirection()))) {
+			if(WorldSensor.getVelocity() <= 0) {
+				applyForwardAcceleration();
+			}
+			return;
+		} 
+		
 		if(move.getAcceleration().equals(Move.Acceleration.ACCELERATE)) {
 			accelerate(move);
 		} else if (move.getAcceleration().equals(Move.Acceleration.BRAKE)){
@@ -82,6 +97,10 @@ public class MyAIController extends CarController {
 			if(WorldSensor.getVelocity() >= 0) {
 				applyReverseAcceleration();
 			}
+		} else {
+			if(WorldSensor.getVelocity() == 0) {
+				applyForwardAcceleration();
+			}
 		}
 	}
 	
@@ -89,15 +108,19 @@ public class MyAIController extends CarController {
 		if(move.getRelativeDirection().equals(Move.RelativeDirection.FORWARD)) {
 			if(WorldSensor.getVelocity() > Move.MIN_FORWARD_SPEED) {
 				applyReverseAcceleration();
-			} else {
+			} else if (WorldSensor.getVelocity() < Move.MIN_FORWARD_SPEED){
 				applyForwardAcceleration();
 			}
 			
 		} else if (move.getRelativeDirection().equals(Move.RelativeDirection.REVERSE)) {
 			if(WorldSensor.getVelocity() < Move.MIN_REVERSE_SPEED) {
 				applyForwardAcceleration();
-			} else {
+			} else if (WorldSensor.getVelocity() < Move.MIN_REVERSE_SPEED){
 				applyReverseAcceleration();
+			}
+		} else {
+			if(WorldSensor.getVelocity() == 0) {
+				applyForwardAcceleration();
 			}
 		}
 	}
@@ -110,6 +133,10 @@ public class MyAIController extends CarController {
 			
 		} else if (move.getRelativeDirection().equals(Move.RelativeDirection.REVERSE)) {
 			if(WorldSensor.getVelocity() < Move.MIN_REVERSE_SPEED) {
+				applyForwardAcceleration();
+			}
+		} else {
+			if(WorldSensor.getVelocity() == 0) {
 				applyForwardAcceleration();
 			}
 		}

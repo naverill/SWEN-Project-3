@@ -6,9 +6,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import mycontroller.AStarSearch;
-import mycontroller.Move;
-import mycontroller.Path;
 import mycontroller.WorldSensor;
+import mycontroller.util.Move;
+import mycontroller.util.Path;
 import tiles.LavaTrap;
 import tiles.MapTile;
 import utilities.Coordinate;

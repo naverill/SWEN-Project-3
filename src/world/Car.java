@@ -38,8 +38,8 @@ public class Car extends Sprite{
 	private static enum Acceleration { FORWARD, REVERSE };
 	private Optional<Acceleration> accelerating;
 	
-	private static final int MAX_FORWARD = 1; //8;
-	private static final int MAX_BACKWARD = -1; //-4;
+	private static final int MAX_FORWARD = 2; //1;
+	private static final int MAX_BACKWARD = -2; //-1;
 	private static final int MAX_TURNING = 5;
 
 	private float rotation = 0;

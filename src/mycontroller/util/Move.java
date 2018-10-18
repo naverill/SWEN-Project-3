@@ -1,5 +1,6 @@
-package mycontroller;
+package mycontroller.util;
 
+import mycontroller.WorldSensor;
 import tiles.MapTile;
 import utilities.Coordinate;
 import world.WorldSpatial;

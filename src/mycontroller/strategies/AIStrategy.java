@@ -6,8 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Stack;
 
-import mycontroller.Move;
 import mycontroller.WorldSensor;
+import mycontroller.util.Move;
 import tiles.MapTile;
 import utilities.Coordinate;
 

@@ -1,9 +1,11 @@
-package mycontroller;
+package mycontroller.util;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Stack;
 
+import mycontroller.AStarSearch;
+import mycontroller.WorldSensor;
 import tiles.MapTile;
 import utilities.Coordinate;
 import world.World;
