@@ -79,6 +79,7 @@ public class ExploreStrategy extends BasicStrategy {
 	
 	//adds unexplored tiles to goal array
 	private void populateUnexploredTiles(HashMap<Coordinate, MapTile> map) {
+		System.out.println(map);
 		for(Coordinate coordinate : map.keySet()) {
 			MapTile tile = map.get(coordinate);
 			

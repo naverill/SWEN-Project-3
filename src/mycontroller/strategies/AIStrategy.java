@@ -20,10 +20,9 @@ public class AIStrategy implements IMovementStrategy {
 	
 	public List<BasicStrategy>  strategies = new ArrayList<>();
 	private BasicStrategy currentStrategy;
-	private WorldSensor sensor;
+
 	//TODO dont pass sensor cause then passing map would be redundant
-	public AIStrategy(HashMap<Coordinate, MapTile> map, WorldSensor sensor) {
-	    this.sensor = sensor;
+	public AIStrategy(HashMap<Coordinate, MapTile> map) {
 		strategies = (List<BasicStrategy>) Arrays.asList(
 	    											   (BasicStrategy) new ExploreStrategy(map), 
 	    											   (BasicStrategy) new HealthStrategy(), 
@@ -72,7 +71,7 @@ public class AIStrategy implements IMovementStrategy {
 
 		//means we have enough health to do other things
 		if(hasExploredEverything()) {
-			if(sensor.hasAllKeys()) {
+			if(WorldSensor.hasAllKeys()) {
 				System.out.println("i have keys");
 				tryToFinish();
 			} else {
@@ -90,7 +89,7 @@ public class AIStrategy implements IMovementStrategy {
 		Stack<Coordinate> pathToFinish = strategies.get(FINISH).potentialPath(
 				sensor.getWorldMap()).getCurrentPath();
 		
-		if (sensor.nearCriticalLowHealth(pathToFinish)) {
+		if (WorldSensor.nearCriticalLowHealth(pathToFinish)) {
 			System.out.println("need health");
 			currentStrategy = strategies.get(HEALTH);
 		} else {
@@ -102,10 +101,10 @@ public class AIStrategy implements IMovementStrategy {
 		Stack<Coordinate> pathToKey = strategies.get(KEY).potentialPath(
 				sensor.getWorldMap()).getCurrentPath();
 		
-		if(sensor.hasEnoughHealth(pathToKey)) {
+		if(WorldSensor.hasEnoughHealth(pathToKey)) {
 			currentStrategy = strategies.get(KEY);
 		} 
-		else if (sensor.nearCriticalLowHealth(pathToKey)) {
+		else if (WorldSensor.nearCriticalLowHealth(pathToKey)) {
 			currentStrategy = strategies.get(HEALTH);
 		}
 		
@@ -114,11 +113,11 @@ public class AIStrategy implements IMovementStrategy {
 	}
 	
 	public boolean currentlyHealing() {
-		return sensor.isHealing() && currentStrategy==strategies.get(HEALTH); //and current strategy is health
+		return WorldSensor.isHealing() && currentStrategy==strategies.get(HEALTH); //and current strategy is health
 	}
 	
 	public boolean fullyHealed() {
-		return sensor.isDoneHealing();
+		return WorldSensor.isDoneHealing();
 	}
 
 	//returns true if it has explored everything
@@ -137,7 +136,7 @@ public class AIStrategy implements IMovementStrategy {
 	public boolean nearCriticalHealth() {
 		Stack<Coordinate> pathToHeal = strategies.get(HEALTH).potentialPath(sensor.getWorldMap()).getCurrentPath();
 		
-		return sensor.nearCriticalLowHealth(pathToHeal);
+		return WorldSensor.nearCriticalLowHealth(pathToHeal);
 	}
 
 }

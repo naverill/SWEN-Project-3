@@ -13,7 +13,7 @@ import world.Car;
 import world.WorldSpatial.Direction;
 
 public class WorldSensor {
-	static public HashMap<Coordinate, MapTile> map = new HashMap<>();
+	public static HashMap<Coordinate, MapTile> map = new HashMap<>();
 	public static Car car;
 	public static final int LAVA_COST = 5;
 	public static final int DANGER_RANGE = 20;
@@ -24,7 +24,7 @@ public class WorldSensor {
 		map.putAll(worldTiles);
 	}
 
-	public  HashMap<Coordinate, MapTile> getNeighbours(Coordinate key){
+	public  static HashMap<Coordinate, MapTile> getNeighbours(Coordinate key){
 		HashMap<Coordinate, MapTile> neighbours = new HashMap<>();
 		int xValue = key.x;
 		int yValue = key.y;
@@ -47,19 +47,19 @@ public class WorldSensor {
 		return neighbours;
 	}
 	
-	public void updateMap(HashMap<Coordinate, MapTile> view) {
+	public static void updateMap(HashMap<Coordinate, MapTile> view) {
 		map.putAll(view);
 	}
 	
-	public HashMap<Coordinate, MapTile> getWorldMap() {
+	public static HashMap<Coordinate, MapTile> getWorldMap() {
 		return map;
 	}
 	
-	public boolean hasAllKeys() {		
+	public static boolean hasAllKeys() {		
 		return keysSeen.equals(car.getKeys());
 	}
 	
-	static public Coordinate getCurrentPosition() {
+	public static Coordinate getCurrentPosition() {
 		return new Coordinate(car.getPosition());
 	}
 	
@@ -87,7 +87,7 @@ public class WorldSensor {
 		return tile.getType().equals(MapTile.Type.START);
 	}
 	
-	public boolean hasEnoughHealth(Stack<Coordinate> path) {
+	public static boolean hasEnoughHealth(Stack<Coordinate> path) {
 		float currentHealth = car.getHealth();
 		float healthBuffer = 100 - DANGER_RANGE;
 		for(Coordinate coor: path) {
@@ -99,7 +99,7 @@ public class WorldSensor {
 	}
 	
 	//HIGHWAY TO THEDANGERZONE
-	public boolean nearCriticalLowHealth(Stack<Coordinate> path) {
+	public static boolean nearCriticalLowHealth(Stack<Coordinate> path) {
 		//move to healthTile before its too late
 		float currentHealth = car.getHealth() - DANGER_RANGE;
 		
@@ -112,11 +112,11 @@ public class WorldSensor {
 		return currentHealth <= healthBuffer;
 	}
 	
-	public boolean isHealing() {
+	public static boolean isHealing() {
 		return map.get(getCurrentPosition()) instanceof HealthTrap;
 	}
 	
-	public boolean isDoneHealing() {
+	public static boolean isDoneHealing() {
 		return car.getHealth() == 100.0f;
 	}
 	

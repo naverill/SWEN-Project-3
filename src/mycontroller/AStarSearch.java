@@ -19,9 +19,7 @@ public class AStarSearch {
 	private static Coordinate start;
 	private static Coordinate goal;
 	private static Coordinate beforeStart;
-	
-	private static WorldSensor mapExpert;
-	
+		
 	private static ArrayList<Coordinate> exploredTiles = new ArrayList<>();
 	private static HashMap<Coordinate, Float> unExplored = new HashMap<>();
 	
@@ -34,12 +32,7 @@ public class AStarSearch {
 	private static final float LAVA_MULTIPLIER = 200.0f;
 	private static final float ICE_MULTIPLIER = 0.5f;
 	
-	public AStarSearch(WorldSensor mapExpert) {
-		//this.start = start;
-		//this.goal = goal;
-		this.mapExpert = mapExpert;
-		worldMap = this.mapExpert.getWorldMap();
-		System.out.println(mapExpert);
+	public AStarSearch() {
 	}
 	
 	public static Pair<Stack<Coordinate>, Float> findBestPath(HashMap<Coordinate, MapTile> iMap, Coordinate iBeforeStart,
@@ -124,7 +117,7 @@ public class AStarSearch {
 		}if(tile instanceof HealthTrap) {
 			gCost*= ICE_MULTIPLIER;
 		}
-		Coordinate coor = mapExpert.getCurrentPosition();
+		Coordinate coor = WorldSensor.getCurrentPosition();
 		if (worldMap.get(coor).getType().equals(MapTile.Type.START)) {
 			Direction nb = absoluteToRelativePosition(current, neighbour);
 			if (!WorldSensor.car.getOrientation().equals(nb)) {
@@ -159,7 +152,7 @@ public static Direction absoluteToRelativePosition(Coordinate current, Coordinat
 	private static ArrayList<Coordinate> getValidNeighbours(Coordinate current) {
 		neighbourTiles = new HashMap<>();
 		ArrayList<Coordinate> validNeighbours = new ArrayList<>();
-		neighbourTiles = mapExpert.getNeighbours(current);
+		neighbourTiles = WorldSensor.getNeighbours(current);
 		
 		for (Coordinate neighbour: neighbourTiles.keySet()) {
 			

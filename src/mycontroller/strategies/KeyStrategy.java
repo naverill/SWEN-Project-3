@@ -24,7 +24,12 @@ public class KeyStrategy extends BasicStrategy {
 			path = potentialPath(worldView);
 		} 
 		//TODO handle types of tiles and acceleration/deceleration
-		return new Move(path.getNextMove(), Move.Acceleration.ACCELERATE);
+		Coordinate nextMove = path.getNextMove();
+		MapTile nextTile = WorldSensor.getTileAtCoordinate(nextMove);
+		Move.Acceleration acceleration = adjustAcceleration(nextTile);
+		
+		//TODO handle types of tiles and acceleration/deceleration
+		return new Move(nextMove, acceleration);
 	}
 
 	@Override
