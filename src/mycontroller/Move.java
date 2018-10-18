@@ -1,12 +1,13 @@
 package mycontroller;
 
+import tiles.MapTile;
 import utilities.Coordinate;
 import world.WorldSpatial;
 import world.WorldSpatial.Direction;
 
 public class Move {
 	public static enum Acceleration { DECELERATE, NEUTRAL, BRAKE, ACCELERATE};
-	public static enum RelativeDirection {LEFT, RIGHT, FORWARD, REVERSE}
+	public static enum RelativeDirection {LEFT, RIGHT, FORWARD, REVERSE, INVALID}
 	public static final int MIN_FORWARD_SPEED = 1;
 	public static final int MIN_REVERSE_SPEED = -1;
 
@@ -21,20 +22,26 @@ public class Move {
     	this.target = target;
     	this.acceleration = acceleration;
     	this.direction = WorldSensor.getOrientation();
-    	this.relativeDirection = absoluteToRelative(current, target, direction);
+    	this.relativeDirection = adjustRelativeDirection(current, target, direction);
     }
     
-	public RelativeDirection absoluteToRelative(Coordinate current, Coordinate target, Direction direction) {
+    public Move(Coordinate target) {
+    	this.current = WorldSensor.getCurrentPosition();
+    	this.target = target;
+    	this.acceleration = adjustAcceleration();
+    	this.direction = WorldSensor.getOrientation();
+    	this.relativeDirection = adjustRelativeDirection(current, target, direction);
+    }
+    
+	public RelativeDirection adjustRelativeDirection(Coordinate current, Coordinate target, Direction direction) {
 		if(current.equals(target)) {
-			acceleration=Acceleration.BRAKE;
+			return RelativeDirection.FORWARD;
 		}
-		
 		float targetAngle = getAngle(current, target);
 		
 		float carAngle = WorldSpatial.rotation(direction);
 		
 		float delta = targetAngle - carAngle;
-		
 		
 		//TODO verify maths here 
 		if (delta < 0 ) delta += 360;
@@ -48,8 +55,33 @@ public class Move {
 		} else if (Float.compare(delta, 270f)==0) {
 			return RelativeDirection.RIGHT;
 		} else {
-			return RelativeDirection.FORWARD; // should never happen 
+			return RelativeDirection.INVALID; // should never happen 
 		}
+	}
+	
+	public Move.Acceleration adjustAcceleration() {
+		if(current.equals(target)) {
+			return Acceleration.BRAKE;
+		}
+		
+		MapTile nextTile = WorldSensor.getTileAtCoordinate(target);
+
+		Coordinate currentPosition = WorldSensor.getCurrentPosition();
+		
+		//WorldSensor.isStart(WorldSensor.getTileAtCoordinate(currentPosition))
+		if(WorldSensor.car.getSpeed() == 0.0f) {
+			
+			return Move.Acceleration.ACCELERATE;
+		} else if(WorldSensor.isTrap(nextTile)) {
+			return Move.Acceleration.ACCELERATE;
+		} else if (WorldSensor.isHealth(nextTile)) {
+			return Move.Acceleration.DECELERATE;
+		} else if (WorldSensor.isStart(WorldSensor.getTileAtCoordinate(currentPosition))){
+			return Move.Acceleration.ACCELERATE;
+		} else {
+			return Move.Acceleration.NEUTRAL;
+		}
+			
 	}
 	
 	public float getAngle(Coordinate current, Coordinate target) {		

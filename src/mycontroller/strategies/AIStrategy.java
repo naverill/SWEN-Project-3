@@ -44,6 +44,7 @@ public class AIStrategy implements IMovementStrategy {
 			strategies.get(i).updateState(state);
 		}	
 		determineState();
+		System.out.println(currentStrategy.getClass());
 	}
 
 	@Override
@@ -59,7 +60,7 @@ public class AIStrategy implements IMovementStrategy {
 	public void determineState() {
 		if(currentlyHealing() && !fullyHealed()) {
 			//System.out.println("brake here");
-			WorldSensor.car.brake();
+//			WorldSensor.car.brake();
 			//System.out.println(currentStrategy.getClass());
 			return;
 		}
@@ -104,7 +105,7 @@ public class AIStrategy implements IMovementStrategy {
 	private void tryToFindKeys() {
 		Stack<Coordinate> pathToKey = strategies.get(KEY).potentialPath(
 				WorldSensor.getWorldMap()).getCurrentPath();
-		System.out.println(WorldSensor.hasEnoughHealth(pathToKey));
+		
 		if(WorldSensor.hasEnoughHealth(pathToKey)) {
 			currentStrategy = strategies.get(KEY);
 		} 
