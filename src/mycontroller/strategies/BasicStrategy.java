@@ -46,5 +46,9 @@ public abstract class BasicStrategy implements IMovementStrategy{
 			return Move.Acceleration.NEUTRAL;
 		}
 	}
+	
+	public Path potentialPath(HashMap<Coordinate, MapTile> worldView) {
+		return new Path(worldView, WorldSensor.getCurrentPosition(), goal);
+	}
 
 }

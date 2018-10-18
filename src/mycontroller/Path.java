@@ -10,7 +10,7 @@ import world.World;
 import world.WorldSpatial.Direction;
 
 public class Path {
-	public Stack<Coordinate> pathCoordinates = new Stack<>();
+	private Stack<Coordinate> pathCoordinates = new Stack<>();
 		
 	public Path() {}
 
@@ -29,7 +29,7 @@ public class Path {
 		return pathCoordinates.pop();
 	}
 	
-	private Stack<Coordinate> getPath( HashMap<Coordinate, MapTile> tiles, Coordinate start, ArrayList<Coordinate> end){		
+	private Stack<Coordinate> getPath(HashMap<Coordinate, MapTile> tiles, Coordinate start, ArrayList<Coordinate> end){		
 		Pair<Stack<Coordinate>, Float> currCost;
 		
 		Pair<Stack<Coordinate>, Float> minCost = new Pair<>(new Stack<>(), Float.MAX_VALUE);
@@ -55,6 +55,10 @@ public class Path {
 
 	public boolean endPath() {
 		return pathCoordinates.isEmpty();
+	}
+	
+	public Stack<Coordinate> getCurrentPath() {
+		return pathCoordinates;
 	}
 	
 	public void clearPath() {
@@ -103,6 +107,10 @@ public class Path {
 			
 			return null;
 		}
+	}
+	
+	public static boolean hasPath(Coordinate coordinate) {
+		return AStarSearch.findBestPath(WorldSensor.map, WorldSensor.getCurrentPosition(), WorldSensor.getCurrentPosition(), coordinate)!=null;
 	}
 	
 	private static final Coordinate NORTH = new Coordinate(0, 1);

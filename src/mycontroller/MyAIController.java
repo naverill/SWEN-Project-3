@@ -12,7 +12,6 @@ import mycontroller.AStarSearch;
 
 public class MyAIController extends CarController {
 	IMovementStrategy strategy;
-	private WorldSensor sensor;
 	
 	private Car car;
 		
@@ -20,18 +19,18 @@ public class MyAIController extends CarController {
 		super(car);
 		this.car = car;
 		HashMap<Coordinate, MapTile> worldMap = getMap();
-		sensor = new WorldSensor(worldMap, car);
-		new AStarSearch(sensor);
+		new WorldSensor(worldMap, car);
+		new AStarSearch();
 		strategy = new AIStrategy(worldMap);
 	}
 
 	@Override
 	public void update() {
 		HashMap<Coordinate, MapTile> currentView = getView();
-		sensor.updateMap(currentView);
+		WorldSensor.updateMap(currentView);
 		strategy.updateState(currentView);
 		
-		Move nextMove = strategy.move(sensor.getWorldMap());	
+		Move nextMove = strategy.move(WorldSensor.getWorldMap());	
 		
 		moveCar(nextMove);
 	}
@@ -41,16 +40,16 @@ public class MyAIController extends CarController {
 	}
 	
 	private void moveCar(Move move) {
-		System.out.println("Current: " + move.getCurrent());
-		System.out.println("Target: " + move.getTarget());
-		System.out.println("Direction: " + move.getDirection());
-		System.out.println("Relative: " + move.getRelativeDirection());
-		System.out.println("Acceleration: " + move.getAcceleration());
-		System.out.println("Velocity: " + WorldSensor.getVelocity());
-		System.out.println();
+//		System.out.println("Current: " + move.getCurrent());
+//		System.out.println("Target: " + move.getTarget());
+//		System.out.println("Direction: " + move.getDirection());
+//		System.out.println("Relative: " + move.getRelativeDirection());
+//		System.out.println("Acceleration: " + move.getAcceleration());
+//		System.out.println("Velocity: " + WorldSensor.getVelocity());
+//		System.out.println();
 		
 		if(Path.invalidMove(move)) {
-			strategy.reset(sensor.getWorldMap());
+			strategy.reset(WorldSensor.getWorldMap());
 			return;
 		};
 			

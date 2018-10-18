@@ -10,6 +10,7 @@ public class LavaTrap extends TrapTile {
 
 	public void applyTo(Car car, float delta) {
 		car.reduceHealth(HealthDelta * delta);
+		System.out.println(delta);
 		if (key>0) car.findKey(key);
 	}
 	

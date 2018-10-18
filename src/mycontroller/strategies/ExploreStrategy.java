@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Stack;
 
 import mycontroller.AStarSearch;
 import mycontroller.Move;
 import mycontroller.Path;
 import mycontroller.WorldSensor;
 import tiles.MapTile;
+import tiles.MudTrap;
 import utilities.Coordinate;
 
 public class ExploreStrategy extends BasicStrategy {
@@ -22,13 +24,7 @@ public class ExploreStrategy extends BasicStrategy {
 	@Override
 	public Move move(HashMap<Coordinate, MapTile> worldView) {		
 		if(path.endPath()) {
-			if (goal.size() > NODES_OUTSIDE_VIEW) {
-				path = new Path(worldView, WorldSensor.getCurrentPosition(), new ArrayList<>(goal.subList(0, NODES_OUTSIDE_VIEW)));
-			}
-			else {
-				path = new Path(worldView, WorldSensor.getCurrentPosition(), goal);
-			}
-			
+			path = potentialPath(worldView);
 		}
 		
 		Coordinate nextMove = path.getNextMove();
@@ -45,11 +41,21 @@ public class ExploreStrategy extends BasicStrategy {
 				goal.remove(coordinate);
 			}
 		}
+		//check it for mudtraps
+		checkCurrentPath(state);
 		
         Collections.sort(goal, new CoordinateComparator(WorldSensor.getCurrentPosition()));
-        System.out.println(goal);
 	}
 	
+	public void checkCurrentPath(HashMap<Coordinate, MapTile> state) {
+		for(Coordinate pathCoor: path.getCurrentPath()) {
+			if(state.containsKey(pathCoor)){
+				if(state.get(pathCoor) instanceof MudTrap) {
+					path = potentialPath(WorldSensor.map);
+				}
+			}
+		}
+	}
 	
 	class CoordinateComparator implements Comparator<Coordinate> {
 		Coordinate currentPosition;
@@ -73,14 +79,15 @@ public class ExploreStrategy extends BasicStrategy {
 	
 	//adds unexplored tiles to goal array
 	private void populateUnexploredTiles(HashMap<Coordinate, MapTile> map) {
-		Coordinate currentPosition = WorldSensor.getCurrentPosition();
+		System.out.println(map);
 		for(Coordinate coordinate : map.keySet()) {
 			MapTile tile = map.get(coordinate);
 			
 			if(tile.getType().equals(MapTile.Type.ROAD) || tile.getType().equals(MapTile.Type.TRAP)) {
-				if(AStarSearch.findBestPath(map, currentPosition, currentPosition, coordinate)!=null) {
-					goal.add(coordinate);
-				}
+				
+					if(Path.hasPath(coordinate)) {
+						goal.add(coordinate);
+					}		
 			}
 		}
         Collections.sort(goal, new CoordinateComparator(WorldSensor.getCurrentPosition()));
@@ -94,6 +101,15 @@ public class ExploreStrategy extends BasicStrategy {
 		}
 		else {
 			path = new Path(map, WorldSensor.getCurrentPosition(), goal);
+		}	
+	}
+	
+	@Override
+	public Path potentialPath(HashMap<Coordinate, MapTile> worldView) {
+		if (goal.size() > NODES_OUTSIDE_VIEW) {
+			return new Path(worldView, WorldSensor.getCurrentPosition(), new ArrayList<>(goal.subList(0, NODES_OUTSIDE_VIEW)));
+		} else {
+			return new Path(worldView, WorldSensor.getCurrentPosition(), goal);
 		}	
 	}
 	

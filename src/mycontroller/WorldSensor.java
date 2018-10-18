@@ -1,7 +1,9 @@
 package mycontroller;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Set;
+import java.util.Stack;
 
 import tiles.HealthTrap;
 import tiles.LavaTrap;
@@ -11,15 +13,18 @@ import world.Car;
 import world.WorldSpatial.Direction;
 
 public class WorldSensor {
-	static public HashMap<Coordinate, MapTile> map = new HashMap<>();
+	public static HashMap<Coordinate, MapTile> map = new HashMap<>();
 	public static Car car;
+	public static final int LAVA_COST = 5;
+	public static final int DANGER_RANGE = 20;
+	private static Set<Integer> keysSeen = new HashSet<>();
 	
 	public WorldSensor(HashMap<Coordinate, MapTile> worldTiles, Car car) {
 		this.car = car;
 		map.putAll(worldTiles);
 	}
 
-	public  HashMap<Coordinate, MapTile> getNeighbours(Coordinate key){
+	public  static HashMap<Coordinate, MapTile> getNeighbours(Coordinate key){
 		HashMap<Coordinate, MapTile> neighbours = new HashMap<>();
 		int xValue = key.x;
 		int yValue = key.y;
@@ -42,22 +47,19 @@ public class WorldSensor {
 		return neighbours;
 	}
 	
-	public void updateMap(HashMap<Coordinate, MapTile> view) {
+	public static void updateMap(HashMap<Coordinate, MapTile> view) {
 		map.putAll(view);
 	}
 	
-	public HashMap<Coordinate, MapTile> getWorldMap() {
+	public static HashMap<Coordinate, MapTile> getWorldMap() {
 		return map;
 	}
 	
-	public boolean hasAllKeys() {
-		int numKeys = car.numKeys;
-		Set<Integer> currKeys = car.getKeys();
-		for (int i = 1; i <= numKeys; i++) if (!currKeys.contains(i)) return false;
-		return true;
+	public static boolean hasAllKeys() {		
+		return keysSeen.equals(car.getKeys());
 	}
 	
-	static public Coordinate getCurrentPosition() {
+	public static Coordinate getCurrentPosition() {
 		return new Coordinate(car.getPosition());
 	}
 	
@@ -84,4 +86,42 @@ public class WorldSensor {
 	public static boolean isStart(MapTile tile) {
 		return tile.getType().equals(MapTile.Type.START);
 	}
+	
+	public static boolean hasEnoughHealth(Stack<Coordinate> path) {
+		float currentHealth = car.getHealth();
+		float healthBuffer = 100 - DANGER_RANGE;
+		for(Coordinate coor: path) {
+			if(map.get(coor) instanceof LavaTrap) {
+				healthBuffer -= LAVA_COST;
+			}
+		}
+		return currentHealth == 100.0f;
+	}
+	
+	//HIGHWAY TO THEDANGERZONE
+	public static boolean nearCriticalLowHealth(Stack<Coordinate> path) {
+		//move to healthTile before its too late
+		float currentHealth = car.getHealth() - DANGER_RANGE;
+		
+		float healthBuffer = 0;
+		for(Coordinate coor: path) {
+			if(map.get(coor) instanceof LavaTrap) {
+				healthBuffer+=LAVA_COST;
+			}
+		}
+		return currentHealth <= healthBuffer;
+	}
+	
+	public static boolean isHealing() {
+		return map.get(getCurrentPosition()) instanceof HealthTrap;
+	}
+	
+	public static boolean isDoneHealing() {
+		return car.getHealth() == 100.0f;
+	}
+	
+	public static void addKey(int num) {
+		keysSeen.add(num);
+	}
+
 }

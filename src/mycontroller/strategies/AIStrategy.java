@@ -4,30 +4,34 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Stack;
 
 import mycontroller.Move;
+import mycontroller.WorldSensor;
 import tiles.MapTile;
 import utilities.Coordinate;
 
 public class AIStrategy implements IMovementStrategy {
-	enum StrategyKey {
-		kExploreStrat,
-		kHealthStrat,
-		kKeyStrat,
-	}
+	private static final int EXPLORE = 0;
+	private static final int HEALTH = 1;
+	private static final int KEY = 2;
+	private static final int FINISH = 3;
+	private static final int NUM_STRATEGIES = 4;
 	
 	public List<BasicStrategy>  strategies = new ArrayList<>();
 	private BasicStrategy currentStrategy;
 
+	//TODO dont pass sensor cause then passing map would be redundant
 	public AIStrategy(HashMap<Coordinate, MapTile> map) {
-	    strategies = (List<BasicStrategy>) Arrays.asList(
+		strategies = (List<BasicStrategy>) Arrays.asList(
 	    											   (BasicStrategy) new ExploreStrategy(map), 
 	    											   (BasicStrategy) new HealthStrategy(), 
-	    											   (BasicStrategy) new KeyStrategy()
+	    											   (BasicStrategy) new KeyStrategy(),
+	    											   (BasicStrategy) new FinishStrategy()
 	    											   );
-		
-		currentStrategy = strategies.get(StrategyKey.kExploreStrat.ordinal());
+		currentStrategy = strategies.get(EXPLORE);
 	}
+
 	
 	@Override
 	public Move move(HashMap<Coordinate, MapTile> worldView) {		
@@ -36,9 +40,11 @@ public class AIStrategy implements IMovementStrategy {
 
 	@Override
 	public void updateState(HashMap<Coordinate, MapTile> state) {
-		for(StrategyKey key : StrategyKey.values()) {
-			strategies.get(key.ordinal()).updateState(state);
+		for(int i=0; i< NUM_STRATEGIES; i++) {
+			strategies.get(i).updateState(state);
 		}	
+		//System.out.println(WorldSensor.car.numKeys);
+		determineState();
 	}
 
 	@Override
@@ -51,5 +57,86 @@ public class AIStrategy implements IMovementStrategy {
 		currentStrategy.applyBrake();
 	}
 	
+	public void determineState() {
+		if(currentlyHealing() && !fullyHealed()) {
+			System.out.println(currentStrategy.getClass());
+			return;
+		}
+		
+		if(foundHealth() && nearCriticalHealth()) {
+			currentStrategy = strategies.get(HEALTH);
+			System.out.println(currentStrategy.getClass());
+			return;
+		}
+
+		//means we have enough health to do other things
+		if(hasExploredEverything()) {
+			if(WorldSensor.hasAllKeys()) {
+				System.out.println("i have keys");
+				tryToFinish();
+			} else {
+				tryToFindKeys();
+			}
+			System.out.println(currentStrategy.getClass());
+			return;
+		}
+
+		currentStrategy = strategies.get(EXPLORE);
+		System.out.println(currentStrategy.getClass());
+	}
+	
+	private void tryToFinish() {
+		Stack<Coordinate> pathToFinish = strategies.get(FINISH).potentialPath(
+				sensor.getWorldMap()).getCurrentPath();
+		
+		if (WorldSensor.nearCriticalLowHealth(pathToFinish)) {
+			System.out.println("need health");
+			currentStrategy = strategies.get(HEALTH);
+		} else {
+			currentStrategy=strategies.get(FINISH);
+		}
+	}
+
+	private void tryToFindKeys() {
+		Stack<Coordinate> pathToKey = strategies.get(KEY).potentialPath(
+				sensor.getWorldMap()).getCurrentPath();
+		
+		if(WorldSensor.hasEnoughHealth(pathToKey)) {
+			currentStrategy = strategies.get(KEY);
+		} 
+		else if (WorldSensor.nearCriticalLowHealth(pathToKey)) {
+			currentStrategy = strategies.get(HEALTH);
+		}
+		
+			
+		
+	}
+	
+	public boolean currentlyHealing() {
+		return WorldSensor.isHealing() && currentStrategy==strategies.get(HEALTH); //and current strategy is health
+	}
+	
+	public boolean fullyHealed() {
+		return WorldSensor.isDoneHealing();
+	}
+
+	//returns true if it has explored everything
+	public boolean hasExploredEverything(){
+		return strategies.get(EXPLORE).goal.isEmpty();
+	}
+	
+	public boolean keysCollected(){
+		return strategies.get(KEY).goal.isEmpty();
+	}
+	
+	public boolean foundHealth(){
+		return strategies.get(HEALTH).foundGoalTile();
+	}
+	
+	public boolean nearCriticalHealth() {
+		Stack<Coordinate> pathToHeal = strategies.get(HEALTH).potentialPath(sensor.getWorldMap()).getCurrentPath();
+		
+		return WorldSensor.nearCriticalLowHealth(pathToHeal);
+	}
 
 }

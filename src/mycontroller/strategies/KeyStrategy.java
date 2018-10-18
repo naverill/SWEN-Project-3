@@ -2,7 +2,10 @@ package mycontroller.strategies;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
+import mycontroller.AStarSearch;
 import mycontroller.Move;
 import mycontroller.Path;
 import mycontroller.WorldSensor;
@@ -11,24 +14,65 @@ import tiles.MapTile;
 import utilities.Coordinate;
 
 public class KeyStrategy extends BasicStrategy {
+	protected ArrayList<Coordinate> collected = new ArrayList<>();
+	
 	@Override
 	public Move move(HashMap<Coordinate, MapTile> worldView) {
+		collectKey();
+		
 		if(path.endPath()) {
-			path = new Path(worldView, WorldSensor.getCurrentPosition(), goal);
+			path = potentialPath(worldView);
 		} 
 		//TODO handle types of tiles and acceleration/deceleration
-		return new Move(path.getNextMove(), Move.Acceleration.ACCELERATE);
+		Coordinate nextMove = path.getNextMove();
+		MapTile nextTile = WorldSensor.getTileAtCoordinate(nextMove);
+		Move.Acceleration acceleration = adjustAcceleration(nextTile);
+		
+		//TODO handle types of tiles and acceleration/deceleration
+		return new Move(nextMove, acceleration);
 	}
 
 	@Override
 	public void updateState(HashMap<Coordinate, MapTile> state) {
 		for(Coordinate coordinate : state.keySet()) {
 			MapTile tile = state.get(coordinate);
+			
 			if(tile instanceof LavaTrap) {
-				if(((LavaTrap) tile).getKey() != 0){
-					goal.add(coordinate);
+				if((isKey((LavaTrap) tile)) && !foundKey(coordinate)){
+					if(!collected(coordinate) && Path.hasPath(coordinate)) {
+						//System.out.println("add key");
+						goal.add(coordinate);
+					}
 				} 
 			}
+		}
+		//System.out.println(collected);
+	}
+	
+	public boolean isKey(LavaTrap tile) {
+		int keyNum = tile.getKey();
+		if(keyNum !=0) {
+			WorldSensor.addKey(keyNum);
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean foundKey(Coordinate key) {
+		return goal.contains(key);
+	}
+	
+	private boolean collected(Coordinate coordinate) {
+		return collected.contains(coordinate);
+	}
+	
+	private void collectKey() {
+		Coordinate currentPosition = WorldSensor.getCurrentPosition();
+		if(goal.contains(currentPosition)) {
+			collected.add(currentPosition);
+			
+			
+			goal.remove(currentPosition);
 		}
 	}
 }
