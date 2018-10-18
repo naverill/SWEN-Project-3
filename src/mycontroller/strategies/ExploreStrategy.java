@@ -10,9 +10,7 @@ import mycontroller.WorldSensor;
 import tiles.MapTile;
 import utilities.Coordinate;
 
-public class ExploreStrategy extends BasicStrategy {	
-	ArrayList<Coordinate> unexploredTiles = new ArrayList<Coordinate>();
-	
+public class ExploreStrategy extends BasicStrategy {		
 	ExploreStrategy(HashMap<Coordinate, MapTile> map){
 		populateUnexploredTiles(map);
 	}
@@ -22,7 +20,7 @@ public class ExploreStrategy extends BasicStrategy {
 		Coordinate exploreTile = path.getNextMove();
 		
 		if(path.endPath()) {
-			path = new Path(WorldSensor.getCurrentPosition(), unexploredTiles, worldView);
+			path = new Path(WorldSensor.getCurrentPosition(), goal, worldView);
 		}
 		
 		return exploreTile;
@@ -30,12 +28,12 @@ public class ExploreStrategy extends BasicStrategy {
 	
 	public void updateState(HashMap<Coordinate, MapTile> state) {
 		for(Coordinate coordinate : state.keySet()) {
-			if(unexploredTiles.contains(coordinate)) {
-				unexploredTiles.remove(coordinate);
+			if(goal.contains(coordinate)) {
+				goal.remove(coordinate);
 			}
 		}
 		
-        Collections.sort(unexploredTiles, new CoordinateComparator(WorldSensor.getCurrentPosition()));
+        Collections.sort(goal, new CoordinateComparator(WorldSensor.getCurrentPosition()));
 	}
 	
 	
@@ -59,16 +57,17 @@ public class ExploreStrategy extends BasicStrategy {
 	};
 	
 	
+	//adds unexplored tiles to goal array
 	private void populateUnexploredTiles(HashMap<Coordinate, MapTile> map) {
 		for(Coordinate coordinate : map.keySet()) {
 			MapTile tile = map.get(coordinate);
 			
 			if(tile.getType().equals(MapTile.Type.ROAD) || tile.getType().equals(MapTile.Type.TRAP)) {
 				//TODO() if tile has a path to it (not blocked by mud/walls)
-				unexploredTiles.add(coordinate);
+				goal.add(coordinate);
 				
 			}
 		}
-        Collections.sort(unexploredTiles, new CoordinateComparator(WorldSensor.getCurrentPosition()));
+        Collections.sort(goal, new CoordinateComparator(WorldSensor.getCurrentPosition()));
 	}
 }

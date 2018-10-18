@@ -10,28 +10,22 @@ import tiles.MapTile;
 import utilities.Coordinate;
 
 public class HealthStrategy extends BasicStrategy {
-	ArrayList<Coordinate> health = new ArrayList<>();
-
 	@Override
 	public Coordinate move(HashMap<Coordinate, MapTile> worldView) {
 		Coordinate healthTile = path.getNextMove();
 		
 		if(path.endPath()) {
-			path = new Path(WorldSensor.getCurrentPosition(), health, worldView);
+			path = new Path(WorldSensor.getCurrentPosition(), goal, worldView);
 		}
 		
 		return healthTile;
-	}
-	
-	public boolean foundHealth() {
-		return !health.isEmpty();
 	}
 
 	@Override
 	public void updateState(HashMap<Coordinate, MapTile> state) {
 		for(Coordinate coordinate : state.keySet()) {
 			if(state.get(coordinate) instanceof HealthTrap) {
-				health.add(coordinate);
+				goal.add(coordinate);
 			}
 		}
 	}

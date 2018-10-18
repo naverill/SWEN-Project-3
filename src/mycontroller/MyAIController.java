@@ -14,7 +14,7 @@ import world.WorldSpatial.Direction;
 public class MyAIController extends CarController {
 	IMovementStrategy strategy;
 	private WorldSensor sensor;
-
+	private enum states {KEY, HEALTH, EXPLORE}
 	enum RelativeDirection {LEFT, RIGHT, FORWARD, BACKWARD}
 	
 	private Car car;
@@ -23,7 +23,7 @@ public class MyAIController extends CarController {
 		super(car);
 		this.car = car;
 		HashMap<Coordinate, MapTile> worldMap = getMap();
-		sensor = new WorldSensor(worldMap, new Coordinate(getPosition()));
+		sensor = new WorldSensor(worldMap, car);
 		strategy = new AIStrategy(worldMap);
 	}
 
@@ -32,14 +32,14 @@ public class MyAIController extends CarController {
 		Coordinate currentPos =  new Coordinate(getPosition());
 
 		HashMap<Coordinate, MapTile> currentView = getView();
-		sensor.updateMap(currentView, currentPos);
+		sensor.updateMap(currentView);
 		strategy.updateState(currentView);
 		
 		Coordinate nextPos = strategy.move(sensor.getWorldMap());
 		
 		coordinateToMovement(currentPos, nextPos);
 	}
-	
+
 	private void coordinateToMovement(Coordinate current, Coordinate next) {
 		if(Path.invalidMove(next)) {
 			return;
@@ -89,8 +89,8 @@ public class MyAIController extends CarController {
 	}
 	
 	public Direction absoluteToRelativePosition(Coordinate current, Coordinate next) {
+		System.out.println(next);
 		Coordinate pos = new Coordinate(next.x - current.x, next.y - current.y);
-
 		System.out.println("("+ next.x + "," + next.y + ")");
 		System.out.println("("+ pos.x + "," + pos.y + ")");
 		

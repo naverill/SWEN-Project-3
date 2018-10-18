@@ -1,13 +1,18 @@
 package controller;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
+import tiles.MapTile.Type;
 
 import tiles.LavaTrap;
 import tiles.MapTile;
 import utilities.Coordinate;
 import world.Car;
+
 import world.WorldSpatial;
+import mycontroller.AStarSearch;
+import mycontroller.WorldSensor;
 
 public class AIController extends CarController {
 	
@@ -21,6 +26,16 @@ public class AIController extends CarController {
 	
 	public AIController(Car car) {
 		super(car);
+		WorldSensor thing = new WorldSensor(getMap(), car);
+		AStarSearch search = new AStarSearch(thing);
+		Coordinate  before = new Coordinate(2,17);
+		Coordinate after = new Coordinate (22,16);
+		HashMap<Coordinate, MapTile> hey = getMap();
+		for(Map.Entry<Coordinate, MapTile> entry: hey.entrySet()){
+			System.out.println(entry.getKey());
+			System.out.println(entry.getValue().getType());
+		}
+		System.out.println(AStarSearch.findBestPath(getMap(), before, before, after) + "hey");
 	}
 	
 	// Coordinate initialGuess;

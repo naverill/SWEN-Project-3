@@ -3,17 +3,19 @@ package mycontroller;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import tiles.MapTile;
 import tiles.MapTile.Type;
 import utilities.Coordinate;
+import world.Car;
 
 public class WorldSensor {
-	static public HashMap<Coordinate, MapTile> map = new HashMap<>();
-	static private Coordinate currentPosition;
+	public static HashMap<Coordinate, MapTile> map = new HashMap<>();
+	private static Car car;
 	
-	public WorldSensor(HashMap<Coordinate, MapTile> worldTiles, Coordinate position) {
-		currentPosition = position;
+	public WorldSensor(HashMap<Coordinate, MapTile> worldTiles, Car car) {
+		this.car = car;
 		map.putAll(worldTiles);
 	}
 
@@ -40,8 +42,7 @@ public class WorldSensor {
 		return neighbours;
 	}
 	
-	public void updateMap(HashMap<Coordinate, MapTile> view, Coordinate position) {
-		currentPosition = position;
+	public void updateMap(HashMap<Coordinate, MapTile> view) {
 		map.putAll(view);
 	}
 	
@@ -49,8 +50,16 @@ public class WorldSensor {
 		return map;
 	}
 	
+	public boolean hasAllKeys() {
+		int numKeys = car.numKeys;
+		Set<Integer> currKeys = car.getKeys();
+		for (int i = 1; i <= numKeys; i++) if (!currKeys.contains(i)) return false;
+		System.out.println("yeet");
+		return true;
+	}
+	
 	static public Coordinate getCurrentPosition() {
-		return new Coordinate(currentPosition.x, currentPosition.y);
+		return new Coordinate(car.getPosition());
 	}
 
 }
