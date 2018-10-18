@@ -5,12 +5,12 @@ import world.WorldSpatial;
 import world.WorldSpatial.Direction;
 
 public class Move {
-	public static enum Acceleration { SLOWDOWN, BRAKE, ACCELERATE};
-	public static enum RelativeDirection {LEFT, RIGHT, FORWARD, BACKWARD}
+	public static enum Acceleration { SLOWDOWN, NEUTRAL, BRAKE, ACCELERATE};
+	public static enum RelativeDirection {LEFT, RIGHT, FORWARD, REVERSE}
 
 	private final Coordinate current;
 	private final Coordinate target;
-	private final Acceleration acceleration;
+	private Acceleration acceleration;
 	private final Direction direction;
 	private final RelativeDirection relativeDirection;
 	
@@ -22,7 +22,11 @@ public class Move {
     	this.relativeDirection = absoluteToRelative(current, target, direction);
     }
     
-	public RelativeDirection absoluteToRelative(Coordinate current, Coordinate target, Direction direction) {		
+	public RelativeDirection absoluteToRelative(Coordinate current, Coordinate target, Direction direction) {
+		if(current.equals(target)) {
+			acceleration=Acceleration.BRAKE;
+		}
+		
 		float targetAngle = getAngle(current, target);
 		
 		float carAngle = WorldSpatial.rotation(direction);
@@ -38,7 +42,7 @@ public class Move {
 		} else if (Float.compare(delta, 90f)==0) {
 			return RelativeDirection.LEFT;
 		} else if (Float.compare(delta, 180f)==0) {
-			return RelativeDirection.BACKWARD;
+			return RelativeDirection.REVERSE;
 		} else if (Float.compare(delta, 270f)==0) {
 			return RelativeDirection.RIGHT;
 		} else {

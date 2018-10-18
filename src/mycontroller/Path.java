@@ -61,6 +61,10 @@ public class Path {
 		pathCoordinates.clear();
 	}
 	
+	public void addPathNode(Coordinate currentPosition) {
+		pathCoordinates.push(currentPosition);
+	}
+	
 	public static boolean invalidMove(Move move) {
 		return move.getTarget().equals(invalid) || invalidXCoordinate(move.getTarget()) || invalidYCoordinate(move.getTarget()) || notCardinalMovement(move);
 	}

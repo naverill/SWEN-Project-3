@@ -45,6 +45,11 @@ public class AIStrategy implements IMovementStrategy {
 	public void reset(HashMap<Coordinate, MapTile> map) {
 		currentStrategy.reset(map);
 	}
+
+	@Override
+	public void applyBrake() {
+		currentStrategy.applyBrake();
+	}
 	
 
 }

@@ -55,14 +55,17 @@ public class MyAIController extends CarController {
 		if(move.getAcceleration().equals(Move.Acceleration.ACCELERATE)) {
 			applyForwardAcceleration();
 		} else if (move.getAcceleration().equals(Move.Acceleration.BRAKE)){
-			applyBrake();
-		} else {
+			if(!isStopped()) {
+				applyBrake();
+				strategy.applyBrake();
+			}
+		} else if (move.getAcceleration().equals(Move.Acceleration.SLOWDOWN)){
 			applyReverseAcceleration();
 		}
 			
 		if(move.getRelativeDirection().equals(Move.RelativeDirection.LEFT)) {
 			turnLeft();
-		} else if (move.getRelativeDirection().equals(Move.RelativeDirection.LEFT)) {
+		} else if (move.getRelativeDirection().equals(Move.RelativeDirection.RIGHT)) {
 			turnRight();
 		}
 	}

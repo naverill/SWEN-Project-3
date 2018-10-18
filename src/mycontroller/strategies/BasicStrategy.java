@@ -28,5 +28,9 @@ public abstract class BasicStrategy implements IMovementStrategy{
 		path.clearPath();
 		path = new Path(map, WorldSensor.getCurrentPosition(), goal);
 	}
+	
+	public void applyBrake() {
+		path.addPathNode(WorldSensor.getCurrentPosition());
+	}
 
 }

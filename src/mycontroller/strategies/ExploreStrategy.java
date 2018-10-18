@@ -30,9 +30,8 @@ public class ExploreStrategy extends BasicStrategy {
 			}
 			
 		}
-		
 		//TODO handle types of tiles and acceleration/deceleration
-		return new Move(path.getNextMove(), Move.Acceleration.ACCELERATE);
+		return new Move(path.getNextMove(), Move.Acceleration.SLOWDOWN);
 	}
 	
 	public void updateState(HashMap<Coordinate, MapTile> state) {

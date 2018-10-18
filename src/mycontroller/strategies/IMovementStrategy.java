@@ -14,5 +14,7 @@ public interface IMovementStrategy {
 	
 	public void reset(HashMap<Coordinate, MapTile> map);
 
+	public void applyBrake();
+
 }
 
