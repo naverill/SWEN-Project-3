@@ -118,13 +118,12 @@ public class AStarSearch {
 		MapTile tile = worldMap.get(neighbour);
 		if (tile instanceof LavaTrap) {
 			if(((LavaTrap) tile).getKey()!=0) {
-				for(Integer keyNum: WorldSensor.car.getKeys()) {
-					if(((LavaTrap) tile).getKey()!=keyNum) {
-						System.out.println();
-						gCost *= OTW_MULTIPLIER;
-					}else {
-						gCost *= LAVA_MULTIPLIER;
-					}
+				if(!WorldSensor.car.getKeys().contains(((LavaTrap) tile).getKey()))
+					//doesnt have key then go through it
+					gCost *= OTW_MULTIPLIER;
+				else {
+					//does have key then go through it
+					gCost *= LAVA_MULTIPLIER;
 				}
 			}else {
 				gCost *= LAVA_MULTIPLIER;		
