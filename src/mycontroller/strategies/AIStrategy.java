@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import mycontroller.Move;
 import tiles.MapTile;
 import utilities.Coordinate;
 
@@ -29,7 +30,7 @@ public class AIStrategy implements IMovementStrategy {
 	}
 	
 	@Override
-	public Coordinate move(HashMap<Coordinate, MapTile> worldView) {		
+	public Move move(HashMap<Coordinate, MapTile> worldView) {		
 		return currentStrategy.move(worldView);
 	}
 
@@ -38,6 +39,16 @@ public class AIStrategy implements IMovementStrategy {
 		for(StrategyKey key : StrategyKey.values()) {
 			strategies.get(key.ordinal()).updateState(state);
 		}	
+	}
+
+	@Override
+	public void reset(HashMap<Coordinate, MapTile> map) {
+		currentStrategy.reset(map);
+	}
+
+	@Override
+	public void applyBrake() {
+		currentStrategy.applyBrake();
 	}
 	
 

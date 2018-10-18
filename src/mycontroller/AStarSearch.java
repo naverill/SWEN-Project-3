@@ -1,16 +1,16 @@
 package mycontroller;
 
 import java.util.*;
-import world.Car;
-import world.World;
+
+import javax.swing.text.Utilities;
+
+
 import tiles.MapTile;
 import utilities.Coordinate;
-import world.WorldSpatial;
-import tiles.MapTile;
-import tiles.TrapTile;
+import world.WorldSpatial.Direction;
 import tiles.MudTrap;
 import tiles.LavaTrap;
-import tiles.GrassTrap;
+import tiles.HealthTrap;
 
 
 public class AStarSearch {
@@ -39,13 +39,12 @@ public class AStarSearch {
 		//this.goal = goal;
 		this.mapExpert = mapExpert;
 		worldMap = this.mapExpert.getWorldMap();
+		System.out.println(mapExpert);
 	}
-	 
 	
-	
-	public static Stack<Coordinate> findBestPath(HashMap<Coordinate, MapTile> iMap, Coordinate iBeforeStart,
+	public static Pair<Stack<Coordinate>, Float> findBestPath(HashMap<Coordinate, MapTile> iMap, Coordinate iBeforeStart,
             Coordinate iStart, Coordinate iGoal) {
-		
+
 		map = iMap;
 		start = iStart;
 		goal = iGoal;
@@ -66,7 +65,7 @@ public class AStarSearch {
 			curr = getLowestFCost();
 			
 			if (curr.equals(goal)) {
-				return reconstructPath(curr);
+				return new Pair<Stack<Coordinate>, Float>(reconstructPath(curr), gCosts.get(goal));
 			}
 			
 			unExplored.remove(curr);
@@ -75,7 +74,7 @@ public class AStarSearch {
 			
 			
 			ArrayList<Coordinate> neighbours = getValidNeighbours(curr);
-			
+
 			for (Coordinate neighbour: neighbours) {
 				if (exploredTiles.contains(neighbour)) {
 					continue;
@@ -84,8 +83,7 @@ public class AStarSearch {
 				if (!unExplored.containsKey(neighbour)) {
 					unExplored.put(neighbour, Float.MAX_VALUE);
 				}
-				//this is null
-
+				
 				gCost = gCosts.get(curr) + calcGCosts(curr, neighbour, cameFrom.get(curr));
 				
 				if (gCosts.containsKey(neighbour)) {
@@ -96,13 +94,14 @@ public class AStarSearch {
 				
 				cameFrom.put(neighbour, curr);
 				gCosts.put(neighbour, gCost);
-				fCost = gCost + calcHCost(neighbour, goal);
+				float hcost = calcHCost(neighbour, goal);
+				
+				fCost = gCost + hcost;
+				
 				unExplored.put(neighbour, fCost);
 			}
-		
+			
 		}
-		
-		
 		return null;
 	}
 	
@@ -122,13 +121,40 @@ public class AStarSearch {
 		if (tile instanceof LavaTrap) {
 //			gCost *= (100 - mapExpert.getCar().getHealth());
 			gCost *= LAVA_MULTIPLIER;
-
+		}if(tile instanceof HealthTrap) {
+			gCost*= ICE_MULTIPLIER;
 		}
-		
+		Coordinate coor = mapExpert.getCurrentPosition();
+		if (worldMap.get(coor).getType().equals(MapTile.Type.START)) {
+			Direction nb = absoluteToRelativePosition(current, neighbour);
+			if (!WorldSensor.car.getOrientation().equals(nb)) {
+				gCost *= 10;
+			}
+		}
 		return gCost;
 	}
 	
-	
+public static Direction absoluteToRelativePosition(Coordinate current, Coordinate next) {
+		
+		Coordinate pos = new Coordinate(next.x - current.x, next.y - current.y);
+		
+		if (pos.x > 0) {
+			return Direction.EAST;
+		}
+		else if (pos.y < 0) {
+			return Direction.SOUTH;
+			
+		} else if (pos.x < 0) {
+			return Direction.WEST;
+			
+		}else if (pos.y > 0) {
+			return Direction.NORTH;
+			
+		} else {
+			
+			return null;
+		}
+	}
 	
 	private static ArrayList<Coordinate> getValidNeighbours(Coordinate current) {
 		neighbourTiles = new HashMap<>();
@@ -147,9 +173,7 @@ public class AStarSearch {
 			}
 			
 			validNeighbours.add(neighbour);
-			
 		}
-		
 		return validNeighbours;
 	}
 	
@@ -160,8 +184,6 @@ public class AStarSearch {
 		return hCost;
 	}
 	
-	
-	
 	private static Stack<Coordinate> reconstructPath(Coordinate goal) {
 		Stack<Coordinate> path = new Stack<>();
         path.add(goal);
@@ -171,7 +193,7 @@ public class AStarSearch {
             path.add(current);
         }
 
-        Collections.reverse(path);
+        path.pop();
         return path;
 	}
 	
@@ -180,6 +202,7 @@ public class AStarSearch {
 	private static float getManhattanDistance(Coordinate from, Coordinate to) {
 		return (float) (Math.abs(to.x - from.x) + Math.abs(to.y - from.y));
 	}
+
 }
 	
 

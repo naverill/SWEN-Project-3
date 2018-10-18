@@ -29,12 +29,12 @@ public class AIController extends CarController {
 		WorldSensor thing = new WorldSensor(getMap(), car);
 		AStarSearch search = new AStarSearch(thing);
 		Coordinate  before = new Coordinate(2,17);
-		Coordinate after = new Coordinate (22,16);
+		Coordinate after = new Coordinate (2,14);
 		HashMap<Coordinate, MapTile> hey = getMap();
-		for(Map.Entry<Coordinate, MapTile> entry: hey.entrySet()){
-			System.out.println(entry.getKey());
-			System.out.println(entry.getValue().getType());
-		}
+//		for(Map.Entry<Coordinate, MapTile> entry: hey.entrySet()){
+//			System.out.println(entry.getKey());
+//			System.out.println(entry.getValue().getType());
+//		}
 		System.out.println(AStarSearch.findBestPath(getMap(), before, before, after) + "hey");
 	}
 	

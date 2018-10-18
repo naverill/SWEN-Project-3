@@ -3,6 +3,7 @@ package mycontroller.strategies;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import mycontroller.Move;
 import mycontroller.Path;
 import mycontroller.WorldSensor;
 import tiles.HealthTrap;
@@ -11,14 +12,12 @@ import utilities.Coordinate;
 
 public class HealthStrategy extends BasicStrategy {
 	@Override
-	public Coordinate move(HashMap<Coordinate, MapTile> worldView) {
-		Coordinate healthTile = path.getNextMove();
-		
+	public Move move(HashMap<Coordinate, MapTile> worldView) {		
 		if(path.endPath()) {
-			path = new Path(WorldSensor.getCurrentPosition(), goal, worldView);
+			path = new Path(worldView, WorldSensor.getCurrentPosition(), goal);
 		}
-		
-		return healthTile;
+		//TODO handle types of tiles and acceleration/deceleration
+		return new Move(path.getNextMove(), Move.Acceleration.ACCELERATE);
 	}
 
 	@Override
@@ -28,6 +27,11 @@ public class HealthStrategy extends BasicStrategy {
 				goal.add(coordinate);
 			}
 		}
+	}
+	
+	public void reset(HashMap<Coordinate, MapTile> map) {
+		path.clearPath();
+		path = new Path(map, WorldSensor.getCurrentPosition(), goal);
 	}
 
 }

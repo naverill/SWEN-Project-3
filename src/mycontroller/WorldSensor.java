@@ -1,18 +1,18 @@
 package mycontroller;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map.Entry;
 import java.util.Set;
 
+import tiles.HealthTrap;
+import tiles.LavaTrap;
 import tiles.MapTile;
-import tiles.MapTile.Type;
 import utilities.Coordinate;
 import world.Car;
+import world.WorldSpatial.Direction;
 
 public class WorldSensor {
-	public static HashMap<Coordinate, MapTile> map = new HashMap<>();
-	private static Car car;
+	static public HashMap<Coordinate, MapTile> map = new HashMap<>();
+	public static Car car;
 	
 	public WorldSensor(HashMap<Coordinate, MapTile> worldTiles, Car car) {
 		this.car = car;
@@ -54,12 +54,34 @@ public class WorldSensor {
 		int numKeys = car.numKeys;
 		Set<Integer> currKeys = car.getKeys();
 		for (int i = 1; i <= numKeys; i++) if (!currKeys.contains(i)) return false;
-		System.out.println("yeet");
 		return true;
 	}
 	
 	static public Coordinate getCurrentPosition() {
 		return new Coordinate(car.getPosition());
 	}
-
+	
+	static public Direction getOrientation() {
+		return car.getOrientation();
+	}
+	
+	static public int getVelocity() {
+		return car.getVelocity();
+	}
+	
+	public static MapTile getTileAtCoordinate(Coordinate coordinate) {
+		return map.get(coordinate);
+	}
+	
+	public static boolean isTrap(MapTile tile) {
+		return tile instanceof LavaTrap;
+	}
+	
+	public static boolean isHealth(MapTile tile) {
+		return tile instanceof HealthTrap;
+	}
+	
+	public static boolean isStart(MapTile tile) {
+		return tile.getType().equals(MapTile.Type.START);
+	}
 }

@@ -7,39 +7,70 @@ import java.util.Stack;
 import tiles.MapTile;
 import utilities.Coordinate;
 import world.World;
+import world.WorldSpatial.Direction;
 
 public class Path {
-	public Stack<Coordinate> pathMoves = new Stack<>();
+	public Stack<Coordinate> pathCoordinates = new Stack<>();
 		
 	public Path() {}
 
-	public Path(Coordinate start, ArrayList<Coordinate> end, HashMap<Coordinate, MapTile> tiles) {
-		pathMoves = getPath(start, end, tiles);
+	public Path(HashMap<Coordinate, MapTile> tiles, Coordinate start, ArrayList<Coordinate> end) {
+		pathCoordinates = getPath(tiles, start, end);
 	}
 	
 	
 	public Coordinate getNextMove(){
-		if(pathMoves.empty()) {
+		if(pathCoordinates.empty()) {
+			
 			return invalid;
 		}
-		return pathMoves.pop();
+		//System.out.println(pathCoordinates);
+		
+		return pathCoordinates.pop();
 	}
 	
-	private Stack<Coordinate> getPath(Coordinate start, ArrayList<Coordinate> end, HashMap<Coordinate, MapTile> tiles){		
-		return pathMoves;
+	private Stack<Coordinate> getPath( HashMap<Coordinate, MapTile> tiles, Coordinate start, ArrayList<Coordinate> end){		
+		Pair<Stack<Coordinate>, Float> currCost;
+		
+		Pair<Stack<Coordinate>, Float> minCost = new Pair<>(new Stack<>(), Float.MAX_VALUE);
+
+		for(Coordinate coordinate : end) {
+			currCost = AStarSearch.findBestPath(tiles, start, start, coordinate);
+			
+			if (currCost != null) {
+				if(currCost.getSecond() < minCost.getSecond()) {
+					minCost.setFirst(currCost.getFirst());
+					minCost.setSecond(currCost.getSecond());
+				}
+			}
+			else {
+				continue;
+			}
+			
+		}
+		//System.out.println(minCost.getFirst());
+		return minCost.getFirst();
 	}
 
 
 	public boolean endPath() {
-		return pathMoves.isEmpty();
+		return pathCoordinates.isEmpty();
 	}
 	
 	public void clearPath() {
-		pathMoves.clear();
+		pathCoordinates.clear();
 	}
 	
-	public static boolean invalidMove(Coordinate c) {
-		return c.equals(invalid) || invalidXCoordinate(c) || invalidYCoordinate(c);
+	public void addPathNode(Coordinate currentPosition) {
+		pathCoordinates.push(currentPosition);
+	}
+	
+	public static boolean invalidMove(Move move) {
+		return move.getTarget().equals(invalid) || invalidXCoordinate(move.getTarget()) || invalidYCoordinate(move.getTarget()) || notCardinalMovement(move);
+	}
+	
+	public static boolean notCardinalMovement(Move move) {
+		return absoluteToCardinal(move.getCurrent(), move.getTarget())==null;
 	}
 	
 	public static boolean invalidXCoordinate(Coordinate c) {
@@ -51,4 +82,31 @@ public class Path {
 	}
 	
 	public static final Coordinate invalid = new Coordinate(-1, -1);
+	
+	public static Direction absoluteToCardinal(Coordinate current, Coordinate next) {
+		
+		Coordinate pos = new Coordinate(next.x - current.x, next.y - current.y);
+		
+		if(pos.equals(NORTH)) {
+			return Direction.NORTH;
+			
+		} else if (pos.equals(SOUTH)) {
+			return Direction.SOUTH;
+			
+		} else if (pos.equals(EAST)) {
+			return Direction.EAST;
+			
+		}else if (pos.equals(WEST)) {
+			return Direction.WEST;
+			
+		} else {
+			
+			return null;
+		}
+	}
+	
+	private static final Coordinate NORTH = new Coordinate(0, 1);
+	private static final Coordinate EAST = new Coordinate(1, 0);
+	private static final Coordinate SOUTH = new Coordinate(0, -1);
+	private static final Coordinate WEST = new Coordinate(-1, 0);
 }
