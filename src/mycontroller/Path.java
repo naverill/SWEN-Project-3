@@ -110,7 +110,7 @@ public class Path {
 	}
 	
 	public static boolean hasPath(Coordinate coordinate) {
-		return AStarSearch.findBestPath(WorldSensor.map, WorldSensor.getCurrentPosition(), WorldSensor.getCurrentPosition(), coordinate)!=null;
+		return AStarSearch.findBestPath(WorldSensor.getWorldMap(), WorldSensor.getCurrentPosition(), WorldSensor.getCurrentPosition(), coordinate)!=null;
 	}
 	
 	private static final Coordinate NORTH = new Coordinate(0, 1);

@@ -16,6 +16,11 @@ public class HealthStrategy extends BasicStrategy {
 		if(path.endPath()) {
 			path = potentialPath(worldView);
 		}
+		
+		if(WorldSensor.isHealing() && !WorldSensor.isDoneHealing()) {
+			return new Move(WorldSensor.getCurrentPosition(), Move.Acceleration.BRAKE);
+		}
+		
 		//TODO handle types of tiles and acceleration/deceleration
 		return new Move(path.getNextMove(), Move.Acceleration.ACCELERATE);
 	}

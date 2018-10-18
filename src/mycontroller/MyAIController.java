@@ -21,14 +21,14 @@ public class MyAIController extends CarController {
 		this.car = car;
 		HashMap<Coordinate, MapTile> worldMap = getMap();
 		sensor = new WorldSensor(worldMap, car);
-		new AStarSearch(sensor);
-		strategy = new AIStrategy(worldMap, sensor);
+		new AStarSearch();
+		strategy = new AIStrategy(worldMap);
 	}
 
 	@Override
 	public void update() {
 		HashMap<Coordinate, MapTile> currentView = getView();
-		sensor.updateMap(currentView);
+		WorldSensor.updateMap(currentView);
 		strategy.updateState(currentView);
 		
 		Move nextMove = strategy.move(sensor.getWorldMap());	
@@ -66,11 +66,7 @@ public class MyAIController extends CarController {
 		} else if (move.getAcceleration().equals(Move.Acceleration.BRAKE)){
 			if(!isStopped()) {
 				applyBrake();
-				strategy.applyBrake();
-			} else {
-				System.out.println("BRAKE");
-			}
-			
+			} 
 		} else if (move.getAcceleration().equals(Move.Acceleration.DECELERATE)){
 			decelerate(move);
 		} else {

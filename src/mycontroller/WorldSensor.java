@@ -12,8 +12,8 @@ import world.Car;
 import world.WorldSpatial.Direction;
 
 public class WorldSensor {
-	static public HashMap<Coordinate, MapTile> map = new HashMap<>();
-	public static Car car;
+	private static HashMap<Coordinate, MapTile> map = new HashMap<>();
+	private static Car car;
 	public static final int LAVA_COST = 5;
 	public static final int DANGER_RANGE = 20;
 	
@@ -22,7 +22,7 @@ public class WorldSensor {
 		map.putAll(worldTiles);
 	}
 
-	public  HashMap<Coordinate, MapTile> getNeighbours(Coordinate key){
+	public  static HashMap<Coordinate, MapTile> getNeighbours(Coordinate key){
 		HashMap<Coordinate, MapTile> neighbours = new HashMap<>();
 		int xValue = key.x;
 		int yValue = key.y;
@@ -45,19 +45,31 @@ public class WorldSensor {
 		return neighbours;
 	}
 	
-	public void updateMap(HashMap<Coordinate, MapTile> view) {
+	public static void updateMap(HashMap<Coordinate, MapTile> view) {
 		map.putAll(view);
 	}
 	
-	public HashMap<Coordinate, MapTile> getWorldMap() {
+	public static HashMap<Coordinate, MapTile> getWorldMap() {
 		return map;
 	}
 	
+<<<<<<< Updated upstream
 	public boolean hasAllKeys() {
+=======
+<<<<<<< Updated upstream
+	public boolean hasAllKeys() {		
+		return keysSeen.equals(car.getKeys());
+=======
+	public static boolean hasAllKeys() {
+>>>>>>> Stashed changes
 		int numKeys = car.numKeys;
 		Set<Integer> currKeys = car.getKeys();
 		for (int i = 1; i <= numKeys; i++) if (!currKeys.contains(i)) return false;
 		return true;
+<<<<<<< Updated upstream
+=======
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
 	}
 	
 	static public Coordinate getCurrentPosition() {
@@ -88,7 +100,7 @@ public class WorldSensor {
 		return tile.getType().equals(MapTile.Type.START);
 	}
 	
-	public boolean hasEnoughHealth(Stack<Coordinate> path) {
+	public static boolean hasEnoughHealth(Stack<Coordinate> path) {
 		float currentHealth = car.getHealth();
 		float healthBuffer = 0;
 		for(Coordinate coor: path) {
@@ -100,7 +112,7 @@ public class WorldSensor {
 	}
 	
 	//HIGHWAY TO THEDANGERZONE
-	public boolean nearCriticalLowHealth(Stack<Coordinate> path) {
+	public static boolean nearCriticalLowHealth(Stack<Coordinate> path) {
 		//move to healthTile before its too late
 		float currentHealth = car.getHealth() - DANGER_RANGE;
 		
@@ -113,12 +125,25 @@ public class WorldSensor {
 		return currentHealth <= healthBuffer;
 	}
 	
-	public boolean isHealing() {
+	public static boolean isHealing() {
 		return map.get(getCurrentPosition()) instanceof HealthTrap;
 	}
 	
+<<<<<<< Updated upstream
 	public boolean isDoneHealing() {
+<<<<<<< Updated upstream
 		return car.getHealth()==100;
+=======
+		return car.getHealth() == 100.0f;
+	}
+	
+	public static void addKey(int num) {
+		keysSeen.add(num);
+=======
+	public static boolean isDoneHealing() {
+		return car.getHealth()==100;
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
 	}
 
 }
