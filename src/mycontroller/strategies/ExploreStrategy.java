@@ -30,8 +30,13 @@ public class ExploreStrategy extends BasicStrategy {
 			}
 			
 		}
+		
+		Coordinate nextMove = path.getNextMove();
+		MapTile nextTile = WorldSensor.getTileAtCoordinate(nextMove);
+		Move.Acceleration acceleration = adjustAcceleration(nextTile);
+		
 		//TODO handle types of tiles and acceleration/deceleration
-		return new Move(path.getNextMove(), Move.Acceleration.SLOWDOWN);
+		return new Move(nextMove, acceleration);
 	}
 	
 	public void updateState(HashMap<Coordinate, MapTile> state) {
@@ -42,6 +47,7 @@ public class ExploreStrategy extends BasicStrategy {
 		}
 		
         Collections.sort(goal, new CoordinateComparator(WorldSensor.getCurrentPosition()));
+        System.out.println(goal);
 	}
 	
 	

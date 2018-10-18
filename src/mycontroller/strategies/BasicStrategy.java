@@ -32,5 +32,19 @@ public abstract class BasicStrategy implements IMovementStrategy{
 	public void applyBrake() {
 		path.addPathNode(WorldSensor.getCurrentPosition());
 	}
+	
+	public Move.Acceleration adjustAcceleration(MapTile nextTile) {
+		Coordinate currentPosition = WorldSensor.getCurrentPosition();
+		
+		if(WorldSensor.isStart(WorldSensor.getTileAtCoordinate(currentPosition))) {
+			return Move.Acceleration.ACCELERATE;
+		} else if(WorldSensor.isTrap(nextTile)) {
+			return Move.Acceleration.ACCELERATE;
+		} else if (WorldSensor.isHealth(nextTile)) {
+			return Move.Acceleration.DECELERATE;
+		} else {
+			return Move.Acceleration.NEUTRAL;
+		}
+	}
 
 }

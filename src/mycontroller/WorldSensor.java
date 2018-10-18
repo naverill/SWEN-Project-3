@@ -3,6 +3,8 @@ package mycontroller;
 import java.util.HashMap;
 import java.util.Set;
 
+import tiles.HealthTrap;
+import tiles.LavaTrap;
 import tiles.MapTile;
 import utilities.Coordinate;
 import world.Car;
@@ -67,7 +69,19 @@ public class WorldSensor {
 		return car.getVelocity();
 	}
 	
-	static public MapTile getTypeAtCoordinate(Coordinate coordinate) {
+	public static MapTile getTileAtCoordinate(Coordinate coordinate) {
 		return map.get(coordinate);
+	}
+	
+	public static boolean isTrap(MapTile tile) {
+		return tile instanceof LavaTrap;
+	}
+	
+	public static boolean isHealth(MapTile tile) {
+		return tile instanceof HealthTrap;
+	}
+	
+	public static boolean isStart(MapTile tile) {
+		return tile.getType().equals(MapTile.Type.START);
 	}
 }
