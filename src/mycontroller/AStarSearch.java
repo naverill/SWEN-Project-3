@@ -33,6 +33,7 @@ public class AStarSearch {
 	private static final float ICE_MULTIPLIER = 0.5f;
 	
 	public AStarSearch() {
+		worldMap = WorldSensor.getWorldMap();
 	}
 	
 	public static Pair<Stack<Coordinate>, Float> findBestPath(HashMap<Coordinate, MapTile> iMap, Coordinate iBeforeStart,

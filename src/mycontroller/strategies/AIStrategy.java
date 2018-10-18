@@ -87,7 +87,7 @@ public class AIStrategy implements IMovementStrategy {
 	
 	private void tryToFinish() {
 		Stack<Coordinate> pathToFinish = strategies.get(FINISH).potentialPath(
-				sensor.getWorldMap()).getCurrentPath();
+				WorldSensor.getWorldMap()).getCurrentPath();
 		
 		if (WorldSensor.nearCriticalLowHealth(pathToFinish)) {
 			System.out.println("need health");
@@ -99,7 +99,7 @@ public class AIStrategy implements IMovementStrategy {
 
 	private void tryToFindKeys() {
 		Stack<Coordinate> pathToKey = strategies.get(KEY).potentialPath(
-				sensor.getWorldMap()).getCurrentPath();
+				WorldSensor.getWorldMap()).getCurrentPath();
 		
 		if(WorldSensor.hasEnoughHealth(pathToKey)) {
 			currentStrategy = strategies.get(KEY);
@@ -134,7 +134,7 @@ public class AIStrategy implements IMovementStrategy {
 	}
 	
 	public boolean nearCriticalHealth() {
-		Stack<Coordinate> pathToHeal = strategies.get(HEALTH).potentialPath(sensor.getWorldMap()).getCurrentPath();
+		Stack<Coordinate> pathToHeal = strategies.get(HEALTH).potentialPath(WorldSensor.getWorldMap()).getCurrentPath();
 		
 		return WorldSensor.nearCriticalLowHealth(pathToHeal);
 	}
