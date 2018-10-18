@@ -63,6 +63,10 @@ public class WorldSensor {
 		return car.getOrientation();
 	}
 	
+	static public int getVelocity() {
+		return car.getVelocity();
+	}
+	
 	static public MapTile getTypeAtCoordinate(Coordinate coordinate) {
 		return map.get(coordinate);
 	}

@@ -5,8 +5,10 @@ import world.WorldSpatial;
 import world.WorldSpatial.Direction;
 
 public class Move {
-	public static enum Acceleration { SLOWDOWN, NEUTRAL, BRAKE, ACCELERATE};
+	public static enum Acceleration { DECELERATE, NEUTRAL, BRAKE, ACCELERATE};
 	public static enum RelativeDirection {LEFT, RIGHT, FORWARD, REVERSE}
+	public static final int MIN_FORWARD_SPEED = 1;
+	public static final int MIN_REVERSE_SPEED = -1;
 
 	private final Coordinate current;
 	private final Coordinate target;

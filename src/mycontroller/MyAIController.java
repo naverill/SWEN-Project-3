@@ -51,22 +51,50 @@ public class MyAIController extends CarController {
 			strategy.reset(sensor.getWorldMap());
 			return;
 		};
-		
-		if(move.getAcceleration().equals(Move.Acceleration.ACCELERATE)) {
-			applyForwardAcceleration();
-		} else if (move.getAcceleration().equals(Move.Acceleration.BRAKE)){
-			if(!isStopped()) {
-				applyBrake();
-				strategy.applyBrake();
-			}
-		} else if (move.getAcceleration().equals(Move.Acceleration.SLOWDOWN)){
-			applyReverseAcceleration();
-		}
 			
 		if(move.getRelativeDirection().equals(Move.RelativeDirection.LEFT)) {
 			turnLeft();
 		} else if (move.getRelativeDirection().equals(Move.RelativeDirection.RIGHT)) {
 			turnRight();
+		} 
+		
+		if(move.getAcceleration().equals(Move.Acceleration.ACCELERATE)) {
+			accelerate(move);
+
+		} else if (move.getAcceleration().equals(Move.Acceleration.BRAKE)){
+			if(!isStopped()) {
+				applyBrake();
+				strategy.applyBrake();
+			}
+			
+		} else if (move.getAcceleration().equals(Move.Acceleration.DECELERATE)){
+			decelerate(move);
+		}
+	}
+	
+	private void accelerate(Move move) {
+		if(move.getRelativeDirection().equals(Move.RelativeDirection.FORWARD)) {
+			if(WorldSensor.getVelocity() <= 0) {
+				applyForwardAcceleration();
+			}
+			
+		} else if (move.getRelativeDirection().equals(Move.RelativeDirection.REVERSE)) {
+			if(WorldSensor.getVelocity() >= 0) {
+				applyReverseAcceleration();
+			}
+		}
+	}
+	
+	private void decelerate(Move move) {
+		if(move.getRelativeDirection().equals(Move.RelativeDirection.FORWARD)) {
+			if(WorldSensor.getVelocity() > Move.MIN_FORWARD_SPEED) {
+				applyReverseAcceleration();
+			}
+			
+		} else if (move.getRelativeDirection().equals(Move.RelativeDirection.REVERSE)) {
+			if(WorldSensor.getVelocity() < Move.MIN_REVERSE_SPEED) {
+				applyForwardAcceleration();
+			}
 		}
 	}
 }
