@@ -30,8 +30,8 @@ public class MyAIController extends CarController {
 		HashMap<Coordinate, MapTile> currentView = getView();
 		WorldSensor.updateMap(currentView);
 		strategy.updateState(currentView);
-		//System.out.println("hef");
 		Move nextMove = strategy.move(WorldSensor.getWorldMap());	
+
 
 		moveCar(nextMove);
 	}
@@ -48,7 +48,6 @@ public class MyAIController extends CarController {
 //		System.out.println("Acceleration: " + move.getAcceleration());
 //		System.out.println("Velocity: " + WorldSensor.getVelocity());
 //		System.out.println();
-		System.out.println(move);
 		if(Path.invalidMove(move)) {
 			
 			strategy.reset(WorldSensor.getWorldMap());

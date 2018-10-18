@@ -10,6 +10,7 @@ import utilities.Coordinate;
 import world.WorldSpatial.Direction;
 import tiles.MudTrap;
 import tiles.LavaTrap;
+import tiles.GrassTrap;
 import tiles.HealthTrap;
 
 
@@ -31,6 +32,9 @@ public class AStarSearch {
 	
 	private static final float LAVA_MULTIPLIER = 200.0f;
 	private static final float ICE_MULTIPLIER = 0.5f;
+	private static final float OTW_MULTIPLIER = 0.5f;
+	private static final float TURN_MULTIPLIER = 10.0f;
+
 	
 	public AStarSearch() {
 		worldMap = WorldSensor.getWorldMap();
@@ -113,9 +117,15 @@ public class AStarSearch {
 		//add trap multipliers if needed
 		MapTile tile = worldMap.get(neighbour);
 		if (tile instanceof LavaTrap) {
-//			gCost *= (100 - mapExpert.getCar().getHealth());
 			if(((LavaTrap) tile).getKey()!=0) {
-				gCost *= ICE_MULTIPLIER;
+				for(Integer keyNum: WorldSensor.car.getKeys()) {
+					if(((LavaTrap) tile).getKey()!=keyNum) {
+						System.out.println();
+						gCost *= OTW_MULTIPLIER;
+					}else {
+						gCost *= LAVA_MULTIPLIER;
+					}
+				}
 			}else {
 				gCost *= LAVA_MULTIPLIER;		
 			}
@@ -123,10 +133,10 @@ public class AStarSearch {
 			gCost*= ICE_MULTIPLIER;
 		}
 		Coordinate coor = WorldSensor.getCurrentPosition();
-		if (worldMap.get(coor).getType().equals(MapTile.Type.START)) {
+		if (WorldSensor.car.getVelocity()==0) {
 			Direction nb = absoluteToRelativePosition(current, neighbour);
 			if (!WorldSensor.car.getOrientation().equals(nb)) {
-				gCost *= 10;
+				gCost *= TURN_MULTIPLIER;
 			}
 		}
 		return gCost;

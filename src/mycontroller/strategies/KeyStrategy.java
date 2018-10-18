@@ -30,7 +30,9 @@ public class KeyStrategy extends BasicStrategy {
 		MapTile nextTile = WorldSensor.getTileAtCoordinate(nextMove);
 		
 		Move.Acceleration acceleration = adjustAcceleration(nextTile);
-		
+		System.out.println(WorldSensor.getCurrentPosition());
+		System.out.println(nextMove);
+		System.out.println(path.getCurrentPath());
 		//TODO handle types of tiles and acceleration/deceleration
 		return new Move(nextMove, acceleration);
 	}

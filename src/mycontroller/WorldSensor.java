@@ -95,7 +95,6 @@ public class WorldSensor {
 				healthBuffer += LAVA_COST;
 			}
 		}
-		System.out.println(healthBuffer);
 		return currentHealth > healthBuffer;
 	}
 	

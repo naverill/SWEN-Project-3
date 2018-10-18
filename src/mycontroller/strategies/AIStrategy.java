@@ -43,7 +43,6 @@ public class AIStrategy implements IMovementStrategy {
 		for(int i=0; i< NUM_STRATEGIES; i++) {
 			strategies.get(i).updateState(state);
 		}	
-		//System.out.println(WorldSensor.car.numKeys);
 		determineState();
 	}
 
@@ -67,7 +66,6 @@ public class AIStrategy implements IMovementStrategy {
 		
 		if(foundHealth() && nearCriticalHealth()) {
 			currentStrategy = strategies.get(HEALTH);
-			System.out.println(currentStrategy.getClass());
 			return;
 		}
 
@@ -106,17 +104,13 @@ public class AIStrategy implements IMovementStrategy {
 	private void tryToFindKeys() {
 		Stack<Coordinate> pathToKey = strategies.get(KEY).potentialPath(
 				WorldSensor.getWorldMap()).getCurrentPath();
-		System.out.println(pathToKey+" tutu");
-		
+		System.out.println(WorldSensor.hasEnoughHealth(pathToKey));
 		if(WorldSensor.hasEnoughHealth(pathToKey)) {
 			currentStrategy = strategies.get(KEY);
 		} 
 		else if (WorldSensor.nearCriticalLowHealth(pathToKey)) {
 			currentStrategy = strategies.get(HEALTH);
 		}
-		
-			
-		
 	}
 	
 	public boolean currentlyHealing() {
