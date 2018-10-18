@@ -74,6 +74,7 @@ public class Move {
 			
 			return Move.Acceleration.ACCELERATE;
 		} else if(WorldSensor.isTrap(nextTile)) {
+			//TODO changed to neutral from accelarate
 			return Move.Acceleration.ACCELERATE;
 		} else if (WorldSensor.isHealth(nextTile)) {
 			return Move.Acceleration.DECELERATE;

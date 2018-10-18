@@ -44,7 +44,7 @@ public class AIStrategy implements IMovementStrategy {
 			strategies.get(i).updateState(state);
 		}	
 		determineState();
-		System.out.println(currentStrategy.getClass());
+//		System.out.println(currentStrategy.getClass());
 	}
 
 	@Override
@@ -87,7 +87,7 @@ public class AIStrategy implements IMovementStrategy {
 		}
 
 		currentStrategy = strategies.get(EXPLORE);
-		System.out.println(currentStrategy.getClass());
+//		System.out.println(currentStrategy.getClass());
 	}
 	
 	private void tryToFinish() {

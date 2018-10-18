@@ -35,7 +35,7 @@ public class MyAIController extends CarController {
 		strategy.updateState(currentView);
 		Move nextMove = strategy.move(WorldSensor.getWorldMap());	
 
-
+		System.out.println(WorldSensor.car.getHealth());
 		moveCar(nextMove);
 	}
 
@@ -44,16 +44,17 @@ public class MyAIController extends CarController {
 	}
 	
 	private void moveCar(Move move) {
-		System.out.println("Current: " + move.getCurrent());
-		System.out.println("Target: " + move.getTarget());
-		System.out.println("Direction: " + move.getDirection());
-		System.out.println("Relative: " + move.getRelativeDirection());
-		System.out.println("Acceleration: " + move.getAcceleration());
-		System.out.println("Velocity: " + WorldSensor.getVelocity());
-		System.out.println();
-		
+//		System.out.println("Current: " + move.getCurrent());
+//		System.out.println("Target: " + move.getTarget());
+//		System.out.println("Direction: " + move.getDirection());
+//		System.out.println("Relative: " + move.getRelativeDirection());
+//		System.out.println("Acceleration: " + move.getAcceleration());
+//		System.out.println("Velocity: " + WorldSensor.getVelocity());
+//		System.out.println();
+//		
 		if(Path.invalidMove(move)) {
 			strategy.reset(WorldSensor.getWorldMap());
+			applyBrake();
 			return;
 		};
 			
