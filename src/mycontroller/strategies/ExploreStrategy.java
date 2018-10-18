@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Stack;
 
 import mycontroller.AStarSearch;
 import mycontroller.Move;
@@ -40,10 +41,21 @@ public class ExploreStrategy extends BasicStrategy {
 				goal.remove(coordinate);
 			}
 		}
+		//check it for mudtraps
+		checkCurrentPath(state);
 		
         Collections.sort(goal, new CoordinateComparator(WorldSensor.getCurrentPosition()));
 	}
 	
+	public void checkCurrentPath(HashMap<Coordinate, MapTile> state) {
+		for(Coordinate pathCoor: path.getCurrentPath()) {
+			if(state.containsKey(pathCoor)){
+				if(state.get(pathCoor) instanceof MudTrap) {
+					path = potentialPath(WorldSensor.map);
+				}
+			}
+		}
+	}
 	
 	class CoordinateComparator implements Comparator<Coordinate> {
 		Coordinate currentPosition;

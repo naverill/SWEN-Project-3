@@ -57,7 +57,7 @@ public class Path {
 		return pathCoordinates.isEmpty();
 	}
 	
-	public Stack<Coordinate> getPath() {
+	public Stack<Coordinate> getCurrentPath() {
 		return pathCoordinates;
 	}
 	
