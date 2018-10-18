@@ -21,9 +21,8 @@ public class MyAIController extends CarController {
 		this.car = car;
 		HashMap<Coordinate, MapTile> worldMap = getMap();
 		sensor = new WorldSensor(worldMap, car);
-		strategy = new AIStrategy(worldMap, sensor);
 		new AStarSearch(sensor);
-		strategy = new AIStrategy(worldMap);
+		strategy = new AIStrategy(worldMap, sensor);
 	}
 
 	@Override

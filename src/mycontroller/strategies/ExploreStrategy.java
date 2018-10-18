@@ -22,13 +22,7 @@ public class ExploreStrategy extends BasicStrategy {
 	@Override
 	public Move move(HashMap<Coordinate, MapTile> worldView) {		
 		if(path.endPath()) {
-			if (goal.size() > NODES_OUTSIDE_VIEW) {
-				path = new Path(worldView, WorldSensor.getCurrentPosition(), new ArrayList<>(goal.subList(0, NODES_OUTSIDE_VIEW)));
-			}
-			else {
-				path = new Path(worldView, WorldSensor.getCurrentPosition(), goal);
-			}
-			
+			path = potentialPath(worldView);
 		}
 		
 		Coordinate nextMove = path.getNextMove();
@@ -94,6 +88,15 @@ public class ExploreStrategy extends BasicStrategy {
 		}
 		else {
 			path = new Path(map, WorldSensor.getCurrentPosition(), goal);
+		}	
+	}
+	
+	@Override
+	public Path potentialPath(HashMap<Coordinate, MapTile> worldView) {
+		if (goal.size() > NODES_OUTSIDE_VIEW) {
+			return new Path(worldView, WorldSensor.getCurrentPosition(), new ArrayList<>(goal.subList(0, NODES_OUTSIDE_VIEW)));
+		} else {
+			return new Path(worldView, WorldSensor.getCurrentPosition(), goal);
 		}	
 	}
 	

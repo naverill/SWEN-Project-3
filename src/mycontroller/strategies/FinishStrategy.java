@@ -2,9 +2,8 @@ package mycontroller.strategies;
 
 import java.util.HashMap;
 
-import mycontroller.Path;
+import mycontroller.Move;
 import mycontroller.WorldSensor;
-import tiles.HealthTrap;
 import tiles.MapTile;
 import tiles.MapTile.Type;
 import utilities.Coordinate;
@@ -12,12 +11,17 @@ import utilities.Coordinate;
 public class FinishStrategy extends BasicStrategy{
 
 	@Override
-	public Coordinate move(HashMap<Coordinate, MapTile> worldView) {		
+	public Move move(HashMap<Coordinate, MapTile> worldView) {		
 		if(path.endPath()) {
-			path = new Path(worldView, WorldSensor.getCurrentPosition(), goal);
+			path = potentialPath(worldView);
 		}
 		
-		return 	path.getNextMove();
+		Coordinate nextMove = path.getNextMove();
+		MapTile nextTile = WorldSensor.getTileAtCoordinate(nextMove);
+		Move.Acceleration acceleration = adjustAcceleration(nextTile);
+		
+		//TODO handle types of tiles and acceleration/deceleration
+		return new Move(nextMove, acceleration);	
 	}
 
 	

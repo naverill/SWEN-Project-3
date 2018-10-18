@@ -14,7 +14,7 @@ public class HealthStrategy extends BasicStrategy {
 	@Override
 	public Move move(HashMap<Coordinate, MapTile> worldView) {		
 		if(path.endPath()) {
-			path = new Path(worldView, WorldSensor.getCurrentPosition(), goal);
+			path = potentialPath(worldView);
 		}
 		//TODO handle types of tiles and acceleration/deceleration
 		return new Move(path.getNextMove(), Move.Acceleration.ACCELERATE);
