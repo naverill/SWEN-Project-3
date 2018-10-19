@@ -29,7 +29,7 @@ public interface IMovementStrategy {
 	* Reset the strategy and recalculate it based on the current world conditions
 	* @param map - the world map of all known tiles  
 	*/
-	public void reset(HashMap<Coordinate, MapTile> map);
+	public void reset();
 
 }
 

@@ -127,7 +127,7 @@ public class ExploreStrategy extends BasicStrategy {
 	 * @param map - the current world map
 	 **/
 	@Override
-	public void reset(HashMap<Coordinate, MapTile> map) {
+	public void reset() {
 		path.clearPath();
 		if (goal.size() > NODES_OUTSIDE_VIEW) {
 			path = new Path(CarSensor.getCurrentPosition(), new ArrayList<>(goal.subList(0, NODES_OUTSIDE_VIEW)));

@@ -65,8 +65,8 @@ public class AIStrategy implements IMovementStrategy {
 	* @param map -  the world map of all tiles 
 	*/
 	@Override
-	public void reset(HashMap<Coordinate, MapTile> map) {
-		currentStrategy.reset(map);
+	public void reset() {
+		currentStrategy.reset();
 	}
 
 	/**

@@ -90,13 +90,6 @@ public class CarSensor {
 		return map;
 	}
 	
-	/**
-	 * Returns the set of seen keys 
-	 * */
-	public static Set<Integer> getKeys() {		
-		return keys;
-	}
-	
 	
 	/**
 	 * Returns a boolean if all unique keys in the map have been collected by the car 
@@ -176,5 +169,14 @@ public class CarSensor {
 	public static void addKey(int num) {
 		keys.add(num);
 	}
+	
+	public static Set<Integer> getSeenKeys() {		
+		return keys;
+	}
+	
+	public static Set<Integer> getCollectedKeys(){
+		return car.getKeys();
+	}
+	
 
 }

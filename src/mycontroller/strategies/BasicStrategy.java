@@ -45,7 +45,7 @@ public abstract class BasicStrategy implements IMovementStrategy{
 	* Reset the strategy and recalculate it based on the current world conditions
 	* @param map - the world map of all known tiles  
 	*/
-	public void reset(HashMap<Coordinate, MapTile> map) {
+	public void reset() {
 		path.clearPath();
 		path = new Path(CarSensor.getCurrentPosition(), goal);	
 	}

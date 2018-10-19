@@ -57,7 +57,7 @@ public class MyAIController extends CarController {
 		
 		// if movement is invalid, recalculate the current strategy
 		if(Path.invalidMove(move)) {
-			strategy.reset(CarSensor.getWorldMap());
+			strategy.reset();
 			applyBrake();
 			return;
 		};

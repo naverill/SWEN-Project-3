@@ -8,7 +8,9 @@ import utilities.Coordinate;
 import world.WorldSpatial.Direction;
 import tiles.MudTrap;
 import tiles.LavaTrap;
+import tiles.GrassTrap;
 import tiles.HealthTrap;
+import world.WorldSpatial;
 
 
 public class AStarSearch {
@@ -26,10 +28,11 @@ public class AStarSearch {
 	
 	private static HashMap<Coordinate, MapTile> neighbourTiles;
 	
-	private static final float LAVA_MULTIPLIER = 200.0f;
+	private static final float LAVA_MULTIPLIER = 100.0f;
 	private static final float ICE_MULTIPLIER = 0.5f;
 	private static final float OTW_MULTIPLIER = 0.5f;
-	private static final float TURN_MULTIPLIER = 10.0f;
+	private static final float TURN_MULTIPLIER = 3.0f;
+	private static final float GRASS_MULTIPLIER = 20000;
 	
 	public static Pair<Stack<Coordinate>, Float> findBestPath(Coordinate iBeforeStart,
             Coordinate iStart, Coordinate iGoal) {
@@ -104,31 +107,39 @@ public class AStarSearch {
 	
 	private static float calcGCosts(Coordinate current, Coordinate neighbour, Coordinate cameFrom) {
 		float gCost = getManhattanDistance(current, neighbour);
+		Direction nb = absoluteToRelativePosition(current, neighbour);
+		Direction now = CarSensor.getOrientation();
+		Direction rnb = WorldSpatial.reverseDirection(nb);
 		//TODO GRASS TILE MULTIPLIER
 		//add trap multipliers if needed
 		MapTile tile = map.get(neighbour);
 		if (tile instanceof LavaTrap) {
 			if(((LavaTrap) tile).getKey()!=0) {
-				if(!CarSensor.getKeys().contains(((LavaTrap) tile).getKey()))
+				if(!CarSensor.getCollectedKeys().contains(((LavaTrap) tile).getKey())) {
 					//doesnt have key then go through it
 					gCost *= OTW_MULTIPLIER;
-				else {
+				} else {
 					//does have key then go through it
 					gCost *= LAVA_MULTIPLIER;
 				}
 			}else {
-				gCost *= LAVA_MULTIPLIER;		
+				gCost *= LAVA_MULTIPLIER;
+				
+				if (needsToTurn(now, nb, rnb)) {
+					gCost *= TURN_MULTIPLIER;
+				}
 			}
-		}if(tile instanceof HealthTrap) {
+			
+			
+		}
+		if(tile instanceof HealthTrap) {
 			gCost*= ICE_MULTIPLIER;
+		} 
+
+		 if ((tile instanceof GrassTrap) && needsToTurn(now, nb, rnb)) {
+				gCost *= GRASS_MULTIPLIER;
 		}
-		Coordinate coor = CarSensor.getCurrentPosition();
-		if (CarSensor.getVelocity()==0) {
-			Direction nb = absoluteToRelativePosition(current, neighbour);
-			if (!CarSensor.getOrientation().equals(nb)) {
-				gCost *= TURN_MULTIPLIER;
-			}
-		}
+			
 		return gCost;
 	}
 	
@@ -173,6 +184,19 @@ public static Direction absoluteToRelativePosition(Coordinate current, Coordinat
 				continue;
 			}
 			
+			if ((cameFrom == null) && CarSensor.getVelocity() == 0) {
+				
+				
+				Direction nb = absoluteToRelativePosition(current, neighbour);
+				Direction rnb = WorldSpatial.reverseDirection(nb);
+				
+				Direction nowOrient = CarSensor.getOrientation();
+				
+				if (needsToTurn(nowOrient, nb, rnb)) {
+					continue;
+				}				
+		}
+			
 			validNeighbours.add(neighbour);
 		}
 		return validNeighbours;
@@ -197,6 +221,19 @@ public static Direction absoluteToRelativePosition(Coordinate current, Coordinat
         path.pop();
         return path;
 	}
+	
+	public static boolean needsToTurn(Direction now, Direction to, Direction revTo) {
+		
+		if (now.equals(to)) {
+			return false;
+		}
+		
+		if (now.equals(revTo)) {
+			return false;
+		}
+		return true;
+	}
+	
 	
 	/**
 	 * Getneighbours() take a tile coordinate and returns a HashMap of all neighbouring tiles
