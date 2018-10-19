@@ -1,31 +1,44 @@
 package mycontroller.strategies;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-
-import mycontroller.WorldSensor;
+import mycontroller.CarSensor;
 import mycontroller.util.Move;
-import mycontroller.util.Path;
 import tiles.HealthTrap;
 import tiles.MapTile;
 import utilities.Coordinate;
 
+
+/**
+ * Extends the abstract class BasicStrategy. The HealthStrategy is responsible for 
+ * identifying the least-cost path to a health tile. The strategy is also responsible for 
+ * defining the car's behaviour while healing.
+ **/
 public class HealthStrategy extends BasicStrategy {
+	/**
+	 * Return the next move in the current optimal path to a health tile
+	 * @param map - the current known map
+	 **/
 	@Override
-	public Move move(HashMap<Coordinate, MapTile> worldView) {		
+	public Move move(HashMap<Coordinate, MapTile> worldView) {	
+		//if goal tile is reached, recalculate next path 
 		if(path.endPath()) {
 			path = potentialPath(worldView);
 		}
-				
+		
+		//if car is located on a healing tile, brake on tile until healing is complete
 		if(currentlyHealing() && !fullyHealed()) {
-			System.out.println("BREAK");
-			return new Move(WorldSensor.getCurrentPosition());
+			return new Move(CarSensor.getCurrentPosition());
 		}
 		
 		Coordinate nextMove = path.getNextMove();
 		return new Move(nextMove);
 	}
 
+	/**
+	 * UpdateState() is responsible for reading in the current view of the car, adding 
+	 * health tiles as they are encountered
+	 * @param view - the current view of the car 
+	 **/
 	@Override
 	public void updateState(HashMap<Coordinate, MapTile> state) {
 		for(Coordinate coordinate : state.keySet()) {
@@ -37,17 +50,18 @@ public class HealthStrategy extends BasicStrategy {
 		}
 	}
 	
-	public void reset(HashMap<Coordinate, MapTile> map) {
-		path.clearPath();
-		path = new Path(map, WorldSensor.getCurrentPosition(), goal);
-	}
-	
+	/**
+	 * Returns if the car is currently located on a health tile
+	 **/
 	public boolean currentlyHealing() {
-		return WorldSensor.isHealing();
+		return CarSensor.isHealing();
 	}
 	
+	/**
+	 * Returns if the car is at full health
+	 **/
 	public boolean fullyHealed() {
-		return WorldSensor.isDoneHealing();
+		return CarSensor.isDoneHealing();
 	}
 
 }

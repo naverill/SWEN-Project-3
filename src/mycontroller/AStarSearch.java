@@ -2,15 +2,12 @@ package mycontroller;
 
 import java.util.*;
 
-import javax.swing.text.Utilities;
-
 import mycontroller.util.Pair;
 import tiles.MapTile;
 import utilities.Coordinate;
 import world.WorldSpatial.Direction;
 import tiles.MudTrap;
 import tiles.LavaTrap;
-import tiles.GrassTrap;
 import tiles.HealthTrap;
 
 
@@ -37,7 +34,7 @@ public class AStarSearch {
 
 	
 	public AStarSearch() {
-		worldMap = WorldSensor.getWorldMap();
+		worldMap = CarSensor.getWorldMap();
 	}
 	
 	public static Pair<Stack<Coordinate>, Float> findBestPath(HashMap<Coordinate, MapTile> iMap, Coordinate iBeforeStart,
@@ -118,7 +115,7 @@ public class AStarSearch {
 		MapTile tile = worldMap.get(neighbour);
 		if (tile instanceof LavaTrap) {
 			if(((LavaTrap) tile).getKey()!=0) {
-				if(!WorldSensor.car.getKeys().contains(((LavaTrap) tile).getKey()))
+				if(!CarSensor.car.getKeys().contains(((LavaTrap) tile).getKey()))
 					//doesnt have key then go through it
 					gCost *= OTW_MULTIPLIER;
 				else {
@@ -131,10 +128,10 @@ public class AStarSearch {
 		}if(tile instanceof HealthTrap) {
 			gCost*= ICE_MULTIPLIER;
 		}
-		Coordinate coor = WorldSensor.getCurrentPosition();
-		if (WorldSensor.car.getVelocity()==0) {
+		Coordinate coor = CarSensor.getCurrentPosition();
+		if (CarSensor.car.getVelocity()==0) {
 			Direction nb = absoluteToRelativePosition(current, neighbour);
-			if (!WorldSensor.car.getOrientation().equals(nb)) {
+			if (!CarSensor.car.getOrientation().equals(nb)) {
 				gCost *= TURN_MULTIPLIER;
 			}
 		}
@@ -166,7 +163,7 @@ public static Direction absoluteToRelativePosition(Coordinate current, Coordinat
 	private static ArrayList<Coordinate> getValidNeighbours(Coordinate current) {
 		neighbourTiles = new HashMap<>();
 		ArrayList<Coordinate> validNeighbours = new ArrayList<>();
-		neighbourTiles = WorldSensor.getNeighbours(current);
+		neighbourTiles = CarSensor.getNeighbours(current);
 		
 		for (Coordinate neighbour: neighbourTiles.keySet()) {
 			
