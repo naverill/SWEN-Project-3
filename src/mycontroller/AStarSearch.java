@@ -25,22 +25,16 @@ public class AStarSearch {
 	private static HashMap<Coordinate, Float> gCosts = new HashMap<>();
 	
 	private static HashMap<Coordinate, MapTile> neighbourTiles;
-	private static HashMap<Coordinate, MapTile> worldMap = new HashMap<>();
 	
 	private static final float LAVA_MULTIPLIER = 200.0f;
 	private static final float ICE_MULTIPLIER = 0.5f;
 	private static final float OTW_MULTIPLIER = 0.5f;
 	private static final float TURN_MULTIPLIER = 10.0f;
-
 	
-	public AStarSearch() {
-		worldMap = CarSensor.getWorldMap();
-	}
-	
-	public static Pair<Stack<Coordinate>, Float> findBestPath(HashMap<Coordinate, MapTile> iMap, Coordinate iBeforeStart,
+	public static Pair<Stack<Coordinate>, Float> findBestPath(Coordinate iBeforeStart,
             Coordinate iStart, Coordinate iGoal) {
 
-		map = iMap;
+		map = CarSensor.getWorldMap();
 		start = iStart;
 		goal = iGoal;
 		beforeStart = iBeforeStart;
@@ -112,7 +106,7 @@ public class AStarSearch {
 		float gCost = getManhattanDistance(current, neighbour);
 		//TODO GRASS TILE MULTIPLIER
 		//add trap multipliers if needed
-		MapTile tile = worldMap.get(neighbour);
+		MapTile tile = map.get(neighbour);
 		if (tile instanceof LavaTrap) {
 			if(((LavaTrap) tile).getKey()!=0) {
 				if(!CarSensor.getKeys().contains(((LavaTrap) tile).getKey()))
@@ -167,11 +161,11 @@ public static Direction absoluteToRelativePosition(Coordinate current, Coordinat
 		
 		for (Coordinate neighbour: neighbourTiles.keySet()) {
 			
-			if (!worldMap.containsKey(neighbour)) {
+			if (!map.containsKey(neighbour)) {
 				continue;
 			}
 				
-			MapTile tile = worldMap.get(neighbour);
+			MapTile tile = map.get(neighbour);
 			if (tile.isType(MapTile.Type.WALL) || tile.isType(MapTile.Type.EMPTY) || tile instanceof MudTrap) {
 				if (tile instanceof MudTrap) {
 					continue;

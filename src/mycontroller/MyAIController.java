@@ -38,7 +38,7 @@ public class MyAIController extends CarController {
 		HashMap<Coordinate, MapTile> currentView = getView();
 		CarSensor.updateMap(currentView);
 		strategy.updateState(currentView);
-		Move nextMove = strategy.move(CarSensor.getWorldMap());	
+		Move nextMove = strategy.move();	
 		moveCar(nextMove);
 	}
 	

@@ -25,7 +25,7 @@ public abstract class BasicStrategy implements IMovementStrategy{
 	* @param map - the world map of all known tiles
 	*/
 	@Override
-	public abstract Move move(HashMap<Coordinate, MapTile> map);
+	public abstract Move move();
 
 	/**
 	* Abstract function that handles updating the state of the strategy based on world conditions
@@ -47,16 +47,16 @@ public abstract class BasicStrategy implements IMovementStrategy{
 	*/
 	public void reset(HashMap<Coordinate, MapTile> map) {
 		path.clearPath();
-		path = new Path(map, CarSensor.getCurrentPosition(), goal);	
+		path = new Path(CarSensor.getCurrentPosition(), goal);	
 	}
 	
 	/**
 	* A possible path that the car can follow based on current world conditions
 	* @worldView  - the current view of the car
 	*/
-	public Path potentialPath(HashMap<Coordinate, MapTile> view) {
+	public Path potentialPath() {
 		Coordinate currentPosition = CarSensor.getCurrentPosition();
-		return new Path(view, currentPosition, goal);
+		return new Path(currentPosition, goal);
 	}
 
 }
