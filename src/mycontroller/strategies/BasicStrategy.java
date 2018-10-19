@@ -47,7 +47,7 @@ public abstract class BasicStrategy implements IMovementStrategy{
 	*/
 	public void reset(HashMap<Coordinate, MapTile> map) {
 		path.clearPath();
-		path = new Path(map, CarSensor.getCurrentPosition(), goal);
+		path = new Path(map, CarSensor.getCurrentPosition(), goal);	
 	}
 	
 	/**
@@ -55,7 +55,8 @@ public abstract class BasicStrategy implements IMovementStrategy{
 	* @worldView  - the current view of the car
 	*/
 	public Path potentialPath(HashMap<Coordinate, MapTile> view) {
-		return new Path(view, CarSensor.getCurrentPosition(), goal);
+		Coordinate currentPosition = CarSensor.getCurrentPosition();
+		return new Path(view, currentPosition, goal);
 	}
 
 }
