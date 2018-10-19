@@ -2,12 +2,16 @@ package mycontroller;
 
 import java.util.*;
 
+
+
 import mycontroller.util.Pair;
 import tiles.MapTile;
 import utilities.Coordinate;
+import world.WorldSpatial;
 import world.WorldSpatial.Direction;
 import tiles.MudTrap;
 import tiles.LavaTrap;
+import tiles.GrassTrap;
 import tiles.HealthTrap;
 
 
@@ -25,22 +29,22 @@ public class AStarSearch {
 	private static HashMap<Coordinate, Float> gCosts = new HashMap<>();
 	
 	private static HashMap<Coordinate, MapTile> neighbourTiles;
-	private static HashMap<Coordinate, MapTile> worldMap = new HashMap<>();
+	//private static HashMap<Coordinate, MapTile> worldMap = new HashMap<>();
 	
-	private static final float LAVA_MULTIPLIER = 200.0f;
+	private static final float LAVA_MULTIPLIER = 100.0f;
 	private static final float ICE_MULTIPLIER = 0.5f;
 	private static final float OTW_MULTIPLIER = 0.5f;
-	private static final float TURN_MULTIPLIER = 10.0f;
+	private static final float GRASS_MULTIPLIER = Float.MAX_VALUE;
 
 	
 	public AStarSearch() {
-		worldMap = CarSensor.getWorldMap();
+		
 	}
 	
 	public static Pair<Stack<Coordinate>, Float> findBestPath(HashMap<Coordinate, MapTile> iMap, Coordinate iBeforeStart,
             Coordinate iStart, Coordinate iGoal) {
 
-		map = iMap;
+		map = CarSensor.getWorldMap();
 		start = iStart;
 		goal = iGoal;
 		beforeStart = iBeforeStart;
@@ -68,7 +72,7 @@ public class AStarSearch {
 			
 			
 			
-			ArrayList<Coordinate> neighbours = getValidNeighbours(curr);
+			ArrayList<Coordinate> neighbours = getValidNeighbours(curr, cameFrom.get(curr));
 
 			for (Coordinate neighbour: neighbours) {
 				if (exploredTiles.contains(neighbour)) {
@@ -110,31 +114,51 @@ public class AStarSearch {
 	
 	private static float calcGCosts(Coordinate current, Coordinate neighbour, Coordinate cameFrom) {
 		float gCost = getManhattanDistance(current, neighbour);
-		//TODO GRASS TILE MULTIPLIER
+		Direction nb = absoluteToRelativePosition(current, neighbour);
+		Direction now = CarSensor.getOrientation();
+		Direction rnb = WorldSpatial.reverseDirection(nb);
+		//TODO lava tile turning cost
 		//add trap multipliers if needed
-		MapTile tile = worldMap.get(neighbour);
+		MapTile tile = map.get(neighbour);
 		if (tile instanceof LavaTrap) {
 			if(((LavaTrap) tile).getKey()!=0) {
-				if(!CarSensor.car.getKeys().contains(((LavaTrap) tile).getKey()))
+				if(!CarSensor.car.getKeys().contains(((LavaTrap) tile).getKey())) {
 					//doesnt have key then go through it
 					gCost *= OTW_MULTIPLIER;
-				else {
+				}else {
 					//does have key then go through it
 					gCost *= LAVA_MULTIPLIER;
 				}
-			}else {
+			} else {
 				gCost *= LAVA_MULTIPLIER;		
 			}
-		}if(tile instanceof HealthTrap) {
+		}
+		if(tile instanceof HealthTrap) {
 			gCost*= ICE_MULTIPLIER;
 		}
-		Coordinate coor = CarSensor.getCurrentPosition();
-		if (CarSensor.car.getVelocity()==0) {
-			Direction nb = absoluteToRelativePosition(current, neighbour);
-			if (!CarSensor.car.getOrientation().equals(nb)) {
-				gCost *= TURN_MULTIPLIER;
-			}
+		
+		if ((tile instanceof GrassTrap) && needsToTurn(now, nb, rnb)) {
+			gCost *= GRASS_MULTIPLIER;
 		}
+		
+		
+
+		if (CarSensor.getVelocity() == 0) {
+			
+			
+			
+			
+//			if (!(now.equals(nb))) {
+//				gCost *= TURN_MULTIPLIER;
+//			}
+
+//			if (needsToTurn(now, nb, rnb)) {
+//				gCost *= TURN_MULTIPLIER;
+//			}
+		}
+		
+		
+		
 		return gCost;
 	}
 	
@@ -159,19 +183,47 @@ public static Direction absoluteToRelativePosition(Coordinate current, Coordinat
 			return null;
 		}
 	}
+
+	/**
+	 * Getneighbours() take a tile coordinate and returns a HashMap of all neighbouring tiles
+	 * @param key - the coordinate of the centre tile
+	 * */
+	public  static HashMap<Coordinate, MapTile> getNeighbours(Coordinate key){
+		HashMap<Coordinate, MapTile> neighbours = new HashMap<>();
+		int xValue = key.x;
+		int yValue = key.y;
+				
+		Coordinate northNeighbourCoor = new Coordinate(xValue, yValue+1);
+		Coordinate eastNeighbourCoor = new Coordinate(xValue+1, yValue);
+		Coordinate westNeighbourCoor = new Coordinate(xValue-1, yValue);
+		Coordinate southNeighbourCoor = new Coordinate(xValue, yValue-1);
+		
+		MapTile northNeighbourType = map.get(northNeighbourCoor);
+		MapTile eastNeighbourType = map.get(eastNeighbourCoor);
+		MapTile westNeighbourType = map.get(westNeighbourCoor);
+		MapTile southNeighbourType = map.get(southNeighbourCoor);
 	
-	private static ArrayList<Coordinate> getValidNeighbours(Coordinate current) {
+		neighbours.put(northNeighbourCoor, northNeighbourType);
+		neighbours.put(eastNeighbourCoor, eastNeighbourType);
+		neighbours.put(westNeighbourCoor, westNeighbourType);
+		neighbours.put(southNeighbourCoor, southNeighbourType);
+		
+		return neighbours;
+	}
+
+	
+	private static ArrayList<Coordinate> getValidNeighbours(Coordinate current, Coordinate cameFrom) {
 		neighbourTiles = new HashMap<>();
 		ArrayList<Coordinate> validNeighbours = new ArrayList<>();
-		neighbourTiles = CarSensor.getNeighbours(current);
+		neighbourTiles = getNeighbours(current);
 		
 		for (Coordinate neighbour: neighbourTiles.keySet()) {
 			
-			if (!worldMap.containsKey(neighbour)) {
+			if (!map.containsKey(neighbour)) {
 				continue;
 			}
 				
-			MapTile tile = worldMap.get(neighbour);
+			MapTile tile = map.get(neighbour);
 			if (tile.isType(MapTile.Type.WALL) || tile.isType(MapTile.Type.EMPTY) || tile instanceof MudTrap) {
 				if (tile instanceof MudTrap) {
 					continue;
@@ -179,9 +231,34 @@ public static Direction absoluteToRelativePosition(Coordinate current, Coordinat
 				continue;
 			}
 			
-			validNeighbours.add(neighbour);
+			if ((cameFrom == null) && CarSensor.getVelocity() == 0) {
+				
+				
+					Direction nb = absoluteToRelativePosition(current, neighbour);
+					Direction rnb = WorldSpatial.reverseDirection(nb);
+					
+					Direction nowOrient = CarSensor.getOrientation();
+					
+					if (needsToTurn(nowOrient, nb, rnb)) {
+						continue;
+					}				
+			}
+					
+			validNeighbours.add(neighbour);	
 		}
 		return validNeighbours;
+}
+	
+	public static boolean needsToTurn(Direction now, Direction to, Direction revTo) {
+		
+		if (now.equals(to)) {
+			return false;
+		}
+		
+		if (now.equals(revTo)) {
+			return false;
+		}
+		return true;
 	}
 	
 	
@@ -211,6 +288,3 @@ public static Direction absoluteToRelativePosition(Coordinate current, Coordinat
 	}
 
 }
-	
-
-
