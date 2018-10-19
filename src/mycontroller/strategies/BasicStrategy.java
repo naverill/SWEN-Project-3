@@ -55,8 +55,8 @@ public abstract class BasicStrategy implements IMovementStrategy{
 	* @worldView  - the current view of the car
 	*/
 	public Path potentialPath() {
-		Coordinate currentPosition = CarSensor.getCurrentPosition();
-		return new Path(currentPosition, goal);
+		Coordinate start = CarSensor.getCurrentPosition();
+		return new Path(start, goal);
 	}
 
 }

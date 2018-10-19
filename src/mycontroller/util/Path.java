@@ -138,7 +138,7 @@ public class Path {
 		
 		if(delta.equals(NORTH)) {
 			return Direction.NORTH;
-			
+				
 		} else if (delta.equals(SOUTH)) {
 			return Direction.SOUTH;
 			
