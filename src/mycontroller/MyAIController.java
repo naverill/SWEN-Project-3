@@ -19,7 +19,7 @@ import mycontroller.AStarSearch;
  * purpose of this class is configuring the movement of the car.
  * */
 public class MyAIController extends CarController {
-	IMovementStrategy strategy; //the AI traversal strategy
+	private IMovementStrategy strategy; //the AI traversal strategy
 		
 	public MyAIController(Car car) {
 		super(car);

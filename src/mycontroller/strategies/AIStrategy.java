@@ -21,8 +21,8 @@ public class AIStrategy implements IMovementStrategy {
 	private static final int FINISH = 3; //index of finish strategy
 	private static final int NUM_STRATEGIES = 4; //number of strategies used 
 	
-	public List<BasicStrategy>  strategies = new ArrayList<>(); //list of basic strategies the AI employs
-	private BasicStrategy currentStrategy; //the current strategy
+	private List<BasicStrategy>  strategies = new ArrayList<>(); //list of basic strategies the AI employs
+	private IMovementStrategy currentStrategy; //the current strategy
 
 
 	/**
@@ -54,9 +54,9 @@ public class AIStrategy implements IMovementStrategy {
 	* @param view -  the current view of the car
 	*/
 	@Override
-	public void updateState(HashMap<Coordinate, MapTile> map) {
+	public void updateState(HashMap<Coordinate, MapTile> view) {
 		for(int i=0; i< NUM_STRATEGIES; i++) {
-			strategies.get(i).updateState(map);
+			strategies.get(i).updateState(view);
 		}
 		//switch strategies based on current state 
 		determineState(); 
