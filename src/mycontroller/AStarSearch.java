@@ -115,7 +115,7 @@ public class AStarSearch {
 		MapTile tile = worldMap.get(neighbour);
 		if (tile instanceof LavaTrap) {
 			if(((LavaTrap) tile).getKey()!=0) {
-				if(!CarSensor.car.getKeys().contains(((LavaTrap) tile).getKey()))
+				if(!CarSensor.getKeys().contains(((LavaTrap) tile).getKey()))
 					//doesnt have key then go through it
 					gCost *= OTW_MULTIPLIER;
 				else {
@@ -129,9 +129,9 @@ public class AStarSearch {
 			gCost*= ICE_MULTIPLIER;
 		}
 		Coordinate coor = CarSensor.getCurrentPosition();
-		if (CarSensor.car.getVelocity()==0) {
+		if (CarSensor.getVelocity()==0) {
 			Direction nb = absoluteToRelativePosition(current, neighbour);
-			if (!CarSensor.car.getOrientation().equals(nb)) {
+			if (!CarSensor.getOrientation().equals(nb)) {
 				gCost *= TURN_MULTIPLIER;
 			}
 		}
@@ -163,7 +163,7 @@ public static Direction absoluteToRelativePosition(Coordinate current, Coordinat
 	private static ArrayList<Coordinate> getValidNeighbours(Coordinate current) {
 		neighbourTiles = new HashMap<>();
 		ArrayList<Coordinate> validNeighbours = new ArrayList<>();
-		neighbourTiles = CarSensor.getNeighbours(current);
+		neighbourTiles = getNeighbours(current);
 		
 		for (Coordinate neighbour: neighbourTiles.keySet()) {
 			
@@ -202,6 +202,33 @@ public static Direction absoluteToRelativePosition(Coordinate current, Coordinat
 
         path.pop();
         return path;
+	}
+	
+	/**
+	 * Getneighbours() take a tile coordinate and returns a HashMap of all neighbouring tiles
+	 * @param key - the coordinate of the centre tile
+	 * */
+	public  static HashMap<Coordinate, MapTile> getNeighbours(Coordinate key){
+		HashMap<Coordinate, MapTile> neighbours = new HashMap<>();
+		int xValue = key.x;
+		int yValue = key.y;
+				
+		Coordinate northNeighbourCoor = new Coordinate(xValue, yValue+1);
+		Coordinate eastNeighbourCoor = new Coordinate(xValue+1, yValue);
+		Coordinate westNeighbourCoor = new Coordinate(xValue-1, yValue);
+		Coordinate southNeighbourCoor = new Coordinate(xValue, yValue-1);
+		
+		MapTile northNeighbourType = map.get(northNeighbourCoor);
+		MapTile eastNeighbourType = map.get(eastNeighbourCoor);
+		MapTile westNeighbourType = map.get(westNeighbourCoor);
+		MapTile southNeighbourType = map.get(southNeighbourCoor);
+
+		neighbours.put(northNeighbourCoor, northNeighbourType);
+		neighbours.put(eastNeighbourCoor, eastNeighbourType);
+		neighbours.put(westNeighbourCoor, westNeighbourType);
+		neighbours.put(southNeighbourCoor, southNeighbourType);
+		
+		return neighbours;
 	}
 	
 	

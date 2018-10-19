@@ -163,7 +163,7 @@ public class Path {
 	 * @param coorinate - coordinate to be evaluated
 	 * */
 	public static boolean hasPath(Coordinate coordinate) {
-		return AStarSearch.findBestPath(CarSensor.map, CarSensor.getCurrentPosition(), CarSensor.getCurrentPosition(), coordinate)!=null;
+		return AStarSearch.findBestPath(CarSensor.getWorldMap(), CarSensor.getCurrentPosition(), CarSensor.getCurrentPosition(), coordinate)!=null;
 	}
 	
 	/**

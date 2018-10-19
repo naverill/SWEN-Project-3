@@ -21,8 +21,8 @@ public class AIStrategy implements IMovementStrategy {
 	private static final int FINISH = 3; //index of finish strategy
 	private static final int NUM_STRATEGIES = 4; //number of strategies used 
 	
-	public List<BasicStrategy>  strategies = new ArrayList<>(); //list of basic strategies the AI employs
-	private BasicStrategy currentStrategy; //the current strategy
+	private List<BasicStrategy>  strategies = new ArrayList<>(); //list of basic strategies the AI employs
+	private IMovementStrategy currentStrategy; //the current strategy
 
 
 	/**
