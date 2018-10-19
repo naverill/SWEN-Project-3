@@ -108,7 +108,14 @@ public class AStarSearch {
 	private static float calcGCosts(Coordinate current, Coordinate neighbour, Coordinate cameFrom) {
 		float gCost = getManhattanDistance(current, neighbour);
 		Direction nb = absoluteToRelativePosition(current, neighbour);
-		Direction now = CarSensor.getOrientation();
+		Direction now;
+		if (cameFrom != null) {
+			now = absoluteToRelativePosition(cameFrom, current);
+		}
+		else {
+			now = CarSensor.getOrientation();
+		}
+		
 		Direction rnb = WorldSpatial.reverseDirection(nb);
 		//TODO GRASS TILE MULTIPLIER
 		//add trap multipliers if needed
@@ -140,6 +147,7 @@ public class AStarSearch {
 		} 
 
 		 if ((tile instanceof GrassTrap) && needsToTurn(now, nb, rnb)) {
+			// System.out.println("i'm on grass");
 				gCost *= GRASS_MULTIPLIER;
 		}
 			
