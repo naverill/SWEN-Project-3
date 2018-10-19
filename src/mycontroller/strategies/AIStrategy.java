@@ -36,8 +36,6 @@ public class AIStrategy implements IMovementStrategy {
 	    											   (BasicStrategy) new KeyStrategy(),
 	    											   (BasicStrategy) new FinishStrategy()
 	    											   );
-		//start car in explore strategy
-		currentStrategy = strategies.get(EXPLORE);
 	}
 
 	/**
@@ -54,9 +52,9 @@ public class AIStrategy implements IMovementStrategy {
 	* @param view -  the current view of the car
 	*/
 	@Override
-	public void updateState(HashMap<Coordinate, MapTile> map) {
+	public void updateState(HashMap<Coordinate, MapTile> view) {
 		for(int i=0; i< NUM_STRATEGIES; i++) {
-			strategies.get(i).updateState(map);
+			strategies.get(i).updateState(view);
 		}
 		//switch strategies based on current state 
 		determineState(); 
