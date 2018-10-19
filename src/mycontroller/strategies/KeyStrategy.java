@@ -2,75 +2,98 @@ package mycontroller.strategies;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
-
-import mycontroller.AStarSearch;
-import mycontroller.WorldSensor;
+import mycontroller.CarSensor;
 import mycontroller.util.Move;
 import mycontroller.util.Path;
 import tiles.LavaTrap;
 import tiles.MapTile;
 import utilities.Coordinate;
 
+/**
+ * Extends the abstract class BasicStrategy. The KeyStrategy is responsible for 
+ * identifying the least-cost path to a key tile. 
+ **/
 public class KeyStrategy extends BasicStrategy {
-	protected ArrayList<Coordinate> collected = new ArrayList<>();
+	protected ArrayList<Coordinate> collected = new ArrayList<>(); //stores all collected keys
 	
+	/**
+	 * Return the next move in the current optimal path to the goal tile
+	 * @param map - the current known map
+	 **/
 	@Override
-	public Move move(HashMap<Coordinate, MapTile> worldView) {
+	public Move move(HashMap<Coordinate, MapTile> map) {
 		
 		collectKey();
 		
 		if(path.endPath()) {
-			path = potentialPath(worldView);
+			path = potentialPath(map);
 		} 
-		//TODO handle types of tiles and acceleration/deceleration
+
 		Coordinate nextMove = path.getNextMove();		
 		return new Move(nextMove);
 	}
 
+	/**
+	 * UpdateState() is responsible for continuously reading in the current view of the car, 
+	 * removing explored tiles as they are encountered
+	 * @param view - the current view of the car 
+	 **/
 	@Override
-	public void updateState(HashMap<Coordinate, MapTile> state) {
-		for(Coordinate coordinate : state.keySet()) {
-			MapTile tile = state.get(coordinate);
+	public void updateState(HashMap<Coordinate, MapTile> view) {
+		for(Coordinate coordinate : view.keySet()) {
+			MapTile tile = view.get(coordinate);
 			
 			if(tile instanceof LavaTrap) {
+				//add key to goal if this is the first time it has been seen 
 				if((isKey((LavaTrap) tile)) && !foundKey(coordinate)){
+					//if key is accessible from a road 
 					if(!collected(coordinate) && Path.hasPath(coordinate)) {
-						
 						goal.add(coordinate);
-					//	System.out.println(goal);
 					}
 				} 
 			}
 		}
-		//System.out.println(collected);
 	}
 	
+	/**
+	 * Returns a boolean value indicating if a lava tile contains a key
+	 * @param tile - lava tile to be evaluated
+	 **/
 	public boolean isKey(LavaTrap tile) {
 		int keyNum = tile.getKey();
 		if(keyNum !=0) {
-			WorldSensor.addKey(keyNum);
+			CarSensor.addKey(keyNum);
 			return true;
 		}
 		return false;
 	}
 	
+	/**
+	 * Returns a boolean value indicating if a key has previously come across 
+	 * the key in the map
+	 * @param tile - lava tile to be evaluated
+	 **/
 	public boolean foundKey(Coordinate key) {
 		return goal.contains(key);
 	}
 	
-	private boolean collected(Coordinate coordinate) {
-		return collected.contains(coordinate);
+	/**
+	 * Returns a boolean value if car has collected the key at a specified coordinate
+	 * @param key - key tile to be assessed
+	 **/
+	private boolean collected(Coordinate key) {
+		return collected.contains(key);
 	}
 	
+	/**
+	 * CollectKey() is responsible for identifying if the current tile the car is located on 
+	 * contains a key and handling collection.
+	 **/
 	private void collectKey() {
-		Coordinate currentPosition = WorldSensor.getCurrentPosition();
+		Coordinate currentPosition = CarSensor.getCurrentPosition();
 		if(goal.contains(currentPosition)) {
-			collected.add(currentPosition);
-			
-			
-			goal.remove(currentPosition);
+			collected.add(currentPosition); //collect key
+			goal.remove(currentPosition);  //remove from list of goal keys
 		}
 	}
 }

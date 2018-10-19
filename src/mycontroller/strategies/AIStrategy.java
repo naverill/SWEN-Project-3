@@ -6,22 +6,29 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Stack;
 
-import mycontroller.WorldSensor;
+import mycontroller.CarSensor;
 import mycontroller.util.Move;
 import tiles.MapTile;
 import utilities.Coordinate;
 
+/**
+* Custom AI Strategy class that encompasses and handles the logic of traversal strategies 
+*/
 public class AIStrategy implements IMovementStrategy {
-	private static final int EXPLORE = 0;
-	private static final int HEALTH = 1;
-	private static final int KEY = 2;
-	private static final int FINISH = 3;
-	private static final int NUM_STRATEGIES = 4;
+	private static final int EXPLORE = 0; //index of explore strategy (using an enum inhibited readability of the code)
+	private static final int HEALTH = 1; //index of health strategy
+	private static final int KEY = 2; //index of key strategy
+	private static final int FINISH = 3; //index of finish strategy
+	private static final int NUM_STRATEGIES = 4; //number of strategies used 
 	
-	public List<BasicStrategy>  strategies = new ArrayList<>();
-	private BasicStrategy currentStrategy;
+	public List<BasicStrategy>  strategies = new ArrayList<>(); //list of basic strategies the AI employs
+	private BasicStrategy currentStrategy; //the current strategy
 
-	//TODO dont pass sensor cause then passing map would be redundant
+
+	/**
+	* The AI Strategy object that controls the movement of the car
+	* @param map -  the map of the world at initialisation
+	*/
 	public AIStrategy(HashMap<Coordinate, MapTile> map) {
 		strategies = (List<BasicStrategy>) Arrays.asList(
 	    											   (BasicStrategy) new ExploreStrategy(map), 
@@ -29,116 +36,149 @@ public class AIStrategy implements IMovementStrategy {
 	    											   (BasicStrategy) new KeyStrategy(),
 	    											   (BasicStrategy) new FinishStrategy()
 	    											   );
+		//start car in explore strategy
 		currentStrategy = strategies.get(EXPLORE);
 	}
 
-	
+	/**
+	* Generate a movement based on the current strategy being employed
+	* @param map -  the world map of all tiles 
+	*/
 	@Override
-	public Move move(HashMap<Coordinate, MapTile> worldView) {		
-		return currentStrategy.move(worldView);
+	public Move move(HashMap<Coordinate, MapTile> map) {		
+		return currentStrategy.move(map);
 	}
 
+	/**
+	* Read in current state of the and updating the state of the traversal strategies 
+	* @param view -  the current view of the car
+	*/
 	@Override
-	public void updateState(HashMap<Coordinate, MapTile> state) {
+	public void updateState(HashMap<Coordinate, MapTile> map) {
 		for(int i=0; i< NUM_STRATEGIES; i++) {
-			strategies.get(i).updateState(state);
-		}	
-		determineState();
-//		System.out.println(currentStrategy.getClass());
+			strategies.get(i).updateState(map);
+		}
+		//switch strategies based on current state 
+		determineState(); 
 	}
 
+	/**
+	* Reset the current strategy
+	* @param map -  the world map of all tiles 
+	*/
 	@Override
 	public void reset(HashMap<Coordinate, MapTile> map) {
 		currentStrategy.reset(map);
 	}
 
-	@Override
-	public void applyBrake() {
-		currentStrategy.applyBrake();
-	}
-	
+	/**
+	* Switch current strategy according to the current state of the World and car
+	* @param map -  the world map of all tiles 
+	*/
 	public void determineState() {
+		//don't switch if car is healing 
 		if(currentlyHealing() && !fullyHealed()) {
-			//System.out.println("brake here");
-//			WorldSensor.car.brake();
-			//System.out.println(currentStrategy.getClass());
 			return;
 		}
 		
+		//health tile is located and car is at critical health
 		if(foundHealth() && nearCriticalHealth()) {
 			currentStrategy = strategies.get(HEALTH);
 			return;
 		}
 
-		//means we have enough health to do other things
+		//All tiles have been explored
 		if(hasExploredEverything()) {
 			
-			if(WorldSensor.hasAllKeys()) {
-				
+			if(CarSensor.hasAllKeys()) {
+				//attempt to reach finish Tile
 				tryToFinish();
 				
 			} else {
-				//System.out.println("i have keys");
 				tryToFindKeys();
-		
 			}
-			//System.out.println(currentStrategy.getClass());
 			return;
 		}
-
+		//default to exploring 
 		currentStrategy = strategies.get(EXPLORE);
-//		System.out.println(currentStrategy.getClass());
 	}
 	
+	/**
+	* Evaluates whether finishing tile can be reached based on current health 
+	*  and most efficient path 
+	*/
 	private void tryToFinish() {
+		//get most efficient path to finish tile 
 		Stack<Coordinate> pathToFinish = strategies.get(FINISH).potentialPath(
-				WorldSensor.getWorldMap()).getCurrentPath();
+				CarSensor.getWorldMap()).getCurrentPath();
 		
-		if (WorldSensor.nearCriticalLowHealth(pathToFinish)) {
-			System.out.println("need health");
+		//find health if insufficient 
+		if (CarSensor.nearCriticalLowHealth(pathToFinish)) {
 			currentStrategy = strategies.get(HEALTH);
 		} else {
 			currentStrategy=strategies.get(FINISH);
 		}
 	}
 
+	/**
+	* Evaluates whether keys tile can be collected based on current health 
+	*  and most efficient path 
+	*/
 	private void tryToFindKeys() {
 		Stack<Coordinate> pathToKey = strategies.get(KEY).potentialPath(
-				WorldSensor.getWorldMap()).getCurrentPath();
+				CarSensor.getWorldMap()).getCurrentPath();
 		
-		if(WorldSensor.hasEnoughHealth(pathToKey)) {
+		if(CarSensor.hasEnoughHealth(pathToKey)) {
 			currentStrategy = strategies.get(KEY);
 		} 
-		else if (WorldSensor.nearCriticalLowHealth(pathToKey)) {
+		else if (CarSensor.nearCriticalLowHealth(pathToKey)) {
 			currentStrategy = strategies.get(HEALTH);
 		}
 	}
 	
+	/**
+	* Returns whether car is currently located on a health tile and is employing the healing strategy
+	*/
 	public boolean currentlyHealing() {
-		return WorldSensor.isHealing() && currentStrategy==strategies.get(HEALTH); //and current strategy is health
+		return CarSensor.isHealing() && currentStrategy==strategies.get(HEALTH); //and current strategy is health
 	}
 	
+	/**
+	* Returns whether car is at full health
+	*/
 	public boolean fullyHealed() {
-		return WorldSensor.isDoneHealing();
+		return CarSensor.isDoneHealing();
 	}
 
+	/**
+	* Returns whether car has explored all areas of the map
+	*/
 	//returns true if it has explored everything
 	public boolean hasExploredEverything(){
 		return strategies.get(EXPLORE).goal.isEmpty();
 	}
 	
+	/**
+	* Returns whether car has identified the location of any keys
+	*/
 	public boolean keysCollected(){
 		return strategies.get(KEY).goal.isEmpty();
 	}
 	
+	/**
+	* Returns whether car has identified the location of any health tiles
+	*/
 	public boolean foundHealth(){
 		return strategies.get(HEALTH).foundGoalTile();
 	}
 	
+	/**
+	* Identifies whether car has enough health to traverse the current path 
+	*/
 	public boolean nearCriticalHealth() {
-		Stack<Coordinate> pathToHeal = strategies.get(HEALTH).potentialPath(WorldSensor.getWorldMap()).getCurrentPath();
+		Stack<Coordinate> pathToHeal = strategies.get(HEALTH).potentialPath(CarSensor.getWorldMap()).getCurrentPath();
 		
-		return WorldSensor.nearCriticalLowHealth(pathToHeal);
+		return CarSensor.nearCriticalLowHealth(pathToHeal);
 	}
 
 }
