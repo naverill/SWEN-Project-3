@@ -18,9 +18,9 @@ public class FinishStrategy extends BasicStrategy{
 	 * @param map - the current known map
 	 **/
 	@Override
-	public Move move(HashMap<Coordinate, MapTile> worldView) {		
+	public Move move() {		
 		if(path.endPath()) {
-			path = potentialPath(worldView);
+			path = potentialPath();
 		}
 		
 		Coordinate nextMove = path.getNextMove();		

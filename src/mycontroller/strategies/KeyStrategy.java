@@ -21,12 +21,12 @@ public class KeyStrategy extends BasicStrategy {
 	 * @param map - the current known map
 	 **/
 	@Override
-	public Move move(HashMap<Coordinate, MapTile> map) {
+	public Move move() {
 		
 		collectKey();
 		
 		if(path.endPath()) {
-			path = potentialPath(map);
+			path = potentialPath();
 		} 
 
 		Coordinate nextMove = path.getNextMove();		

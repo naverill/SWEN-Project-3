@@ -45,8 +45,8 @@ public class AIStrategy implements IMovementStrategy {
 	* @param map -  the world map of all tiles 
 	*/
 	@Override
-	public Move move(HashMap<Coordinate, MapTile> map) {		
-		return currentStrategy.move(map);
+	public Move move() {		
+		return currentStrategy.move();
 	}
 
 	/**
@@ -54,9 +54,9 @@ public class AIStrategy implements IMovementStrategy {
 	* @param view -  the current view of the car
 	*/
 	@Override
-	public void updateState(HashMap<Coordinate, MapTile> map) {
+	public void updateState(HashMap<Coordinate, MapTile> view) {
 		for(int i=0; i< NUM_STRATEGIES; i++) {
-			strategies.get(i).updateState(map);
+			strategies.get(i).updateState(view);
 		}
 		//switch strategies based on current state 
 		determineState(); 
@@ -67,8 +67,8 @@ public class AIStrategy implements IMovementStrategy {
 	* @param map -  the world map of all tiles 
 	*/
 	@Override
-	public void reset(HashMap<Coordinate, MapTile> map) {
-		currentStrategy.reset(map);
+	public void reset() {
+		currentStrategy.reset();
 	}
 
 	/**
@@ -109,8 +109,7 @@ public class AIStrategy implements IMovementStrategy {
 	*/
 	private void tryToFinish() {
 		//get most efficient path to finish tile 
-		Stack<Coordinate> pathToFinish = strategies.get(FINISH).potentialPath(
-				CarSensor.getWorldMap()).getCurrentPath();
+		Stack<Coordinate> pathToFinish = strategies.get(FINISH).potentialPath().getCurrentPath();
 		
 		//find health if insufficient 
 		if (CarSensor.nearCriticalLowHealth(pathToFinish)) {
@@ -125,8 +124,7 @@ public class AIStrategy implements IMovementStrategy {
 	*  and most efficient path 
 	*/
 	private void tryToFindKeys() {
-		Stack<Coordinate> pathToKey = strategies.get(KEY).potentialPath(
-				CarSensor.getWorldMap()).getCurrentPath();
+		Stack<Coordinate> pathToKey = strategies.get(KEY).potentialPath().getCurrentPath();
 		
 		if(CarSensor.hasEnoughHealth(pathToKey)) {
 			currentStrategy = strategies.get(KEY);
@@ -176,7 +174,7 @@ public class AIStrategy implements IMovementStrategy {
 	* Identifies whether car has enough health to traverse the current path 
 	*/
 	public boolean nearCriticalHealth() {
-		Stack<Coordinate> pathToHeal = strategies.get(HEALTH).potentialPath(CarSensor.getWorldMap()).getCurrentPath();
+		Stack<Coordinate> pathToHeal = strategies.get(HEALTH).potentialPath().getCurrentPath();
 		
 		return CarSensor.nearCriticalLowHealth(pathToHeal);
 	}

@@ -29,19 +29,13 @@ public class AStarSearch {
 	private static HashMap<Coordinate, Float> gCosts = new HashMap<>();
 	
 	private static HashMap<Coordinate, MapTile> neighbourTiles;
-	//private static HashMap<Coordinate, MapTile> worldMap = new HashMap<>();
 	
 	private static final float LAVA_MULTIPLIER = 100.0f;
 	private static final float ICE_MULTIPLIER = 0.5f;
 	private static final float OTW_MULTIPLIER = 0.5f;
 	private static final float GRASS_MULTIPLIER = Float.MAX_VALUE;
 
-	
-	public AStarSearch() {
-		
-	}
-	
-	public static Pair<Stack<Coordinate>, Float> findBestPath(HashMap<Coordinate, MapTile> iMap, Coordinate iBeforeStart,
+	public static Pair<Stack<Coordinate>, Float> findBestPath(Coordinate iBeforeStart,
             Coordinate iStart, Coordinate iGoal) {
 
 		map = CarSensor.getWorldMap();
@@ -122,7 +116,7 @@ public class AStarSearch {
 		MapTile tile = map.get(neighbour);
 		if (tile instanceof LavaTrap) {
 			if(((LavaTrap) tile).getKey()!=0) {
-				if(!CarSensor.car.getKeys().contains(((LavaTrap) tile).getKey())) {
+				if(!CarSensor.getCollectedKeys().contains(((LavaTrap) tile).getKey())) {
 					//doesnt have key then go through it
 					gCost *= OTW_MULTIPLIER;
 				}else {

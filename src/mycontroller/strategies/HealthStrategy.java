@@ -19,10 +19,10 @@ public class HealthStrategy extends BasicStrategy {
 	 * @param map - the current known map
 	 **/
 	@Override
-	public Move move(HashMap<Coordinate, MapTile> worldView) {	
+	public Move move() {	
 		//if goal tile is reached, recalculate next path 
 		if(path.endPath()) {
-			path = potentialPath(worldView);
+			path = potentialPath();
 		}
 		
 		//if car is located on a healing tile, brake on tile until healing is complete

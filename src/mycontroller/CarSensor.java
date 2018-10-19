@@ -16,8 +16,8 @@ import world.WorldSpatial.Direction;
  * The CarSensor class stores and processes all world knowledge collected by the car
  * */
 public class CarSensor {
-	public static HashMap<Coordinate, MapTile> map = new HashMap<>(); //map of all world Tiles
-	public static Car car;
+	private static HashMap<Coordinate, MapTile> map = new HashMap<>(); //map of all world Tiles
+	private static Car car;
 	public static final int LAVA_COST = 5; //health cost of lava tiles
 	public static final int DANGER_RANGE = 20; // health buffer for car 
 	private static Set<Integer> keys = new HashSet<>(); //set of all seens keys in the map
@@ -25,33 +25,6 @@ public class CarSensor {
 	public CarSensor(HashMap<Coordinate, MapTile> worldTiles, Car car) {
 		this.car = car;
 		updateMap(worldTiles);
-	}
-
-	/**
-	 * Getneighbours() take a tile coordinate and returns a HashMap of all neighbouring tiles
-	 * @param key - the coordinate of the centre tile
-	 * */
-	public  static HashMap<Coordinate, MapTile> getNeighbours(Coordinate key){
-		HashMap<Coordinate, MapTile> neighbours = new HashMap<>();
-		int xValue = key.x;
-		int yValue = key.y;
-				
-		Coordinate northNeighbourCoor = new Coordinate(xValue, yValue+1);
-		Coordinate eastNeighbourCoor = new Coordinate(xValue+1, yValue);
-		Coordinate westNeighbourCoor = new Coordinate(xValue-1, yValue);
-		Coordinate southNeighbourCoor = new Coordinate(xValue, yValue-1);
-		
-		MapTile northNeighbourType = map.get(northNeighbourCoor);
-		MapTile eastNeighbourType = map.get(eastNeighbourCoor);
-		MapTile westNeighbourType = map.get(westNeighbourCoor);
-		MapTile southNeighbourType = map.get(southNeighbourCoor);
-
-		neighbours.put(northNeighbourCoor, northNeighbourType);
-		neighbours.put(eastNeighbourCoor, eastNeighbourType);
-		neighbours.put(westNeighbourCoor, westNeighbourType);
-		neighbours.put(southNeighbourCoor, southNeighbourType);
-		
-		return neighbours;
 	}
 	
 	/**
@@ -122,6 +95,14 @@ public class CarSensor {
 	 * */
 	public static boolean hasAllKeys() {		
 		return keys.equals(car.getKeys());
+	}
+	
+	public static Set<Integer> getSeenKeys() {		
+		return keys;
+	}
+	
+	public static Set<Integer> getCollectedKeys(){
+		return car.getKeys();
 	}
 	
 	/**

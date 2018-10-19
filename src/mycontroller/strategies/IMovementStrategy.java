@@ -17,7 +17,7 @@ public interface IMovementStrategy {
 	 * This outputs the next possible movement for the car
 	* @param map - the world map of all known tiles  
 	 */
-	public Move move(HashMap<Coordinate, MapTile> map);
+	public Move move();
 	
 	/**
 	 * This updates the world state that defines the decision making of the strategy
@@ -29,7 +29,7 @@ public interface IMovementStrategy {
 	* Reset the strategy and recalculate it based on the current world conditions
 	* @param map - the world map of all known tiles  
 	*/
-	public void reset(HashMap<Coordinate, MapTile> map);
+	public void reset();
 
 }
 

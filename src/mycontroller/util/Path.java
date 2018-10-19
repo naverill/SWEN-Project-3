@@ -20,8 +20,8 @@ public class Path {
 		
 	public Path() {}
 
-	public Path(HashMap<Coordinate, MapTile> tiles, Coordinate start, ArrayList<Coordinate> end) {
-		pathCoordinates = getPath(tiles, start, end);
+	public Path(Coordinate start, ArrayList<Coordinate> end) {
+		pathCoordinates = getPath(start, end);
 	}
 	
 	/**
@@ -42,13 +42,13 @@ public class Path {
 	 * @param start - the start coordinate
 	 * @param end - list of possible end points of the paths 
 	 * */
-	private Stack<Coordinate> getPath(HashMap<Coordinate, MapTile> map, Coordinate start, ArrayList<Coordinate> end){		
+	private Stack<Coordinate> getPath(Coordinate start, ArrayList<Coordinate> end){		
 		Pair<Stack<Coordinate>, Float> currCost;
 		Pair<Stack<Coordinate>, Float> minCost = new Pair<>(new Stack<>(), Float.MAX_VALUE);
 
 		//find least cost path to all coordinates
 		for(Coordinate coordinate : end) {
-			currCost = AStarSearch.findBestPath(map, start, start, coordinate);
+			currCost = AStarSearch.findBestPath(start, start, coordinate);
 			
 			//find the minimum cost path
 			if (currCost != null) {
@@ -163,7 +163,7 @@ public class Path {
 	 * @param coorinate - coordinate to be evaluated
 	 * */
 	public static boolean hasPath(Coordinate coordinate) {
-		return AStarSearch.findBestPath(CarSensor.map, CarSensor.getCurrentPosition(), CarSensor.getCurrentPosition(), coordinate)!=null;
+		return AStarSearch.findBestPath(CarSensor.getCurrentPosition(), CarSensor.getCurrentPosition(), coordinate)!=null;
 	}
 	
 	/**

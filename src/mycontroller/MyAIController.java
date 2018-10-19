@@ -38,7 +38,7 @@ public class MyAIController extends CarController {
 		HashMap<Coordinate, MapTile> currentView = getView();
 		CarSensor.updateMap(currentView);
 		strategy.updateState(currentView);
-		Move nextMove = strategy.move(CarSensor.getWorldMap());	
+		Move nextMove = strategy.move();	
 		moveCar(nextMove);
 	}
 	
@@ -57,7 +57,7 @@ public class MyAIController extends CarController {
 		
 		// if movement is invalid, recalculate the current strategy
 		if(Path.invalidMove(move)) {
-			strategy.reset(CarSensor.getWorldMap());
+			strategy.reset();
 			applyBrake();
 			return;
 		};

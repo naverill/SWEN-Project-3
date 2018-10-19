@@ -25,7 +25,6 @@ public class AIController extends CarController {
 //			System.out.println(entry.getKey());
 //			System.out.println(entry.getValue().getType());
 //		}
-		System.out.println(AStarSearch.findBestPath(getMap(), before, before, after) + "hey");
 	}
 	
 	// Coordinate initialGuess;

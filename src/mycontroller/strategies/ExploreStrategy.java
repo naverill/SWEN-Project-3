@@ -35,10 +35,10 @@ public class ExploreStrategy extends BasicStrategy {
 	 * @param map - the current known map
 	 **/
 	@Override
-	public Move move(HashMap<Coordinate, MapTile> map) {
+	public Move move() {
 		//if goal tile is reached, recalculate next path 
 		if(path.endPath()) {
-			path = potentialPath(map);
+			path = potentialPath();
 		}
 		
 		Coordinate nextMove = path.getNextMove();		
@@ -68,15 +68,16 @@ public class ExploreStrategy extends BasicStrategy {
 	 *  encountered.
 	 *  @param map - the current world map
 	 **/
-	public void checkCurrentPath(HashMap<Coordinate, MapTile> map) {
+	public void checkCurrentPath(HashMap<Coordinate, MapTile> view) {
 		for(Coordinate coordinate: path.getCurrentPath()) {
-			if(map.containsKey(coordinate)){
-				if(map.get(coordinate) instanceof MudTrap) {
-					path = potentialPath(CarSensor.getWorldMap());
+			if(view.containsKey(coordinate)){
+				if(view.get(coordinate) instanceof MudTrap) {
+					path = potentialPath();
 				}
 			}
 		}
 	}
+	
 	
 	/**
 	 * A comparator to sort Coordinates according to the euclidean distance from 
@@ -114,9 +115,9 @@ public class ExploreStrategy extends BasicStrategy {
 			
 			if(tile.getType().equals(MapTile.Type.ROAD) || tile.getType().equals(MapTile.Type.TRAP)) {
 				
-					if(Path.hasPath(coordinate)) {
-						goal.add(coordinate);
-					}		
+				if(Path.hasPath(coordinate)) {
+					goal.add(coordinate);
+				} 
 			}
 		}
         Collections.sort(goal, new CoordinateComparator(CarSensor.getCurrentPosition()));
@@ -127,13 +128,13 @@ public class ExploreStrategy extends BasicStrategy {
 	 * @param map - the current world map
 	 **/
 	@Override
-	public void reset(HashMap<Coordinate, MapTile> map) {
+	public void reset() {
 		path.clearPath();
 		if (goal.size() > NODES_OUTSIDE_VIEW) {
-			path = new Path(map, CarSensor.getCurrentPosition(), new ArrayList<>(goal.subList(0, NODES_OUTSIDE_VIEW)));
+			path = new Path(CarSensor.getCurrentPosition(), new ArrayList<>(goal.subList(0, NODES_OUTSIDE_VIEW)));
 		}
 		else {
-			path = new Path(map, CarSensor.getCurrentPosition(), goal);
+			path = new Path(CarSensor.getCurrentPosition(), goal);
 		}	
 	}
 	
@@ -142,11 +143,11 @@ public class ExploreStrategy extends BasicStrategy {
 	 * @param map - the current world map
 	 **/
 	@Override
-	public Path potentialPath(HashMap<Coordinate, MapTile> worldView) {
+	public Path potentialPath() {
 		if (goal.size() > NODES_OUTSIDE_VIEW) {
-			return new Path(worldView, CarSensor.getCurrentPosition(), new ArrayList<>(goal.subList(0, NODES_OUTSIDE_VIEW)));
+			return new Path(CarSensor.getCurrentPosition(), new ArrayList<>(goal.subList(0, NODES_OUTSIDE_VIEW)));
 		} else {
-			return new Path(worldView, CarSensor.getCurrentPosition(), goal);
+			return new Path(CarSensor.getCurrentPosition(), goal);
 		}	
 	}
 	
