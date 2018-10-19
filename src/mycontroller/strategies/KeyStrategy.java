@@ -13,18 +13,13 @@ import utilities.Coordinate;
  * Extends the abstract class BasicStrategy. The KeyStrategy is responsible for 
  * identifying the least-cost path to a key tile. 
  **/
-public class KeyStrategy extends BasicStrategy {
-	protected ArrayList<Coordinate> collected = new ArrayList<>(); //stores all collected keys
-	
+public class KeyStrategy extends BasicStrategy {	
 	/**
 	 * Return the next move in the current optimal path to the goal tile
 	 * @param map - the current known map
 	 **/
 	@Override
-	public Move move() {
-		
-		collectKey();
-		
+	public Move move() {		
 		if(path.endPath()) {
 			path = potentialPath();
 		} 
@@ -47,7 +42,7 @@ public class KeyStrategy extends BasicStrategy {
 				//add key to goal if this is the first time it has been seen 
 				if((isKey((LavaTrap) tile)) && !foundKey(coordinate)){
 					//if key is accessible from a road 
-					if(!collected(coordinate) && Path.hasPath(coordinate)) {
+					if(!collected(((LavaTrap) tile).getKey()) && Path.hasPath(coordinate)) {
 						goal.add(coordinate);
 					}
 				} 
@@ -81,19 +76,7 @@ public class KeyStrategy extends BasicStrategy {
 	 * Returns a boolean value if car has collected the key at a specified coordinate
 	 * @param key - key tile to be assessed
 	 **/
-	private boolean collected(Coordinate key) {
-		return collected.contains(key);
-	}
-	
-	/**
-	 * CollectKey() is responsible for identifying if the current tile the car is located on 
-	 * contains a key and handling collection.
-	 **/
-	private void collectKey() {
-		Coordinate currentPosition = CarSensor.getCurrentPosition();
-		if(goal.contains(currentPosition)) {
-			collected.add(currentPosition); //collect key
-			goal.remove(currentPosition);  //remove from list of goal keys
-		}
+	private boolean collected(Integer key) {
+		return CarSensor.getCollectedKeys().contains(key);
 	}
 }

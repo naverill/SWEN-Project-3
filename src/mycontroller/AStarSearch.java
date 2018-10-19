@@ -31,7 +31,7 @@ public class AStarSearch {
 	private static final float LAVA_MULTIPLIER = 100.0f;
 	private static final float ICE_MULTIPLIER = 0.5f;
 	private static final float OTW_MULTIPLIER = 0.5f;
-	private static final float TURN_MULTIPLIER = 3.0f;
+	private static final float TURN_MULTIPLIER = 2.0f;
 	private static final float GRASS_MULTIPLIER = 20000;
 	
 	public static Pair<Stack<Coordinate>, Float> findBestPath(Coordinate iBeforeStart,
@@ -65,7 +65,7 @@ public class AStarSearch {
 			
 			
 			
-			ArrayList<Coordinate> neighbours = getValidNeighbours(curr);
+			ArrayList<Coordinate> neighbours = getValidNeighbours(curr, cameFrom.get(curr));
 
 			for (Coordinate neighbour: neighbours) {
 				if (exploredTiles.contains(neighbour)) {
@@ -114,9 +114,12 @@ public class AStarSearch {
 		//add trap multipliers if needed
 		MapTile tile = map.get(neighbour);
 		if (tile instanceof LavaTrap) {
-			if(((LavaTrap) tile).getKey()!=0) {
-				if(!CarSensor.getCollectedKeys().contains(((LavaTrap) tile).getKey())) {
+			LavaTrap lava = (LavaTrap) tile;
+			if(lava.getKey()!=0) {
+				System.out.println(CarSensor.getCollectedKeys());
+				if(!CarSensor.getCollectedKeys().contains(lava.getKey())) {
 					//doesnt have key then go through it
+					System.out.println("ON THE WAY");
 					gCost *= OTW_MULTIPLIER;
 				} else {
 					//does have key then go through it
@@ -165,7 +168,7 @@ public static Direction absoluteToRelativePosition(Coordinate current, Coordinat
 		}
 	}
 	
-	private static ArrayList<Coordinate> getValidNeighbours(Coordinate current) {
+	private static ArrayList<Coordinate> getValidNeighbours(Coordinate current, Coordinate cameFrom) {
 		neighbourTiles = new HashMap<>();
 		ArrayList<Coordinate> validNeighbours = new ArrayList<>();
 		neighbourTiles = getNeighbours(current);

@@ -58,6 +58,7 @@ public class AIStrategy implements IMovementStrategy {
 		}
 		//switch strategies based on current state 
 		determineState(); 
+		collectKey();
 	}
 
 	/**
@@ -159,6 +160,17 @@ public class AIStrategy implements IMovementStrategy {
 	*/
 	public boolean keysCollected(){
 		return strategies.get(KEY).goal.isEmpty();
+	}
+	
+	/**
+	 * CollectKey() is responsible for identifying if the current tile the car is located on 
+	 * contains a key and handling collection.
+	 **/
+	private void collectKey() {
+		Coordinate currentPosition = CarSensor.getCurrentPosition();
+		if(strategies.get(KEY).goal.contains(currentPosition)) {
+			strategies.get(KEY).goal.remove(currentPosition);  //remove from list of goal keys
+		}
 	}
 	
 	/**
